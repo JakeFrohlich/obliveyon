@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest obliveyon --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "Bash(mkdir -p obliveyon)",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)",
+      "Bash(npx next:*)",
+      "Bash(node -e \"const { defineConfig } = require\\(''prisma/config''\\); console.log\\(typeof defineConfig\\);\")",
+      "Bash(node -e \"const { PrismaClient } = require\\(''@prisma/client''\\); const c = new PrismaClient\\(\\); console.log\\(''ok''\\); c.$disconnect\\(\\);\")",
+      "Bash(node -e \"const { PrismaClient } = require\\(''@prisma/client''\\); console.log\\(Object.getOwnPropertyNames\\(PrismaClient.prototype\\).sort\\(\\).join\\('', ''\\)\\);\")",
+      "Bash(node -e \"const pc = require\\(''@prisma/client''\\); const c = new pc.PrismaClient\\(\\); console.log\\(''created ok''\\);\")"
+    ]
+  }
+}

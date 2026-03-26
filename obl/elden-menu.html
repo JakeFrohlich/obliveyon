@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Ashen Throne</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --amber: #c8860a;
+      --amber-light: #f0a830;
+      --bg: #050301;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      font-family: 'Cinzel', serif;
+      color: #c8a060;
+      cursor: default;
+    }
+
+    /* ── Full-screen canvas stack ── */
+    canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    #bgCanvas  { z-index: 0; }
+    #fxCanvas  { z-index: 3; }
+
+    /* ── Stone texture background via CSS ── */
+    .stone-bg {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        repeating-radial-gradient(circle at 23% 67%, rgba(20,15,8,0.04) 0px, transparent 1px),
+        repeating-radial-gradient(circle at 78% 34%, rgba(25,18,10,0.03) 0px, transparent 1px),
+        repeating-radial-gradient(circle at 51% 89%, rgba(15,10,5,0.05) 0px, transparent 2px),
+        linear-gradient(180deg, #050301 0%, #080503 50%, #060402 100%);
+      pointer-events: none;
+    }
+
+    /* ── Vignette (asymmetric, heavier at edges) ── */
+    .vignette {
+      position: fixed; inset: 0; z-index: 8;
+      background:
+        radial-gradient(ellipse 70% 65% at 50% 48%, transparent 20%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.92) 100%);
+      pointer-events: none;
+    }
+
+    /* ── Fog layer ── */
+    .fog {
+      position: fixed;
+      bottom: 0; left: -20%; right: -20%;
+      height: 35%;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        radial-gradient(ellipse 120% 100% at 30% 100%, rgba(20,15,8,0.4) 0%, transparent 70%),
+        radial-gradient(ellipse 100% 80% at 70% 100%, rgba(15,10,5,0.35) 0%, transparent 60%);
+      animation: fogDrift 20s ease-in-out infinite alternate;
+    }
+    @keyframes fogDrift {
+      0%   { transform: translateX(-3%); }
+      100% { transform: translateX(3%); }
+    }
+
+    /* ── Scene (HTML menu layer) ── */
+    .scene {
+      position: fixed; inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    /* ── Candle body (CSS) ── */
+    .candle-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 48px;
+      opacity: 0;
+    }
+
+    .candle-body {
+      width: 28px;
+      height: 90px;
+      background: linear-gradient(to right,
+        #1a120a 0%, #3a2818 15%, #5a3c22 40%, #4a3018 65%, #2a1a10 85%, #1a120a 100%);
+      border-radius: 3px 3px 4px 4px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.7);
+      position: relative;
+    }
+
+    /* Wax lip at top */
+    .candle-body::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: -3px; right: -3px;
+      height: 8px;
+      background: radial-gradient(ellipse at 50% 100%, #8a6838 0%, #5a3c22 70%, #3a2818 100%);
+      border-radius: 50%;
+    }
+
+    /* Wax drip left */
+    .wax-drip {
+      position: absolute;
+      width: 6px; height: 24px;
+      background: linear-gradient(to bottom, #7a5830, #5a3c22 60%, transparent);
+      border-radius: 0 0 50% 50%;
+      top: 12px; left: 2px;
+      opacity: 0.7;
+    }
+    .wax-drip-2 {
+      position: absolute;
+      width: 4px; height: 16px;
+      background: linear-gradient(to bottom, #6a4828, #4a3018 60%, transparent);
+      border-radius: 0 0 50% 50%;
+      top: 20px; right: 3px;
+      opacity: 0.5;
+    }
+
+    /* Wax pool at base */
+    .wax-pool {
+      width: 52px; height: 10px;
+      background: radial-gradient(ellipse, #4a3520 0%, #2a1a10 60%, transparent 100%);
+      border-radius: 50%;
+      margin-top: -2px;
+    }
+
+    /* Wick */
+    .wick {
+      width: 2px; height: 12px;
+      background: linear-gradient(to top, #2a1a08, #4a3018 40%, #1a0e04);
+      border-radius: 1px;
+    }
+
+    /* Canvas-drawn flame placeholder (actual flame drawn on fxCanvas) */
+    .flame-space {
+      width: 40px; height: 65px;
+    }
+
+    /* ── Title ── */
+    .title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1rem, 2.8vw, 1.5rem);
+      font-weight: 400;
+      letter-spacing: 0.5em;
+      color: #a07838;
+      text-transform: uppercase;
+      margin-bottom: 52px;
+      text-shadow:
+        0 0 20px rgba(200,120,20,0.5),
+        0 0 40px rgba(180,80,0,0.2);
+      opacity: 0;
+      overflow: hidden;
+    }
+    .title span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    /* ── Menu ── */
+    .menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn {
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      font-family: 'Cinzel', serif;
+      text-transform: uppercase;
+      transition: all 0.35s ease;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    /* ── PLAY ── */
+    .btn-play {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      font-weight: 600;
+      color: var(--amber-light);
+      padding: 18px 72px;
+      letter-spacing: 0.3em;
+      border: 1px solid rgba(200,140,40,0.3);
+      text-shadow:
+        0 0 8px rgba(255,170,40,0.9),
+        0 0 20px rgba(255,120,10,0.5),
+        0 0 40px rgba(200,80,0,0.25);
+      box-shadow:
+        inset 0 0 25px rgba(180,90,10,0.08),
+        0 0 20px rgba(180,90,10,0.12);
+      margin-bottom: 8px;
+    }
+
+    /* Corner brackets */
+    .btn-play .corner {
+      position: absolute;
+      width: 12px; height: 12px;
+      border-color: rgba(200,150,60,0.5);
+      border-style: solid;
+      transition: all 0.4s ease;
+    }
+    .corner.tl { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+    .corner.tr { top: -1px; right: -1px; border-width: 1px 1px 0 0; }
+    .corner.bl { bottom: -1px; left: -1px; border-width: 0 0 1px 1px; }
+    .corner.br { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
+
+    .btn-play:hover {
+      color: #ffe0a0;
+      border-color: rgba(255,180,60,0.65);
+      text-shadow:
+        0 0 12px rgba(255,200,60,1.0),
+        0 0 30px rgba(255,140,20,0.9),
+        0 0 60px rgba(220,100,0,0.4);
+      box-shadow:
+        inset 0 0 35px rgba(200,100,10,0.15),
+        0 0 50px rgba(220,120,10,0.35),
+        0 0 100px rgba(180,80,0,0.15);
+      transform: translateY(0) scale(1.03);
+    }
+    .btn-play:hover .corner {
+      width: 16px; height: 16px;
+      border-color: rgba(255,200,80,0.8);
+    }
+    .btn-play:active { transform: scale(0.97); }
+
+    /* Shimmer sweep */
+    .btn-play::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(105deg,
+        transparent 35%, rgba(255,200,80,0.1) 45%,
+        rgba(255,200,80,0.2) 50%,
+        rgba(255,200,80,0.1) 55%, transparent 65%);
+      transform: translateX(-120%);
+      animation: shimmer 4s ease-in-out 4.5s infinite;
+    }
+    @keyframes shimmer {
+      0%   { transform: translateX(-120%); }
+      40%  { transform: translateX(120%); }
+      100% { transform: translateX(120%); }
+    }
+
+    /* Ornament below Play */
+    .ornament {
+      font-size: 0.55rem;
+      color: rgba(180,120,40,0.4);
+      letter-spacing: 0.5em;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    /* Divider */
+    .divider {
+      width: 160px; height: 1px;
+      background: linear-gradient(to right,
+        transparent, rgba(140,100,40,0.3) 30%, rgba(180,130,50,0.45) 50%, rgba(140,100,40,0.3) 70%, transparent);
+      margin-bottom: 6px;
+      opacity: 0;
+    }
+
+    /* ── Secondary buttons ── */
+    .btn-secondary {
+      font-size: clamp(0.6rem, 1.3vw, 0.75rem);
+      font-weight: 400;
+      color: #6a4c28;
+      padding: 10px 48px;
+      letter-spacing: 0.35em;
+      border: 1px solid transparent;
+      text-shadow: 0 0 6px rgba(120,80,20,0.2);
+      transition: all 0.5s ease;
+    }
+    .btn-secondary:hover {
+      color: #b08040;
+      border-color: rgba(160,110,40,0.3);
+      text-shadow:
+        0 0 10px rgba(200,130,30,0.5),
+        0 0 20px rgba(180,90,0,0.25);
+      box-shadow: 0 0 15px rgba(180,90,10,0.08);
+      transform: translateY(0) scale(1.02);
+    }
+    .btn-secondary:active { transform: scale(0.97); }
+
+    /* ── Lore text ── */
+    .lore {
+      position: fixed;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.55rem;
+      letter-spacing: 0.45em;
+      color: rgba(120,80,30,0.0);
+      text-transform: uppercase;
+      white-space: nowrap;
+      z-index: 6;
+    }
+
+    /* ── Fade-from-black overlay ── */
+    .blackout {
+      position: fixed; inset: 0;
+      background: #000;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    /* ── Screen flash ── */
+    .flash {
+      position: fixed; inset: 0;
+      background: rgba(255,220,140,0.0);
+      z-index: 50;
+      pointer-events: none;
+      transition: background 0.08s ease;
+    }
+  </style>
+</head>
+<body>
+
+<div class="stone-bg"></div>
+<canvas id="bgCanvas"></canvas>
+<div class="fog"></div>
+<canvas id="fxCanvas"></canvas>
+<div class="vignette"></div>
+
+<div class="scene">
+  <div class="candle-wrap" id="candleWrap">
+    <div class="flame-space" id="flameSpace"></div>
+    <div class="wick"></div>
+    <div class="candle-body">
+      <div class="wax-drip"></div>
+      <div class="wax-drip-2"></div>
+    </div>
+    <div class="wax-pool"></div>
+  </div>
+
+  <div class="title" id="title"></div>
+
+  <nav class="menu">
+    <button class="btn btn-play" id="btnPlay">
+      <span class="corner tl"></span>
+      <span class="corner tr"></span>
+      <span class="corner bl"></span>
+      <span class="corner br"></span>
+      Play
+    </button>
+    <div class="ornament" id="ornament">&mdash; &diams; &mdash;</div>
+    <div class="divider" id="divider"></div>
+    <button class="btn btn-secondary" id="btnSettings">Settings</button>
+    <button class="btn btn-secondary" id="btnCredits">Credits</button>
+  </nav>
+</div>
+
+<div class="lore" id="lore">Seek the throne &nbsp;&middot;&nbsp; Embrace the dark &nbsp;&middot;&nbsp; Remember the flame</div>
+<div class="blackout" id="blackout"></div>
+<div class="flash" id="flash"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  SETUP
+// ═══════════════════════════════════════════════════════════════════
+const bgCanvas = document.getElementById('bgCanvas');
+const fxCanvas = document.getElementById('fxCanvas');
+const bgCtx = bgCanvas.getContext('2d');
+const fxCtx = fxCanvas.getContext('2d');
+
+let W, H;
+function resize() {
+  W = bgCanvas.width = fxCanvas.width = window.innerWidth;
+  H = bgCanvas.height = fxCanvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Candle position (center of flame tip)
+function flamePos() {
+  const el = document.getElementById('flameSpace');
+  const r = el.getBoundingClientRect();
+  return { x: r.left + r.width / 2, y: r.top + r.height * 0.35 };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SIMPLEX-LIKE NOISE (compact hash-based)
+// ═══════════════════════════════════════════════════════════════════
+function noise(x) {
+  const xi = Math.floor(x);
+  const f = x - xi;
+  const t = f * f * (3 - 2 * f); // smoothstep
+  const h = (n) => {
+    let s = n * 127.1;
+    return (Math.sin(s) * 43758.5453) % 1;
+  };
+  return h(xi) * (1 - t) + h(xi + 1) * t;
+}
+function fbm(x, octaves = 4) {
+  let val = 0, amp = 0.5, freq = 1;
+  for (let i = 0; i < octaves; i++) {
+    val += amp * noise(x * freq);
+    amp *= 0.5;
+    freq *= 2.1;
+  }
+  return val;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  FLAME (drawn on fxCanvas)
+// ═══════════════════════════════════════════════════════════════════
+let time = 0;
+let flameIntensity = 0; // 0..1, ramps up during entrance
+
+function drawFlame(ctx) {
+  const fp = flamePos();
+  const cx = fp.x;
+  const baseY = fp.y + 28; // bottom of flame (wick tip)
+  const t = time;
+
+  // Noise-driven flicker
+  const n1 = fbm(t * 3.2) * 2 - 1;
+  const n2 = fbm(t * 4.7 + 100) * 2 - 1;
+  const n3 = fbm(t * 2.1 + 200) * 2 - 1;
+  const intensity = 0.8 + n3 * 0.2;
+
+  const flameH = (45 + n1 * 6) * flameIntensity;
+  const flameW = (10 + n2 * 2.5) * flameIntensity;
+  const sway = n1 * 3;
+
+  ctx.save();
+
+  // ── Outer glow (large, soft) ──
+  const outerGrad = ctx.createRadialGradient(cx + sway * 0.5, baseY - flameH * 0.4, 2, cx, baseY, flameH * 1.6);
+  outerGrad.addColorStop(0, `rgba(255,140,30,${0.25 * intensity * flameIntensity})`);
+  outerGrad.addColorStop(0.4, `rgba(200,70,10,${0.1 * intensity * flameIntensity})`);
+  outerGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = outerGrad;
+  ctx.fillRect(cx - flameH * 2, baseY - flameH * 2, flameH * 4, flameH * 3);
+
+  // ── Draw flame shape using bezier curves ──
+  function flameShape(xOff, widthMul, heightMul, color, blur) {
+    const w = flameW * widthMul;
+    const h = flameH * heightMul;
+    const s = sway * widthMul;
+
+    ctx.save();
+    ctx.filter = `blur(${blur}px)`;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(cx - w + s * 0.3, baseY);
+    // Left side curve
+    ctx.bezierCurveTo(
+      cx - w * 1.1 + s * 0.5, baseY - h * 0.35,
+      cx - w * 0.4 + s * 0.8, baseY - h * 0.75,
+      cx + s, baseY - h
+    );
+    // Right side curve
+    ctx.bezierCurveTo(
+      cx + w * 0.4 + s * 0.8, baseY - h * 0.75,
+      cx + w * 1.1 + s * 0.5, baseY - h * 0.35,
+      cx + w + s * 0.3, baseY
+    );
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Layer 1: outer (dark orange, blurred)
+  flameShape(0, 1.3, 1.0, `rgba(180,60,5,${0.7 * intensity * flameIntensity})`, 3);
+  // Layer 2: middle (orange-yellow)
+  flameShape(0, 0.9, 0.92, `rgba(255,140,20,${0.85 * intensity * flameIntensity})`, 1.5);
+  // Layer 3: bright core (yellow)
+  flameShape(0, 0.5, 0.75, `rgba(255,220,100,${0.9 * intensity * flameIntensity})`, 0.5);
+  // Layer 4: white-hot center
+  flameShape(0, 0.2, 0.55, `rgba(255,250,220,${0.95 * intensity * flameIntensity})`, 0);
+
+  // ── Blue base at wick ──
+  const blueGrad = ctx.createRadialGradient(cx, baseY, 0, cx, baseY, 7 * flameIntensity);
+  blueGrad.addColorStop(0, `rgba(100,140,255,${0.5 * flameIntensity})`);
+  blueGrad.addColorStop(0.5, `rgba(60,80,200,${0.25 * flameIntensity})`);
+  blueGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = blueGrad;
+  ctx.fillRect(cx - 10, baseY - 8, 20, 12);
+
+  // ── Bright halo ──
+  const haloGrad = ctx.createRadialGradient(cx + sway * 0.3, baseY - flameH * 0.3, 0, cx, baseY, flameH * 0.8);
+  haloGrad.addColorStop(0, `rgba(255,200,80,${0.4 * intensity * flameIntensity})`);
+  haloGrad.addColorStop(0.5, `rgba(255,120,20,${0.15 * intensity * flameIntensity})`);
+  haloGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = haloGrad;
+  ctx.fillRect(cx - flameH, baseY - flameH, flameH * 2, flameH * 1.5);
+
+  ctx.restore();
+
+  return intensity * flameIntensity;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  DYNAMIC LIGHTING (drawn on bgCanvas)
+// ═══════════════════════════════════════════════════════════════════
+function drawLighting(ctx, intensity) {
+  ctx.clearRect(0, 0, W, H);
+  const fp = flamePos();
+  const cx = fp.x;
+  const cy = fp.y;
+
+  // Main radial light
+  const lightR = 350 + intensity * 80;
+  const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy + 20, lightR);
+  grad.addColorStop(0, `rgba(200,110,20,${0.18 * intensity})`);
+  grad.addColorStop(0.25, `rgba(150,70,10,${0.1 * intensity})`);
+  grad.addColorStop(0.5, `rgba(100,40,5,${0.05 * intensity})`);
+  grad.addColorStop(1, 'transparent');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Shadow rays (6 faint radial beams)
+  ctx.save();
+  ctx.globalAlpha = 0.03 * intensity;
+  ctx.translate(cx, cy);
+  for (let i = 0; i < 6; i++) {
+    const angle = (i / 6) * Math.PI * 2 + time * 0.15;
+    const rayLen = 280 + fbm(time * 0.5 + i) * 80;
+    const rayW = 0.04 + fbm(time * 0.8 + i * 10) * 0.02;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(Math.cos(angle - rayW) * rayLen, Math.sin(angle - rayW) * rayLen);
+    ctx.lineTo(Math.cos(angle + rayW) * rayLen, Math.sin(angle + rayW) * rayLen);
+    ctx.closePath();
+    ctx.fillStyle = `rgba(255,160,40,1)`;
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // Floor glow puddle
+  const poolGrad = ctx.createRadialGradient(cx, cy + 160, 5, cx, cy + 160, 100 + intensity * 20);
+  poolGrad.addColorStop(0, `rgba(180,90,15,${0.18 * intensity})`);
+  poolGrad.addColorStop(0.6, `rgba(120,50,5,${0.06 * intensity})`);
+  poolGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = poolGrad;
+  ctx.fillRect(cx - 200, cy + 100, 400, 200);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  PARTICLES
+// ═══════════════════════════════════════════════════════════════════
+const particles = [];
+
+class Ember {
+  constructor() { this.reset(true); }
+  reset(init) {
+    const fp = flamePos();
+    this.x = fp.x + (Math.random() - 0.5) * 8;
+    this.y = fp.y + (Math.random() - 0.5) * 10;
+    this.vx = (Math.random() - 0.5) * 1.2;
+    this.vy = -(Math.random() * 2.0 + 0.8);
+    this.size = Math.random() * 2.0 + 0.6;
+    this.life = 1.0;
+    this.decay = Math.random() * 0.015 + 0.008;
+    this.r = 255; this.g = Math.floor(100 + Math.random() * 120); this.b = 10;
+    this.trail = [];
+    this.wobblePhase = Math.random() * Math.PI * 2;
+    if (init) this.life = Math.random();
+  }
+  update() {
+    this.wobblePhase += 0.06;
+    this.trail.push({ x: this.x, y: this.y });
+    if (this.trail.length > 5) this.trail.shift();
+    this.x += this.vx + Math.sin(this.wobblePhase) * 0.3;
+    this.y += this.vy;
+    this.vy -= 0.008;
+    this.vx *= 0.995;
+    this.life -= this.decay;
+    if (this.life <= 0) this.reset(false);
+  }
+  draw(ctx) {
+    if (flameIntensity < 0.1) return;
+    const a = Math.max(0, this.life) * flameIntensity;
+    // Trail
+    if (this.trail.length > 1) {
+      ctx.save();
+      ctx.strokeStyle = `rgba(${this.r},${this.g},${this.b},${a * 0.3})`;
+      ctx.lineWidth = this.size * 0.5;
+      ctx.beginPath();
+      ctx.moveTo(this.trail[0].x, this.trail[0].y);
+      for (let i = 1; i < this.trail.length; i++) {
+        ctx.lineTo(this.trail[i].x, this.trail[i].y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+    // Head
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.shadowColor = `rgb(${this.r},${this.g},${this.b})`;
+    ctx.shadowBlur = 6;
+    ctx.fillStyle = `rgb(${this.r},${this.g},${this.b})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+class Smoke {
+  constructor() { this.reset(true); }
+  reset(init) {
+    const fp = flamePos();
+    this.x = fp.x + (Math.random() - 0.5) * 6;
+    this.y = fp.y - 15 - Math.random() * 20;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = -(Math.random() * 0.5 + 0.15);
+    this.size = Math.random() * 8 + 4;
+    this.life = 1.0;
+    this.decay = Math.random() * 0.008 + 0.004;
+    this.wobblePhase = Math.random() * Math.PI * 2;
+    if (init) this.life = Math.random() * 0.5;
+  }
+  update() {
+    this.wobblePhase += 0.02;
+    this.x += this.vx + Math.sin(this.wobblePhase) * 0.15;
+    this.y += this.vy;
+    this.size += 0.08;
+    this.life -= this.decay;
+    if (this.life <= 0) this.reset(false);
+  }
+  draw(ctx) {
+    if (flameIntensity < 0.3) return;
+    const a = Math.max(0, this.life) * 0.06 * flameIntensity;
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.fillStyle = `rgba(80,60,40,1)`;
+    ctx.filter = `blur(${this.size * 0.4}px)`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+class Dust {
+  constructor() { this.reset(true); }
+  reset(init) {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.08;
+    this.vy = -(Math.random() * 0.04 + 0.01);
+    this.size = Math.random() * 1.0 + 0.2;
+    this.life = Math.random();
+    this.decay = Math.random() * 0.001 + 0.0003;
+    this.wobblePhase = Math.random() * Math.PI * 2;
+    this.brightness = Math.random();
+  }
+  update() {
+    this.wobblePhase += 0.015;
+    this.x += this.vx + Math.sin(this.wobblePhase) * 0.05;
+    this.y += this.vy + Math.cos(this.wobblePhase * 0.7) * 0.02;
+    this.life -= this.decay;
+    if (this.life <= 0 || this.x < 0 || this.x > W || this.y < 0) this.reset(false);
+  }
+  draw(ctx) {
+    if (flameIntensity < 0.2) return;
+    // Brightness based on distance to candle
+    const fp = flamePos();
+    const dx = this.x - fp.x;
+    const dy = this.y - fp.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const proxBright = Math.max(0, 1 - dist / 400);
+    const a = Math.max(0, this.life) * (0.15 + proxBright * 0.4) * flameIntensity;
+
+    ctx.save();
+    ctx.globalAlpha = a;
+    const c = Math.floor(140 + proxBright * 80);
+    ctx.fillStyle = `rgb(${c},${Math.floor(c * 0.7)},${Math.floor(c * 0.4)})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+class Ash {
+  constructor() { this.reset(true); }
+  reset(init) {
+    this.x = W * 0.3 + Math.random() * W * 0.4;
+    this.y = H * 0.2 + Math.random() * H * 0.5;
+    this.vx = (Math.random() - 0.5) * 0.06;
+    this.vy = -(Math.random() * 0.03 + 0.005);
+    this.size = Math.random() * 2.5 + 1.5;
+    this.life = Math.random();
+    this.decay = Math.random() * 0.0008 + 0.0003;
+    this.rotation = Math.random() * Math.PI * 2;
+    this.rotSpeed = (Math.random() - 0.5) * 0.01;
+    this.wobblePhase = Math.random() * Math.PI * 2;
+  }
+  update() {
+    this.wobblePhase += 0.008;
+    this.x += this.vx + Math.sin(this.wobblePhase) * 0.08;
+    this.y += this.vy + Math.cos(this.wobblePhase * 1.3) * 0.03;
+    this.rotation += this.rotSpeed;
+    this.life -= this.decay;
+    if (this.life <= 0) this.reset(false);
+  }
+  draw(ctx) {
+    if (flameIntensity < 0.3) return;
+    const fp = flamePos();
+    const dist = Math.sqrt((this.x - fp.x) ** 2 + (this.y - fp.y) ** 2);
+    const proxBright = Math.max(0, 1 - dist / 350);
+    const a = Math.max(0, this.life) * (0.08 + proxBright * 0.2) * flameIntensity;
+
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+    ctx.fillStyle = `rgba(${100 + proxBright * 80},${60 + proxBright * 50},${30 + proxBright * 20},1)`;
+    // Irregular shape
+    ctx.beginPath();
+    ctx.ellipse(0, 0, this.size, this.size * 0.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+class PlaySpark {
+  constructor() { this.reset(true); }
+  reset(init) {
+    const btn = document.getElementById('btnPlay');
+    const r = btn.getBoundingClientRect();
+    this.cx = r.left + r.width / 2;
+    this.cy = r.top + r.height / 2;
+    this.angle = Math.random() * Math.PI * 2;
+    this.radius = Math.max(r.width, r.height) * 0.55 + Math.random() * 15;
+    this.speed = (Math.random() * 0.003 + 0.002) * (Math.random() < 0.5 ? 1 : -1);
+    this.size = Math.random() * 1.2 + 0.4;
+    this.life = Math.random();
+    this.decay = Math.random() * 0.003 + 0.001;
+    this.phase = Math.random() * Math.PI * 2;
+  }
+  update() {
+    const btn = document.getElementById('btnPlay');
+    const r = btn.getBoundingClientRect();
+    this.cx = r.left + r.width / 2;
+    this.cy = r.top + r.height / 2;
+    this.angle += this.speed;
+    this.phase += 0.03;
+    this.radius = Math.max(r.width, r.height) * 0.55 + Math.sin(this.phase) * 8;
+    this.life -= this.decay;
+    if (this.life <= 0) this.reset(false);
+  }
+  draw(ctx) {
+    if (flameIntensity < 0.5) return;
+    const a = Math.max(0, this.life) * 0.7 * flameIntensity;
+    const x = this.cx + Math.cos(this.angle) * this.radius;
+    const y = this.cy + Math.sin(this.angle) * this.radius;
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.shadowColor = 'rgba(255,180,40,0.8)';
+    ctx.shadowBlur = 4;
+    ctx.fillStyle = `rgba(255,${150 + Math.floor(Math.random() * 50)},30,1)`;
+    ctx.beginPath();
+    ctx.arc(x, y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+// Seed particles
+for (let i = 0; i < 40; i++) particles.push(new Ember());
+for (let i = 0; i < 15; i++) particles.push(new Smoke());
+for (let i = 0; i < 100; i++) particles.push(new Dust());
+for (let i = 0; i < 20; i++) particles.push(new Ash());
+for (let i = 0; i < 16; i++) particles.push(new PlaySpark());
+
+// ═══════════════════════════════════════════════════════════════════
+//  PLAY BUTTON BREATHING (JS-driven for sync with flame)
+// ═══════════════════════════════════════════════════════════════════
+const btnPlay = document.getElementById('btnPlay');
+function updatePlayBreath() {
+  if (flameIntensity < 0.5) return;
+  const n = fbm(time * 1.2 + 50);
+  const glow = 15 + n * 20;
+  const innerGlow = 8 + n * 15;
+  btnPlay.style.boxShadow =
+    `inset 0 0 ${innerGlow}px rgba(180,90,10,${0.08 + n * 0.08}), ` +
+    `0 0 ${glow}px rgba(180,90,10,${0.1 + n * 0.12}), ` +
+    `0 0 ${glow * 2}px rgba(150,60,0,${0.04 + n * 0.06})`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  MAIN LOOP
+// ═══════════════════════════════════════════════════════════════════
+function frame() {
+  time += 0.016;
+
+  fxCtx.clearRect(0, 0, W, H);
+
+  const intensity = drawFlame(fxCtx);
+  drawLighting(bgCtx, intensity);
+  updatePlayBreath();
+
+  for (const p of particles) {
+    p.update();
+    p.draw(fxCtx);
+  }
+
+  requestAnimationFrame(frame);
+}
+frame();
+
+// ═══════════════════════════════════════════════════════════════════
+//  CINEMATIC ENTRANCE SEQUENCE
+// ═══════════════════════════════════════════════════════════════════
+const titleText = "The Ashen Throne";
+const titleEl = document.getElementById('title');
+titleEl.innerHTML = titleText.split('').map(c =>
+  c === ' ' ? ' ' : `<span>${c}</span>`
+).join('');
+
+const blackout = document.getElementById('blackout');
+const fog = document.querySelector('.fog');
+const candleWrap = document.getElementById('candleWrap');
+const ornament = document.getElementById('ornament');
+const dividerEl = document.getElementById('divider');
+const lore = document.getElementById('lore');
+const flash = document.getElementById('flash');
+
+// Timeline
+function entrance() {
+  // Phase 0: blackout (0–1.5s)
+  blackout.style.transition = 'opacity 2s ease';
+  blackout.style.opacity = '0';
+
+  // Phase 1: candle appears (1s)
+  setTimeout(() => {
+    candleWrap.style.transition = 'opacity 2s ease';
+    candleWrap.style.opacity = '1';
+  }, 800);
+
+  // Phase 2: flame ignites (1.5s) — ramp flameIntensity
+  setTimeout(() => {
+    const igniteStart = performance.now();
+    function ignite() {
+      const elapsed = (performance.now() - igniteStart) / 1000;
+      flameIntensity = Math.min(1, elapsed / 1.5); // 1.5s ramp
+      if (flameIntensity < 1) requestAnimationFrame(ignite);
+    }
+    ignite();
+
+    // Brief flare
+    flash.style.background = 'rgba(255,200,100,0.08)';
+    setTimeout(() => { flash.style.transition = 'background 1.5s ease'; flash.style.background = 'rgba(255,200,100,0)'; }, 100);
+  }, 1400);
+
+  // Phase 3: fog fades in
+  setTimeout(() => {
+    fog.style.transition = 'opacity 3s ease';
+    fog.style.opacity = '1';
+  }, 2000);
+
+  // Phase 4: title letter-by-letter (2.5s)
+  setTimeout(() => {
+    titleEl.style.opacity = '1';
+    const spans = titleEl.querySelectorAll('span');
+    spans.forEach((span, i) => {
+      setTimeout(() => {
+        span.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        span.style.opacity = '1';
+        span.style.transform = 'translateY(0)';
+      }, i * 55);
+    });
+  }, 2500);
+
+  // Phase 5: Play button (3.8s)
+  setTimeout(() => {
+    btnPlay.style.transition = 'opacity 1s ease, transform 1s ease';
+    btnPlay.style.opacity = '1';
+    btnPlay.style.transform = 'translateY(0)';
+  }, 3600);
+
+  // Phase 5b: ornament
+  setTimeout(() => {
+    ornament.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    ornament.style.opacity = '1';
+    ornament.style.transform = 'translateY(0)';
+  }, 4000);
+
+  // Phase 5c: divider
+  setTimeout(() => {
+    dividerEl.style.transition = 'opacity 0.8s ease';
+    dividerEl.style.opacity = '1';
+  }, 4200);
+
+  // Phase 6: secondary buttons (4.3s, staggered)
+  setTimeout(() => {
+    const btn = document.getElementById('btnSettings');
+    btn.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    btn.style.opacity = '1';
+    btn.style.transform = 'translateY(0)';
+  }, 4300);
+
+  setTimeout(() => {
+    const btn = document.getElementById('btnCredits');
+    btn.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    btn.style.opacity = '1';
+    btn.style.transform = 'translateY(0)';
+  }, 4600);
+
+  // Phase 7: lore text
+  setTimeout(() => {
+    lore.style.transition = 'color 2s ease';
+    lore.style.color = 'rgba(120,80,30,0.35)';
+  }, 5200);
+}
+
+// Start entrance
+entrance();
+
+// ═══════════════════════════════════════════════════════════════════
+//  INTERACTIONS
+// ═══════════════════════════════════════════════════════════════════
+
+// Play click: flash + shake
+btnPlay.addEventListener('click', () => {
+  flash.style.transition = 'none';
+  flash.style.background = 'rgba(255,220,140,0.15)';
+  document.body.style.transform = `translate(${(Math.random()-0.5)*4}px, ${(Math.random()-0.5)*3}px)`;
+  setTimeout(() => {
+    document.body.style.transition = 'transform 0.3s ease';
+    document.body.style.transform = 'translate(0,0)';
+    flash.style.transition = 'background 0.6s ease';
+    flash.style.background = 'rgba(255,220,140,0)';
+  }, 80);
+  setTimeout(() => { document.body.style.transition = ''; }, 400);
+});
+
+// Click ripple anywhere
+document.addEventListener('click', (e) => {
+  const el = document.createElement('div');
+  el.style.cssText = `
+    position:fixed; width:40px; height:40px; border-radius:50%;
+    border:1px solid rgba(200,140,40,0.5);
+    left:${e.clientX-20}px; top:${e.clientY-20}px;
+    transform:scale(0); pointer-events:none; z-index:60;
+    animation: clickRipple 0.7s ease-out forwards;
+  `;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 700);
+});
+
+// Inject ripple animation
+const style = document.createElement('style');
+style.textContent = '@keyframes clickRipple { to { transform:scale(4); opacity:0; } }';
+document.head.appendChild(style);
+
+// Lore text subtle breath
+setInterval(() => {
+  const n = 0.25 + fbm(time * 0.3) * 0.2;
+  lore.style.opacity = n;
+}, 100);
+</script>
+</body>
+</html>
