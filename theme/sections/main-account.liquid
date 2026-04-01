@@ -1,0 +1,30 @@
+<div class="container account-page">
+  <h1 class="account-page__greeting">{{ customer.first_name | default: 'Welcome' }}</h1>
+  <p class="account-page__email">{{ customer.email }}</p>
+
+  <div style="display:flex;justify-content:flex-end;margin-bottom:2rem">
+    <a href="{{ routes.account_logout_url }}" style="font-family:var(--font-medieval);font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(255,255,255,0.25);transition:color 0.3s" onmouseover="this.style.color='rgba(255,255,255,0.5)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Sign Out</a>
+  </div>
+
+  <p class="account-page__section-title">Order History</p>
+
+  {%- if customer.orders.size > 0 -%}
+    {%- for order in customer.orders -%}
+      <a href="{{ order.customer_url }}" class="order-card" style="display:block">
+        <p class="order-card__number">Order {{ order.name }}</p>
+        <p class="order-card__date">{{ order.created_at | date: '%B %d, %Y' }}</p>
+        <p class="order-card__status">{{ order.financial_status_label }}</p>
+        <p class="order-card__total">{{ order.total_price | money }}</p>
+      </a>
+    {%- endfor -%}
+  {%- else -%}
+    <p style="font-family:var(--font-medieval);font-size:10px;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,255,255,0.2)">No orders yet.</p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Account",
+  "settings": []
+}
+{% endschema %}

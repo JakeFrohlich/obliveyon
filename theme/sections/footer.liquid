@@ -1,0 +1,31 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="site-footer__divider">
+    <div class="site-footer__divider-line"></div>
+    <div class="site-footer__divider-dot"></div>
+    <div class="site-footer__divider-line"></div>
+  </div>
+
+  <p class="site-footer__brand">Obliveyon</p>
+  <p class="site-footer__tagline">{{ settings.brand_tagline | default: 'Be the light in the darkness.' }}</p>
+
+  <div class="site-footer__social">
+    {%- if settings.social_instagram != blank -%}
+      <a href="{{ settings.social_instagram }}" class="site-footer__social-link" target="_blank" rel="noopener">Instagram</a>
+    {%- endif -%}
+    {%- if settings.social_twitter != blank -%}
+      <a href="{{ settings.social_twitter }}" class="site-footer__social-link" target="_blank" rel="noopener">X</a>
+    {%- endif -%}
+    {%- if settings.social_tiktok != blank -%}
+      <a href="{{ settings.social_tiktok }}" class="site-footer__social-link" target="_blank" rel="noopener">TikTok</a>
+    {%- endif -%}
+  </div>
+
+  <p class="site-footer__copyright">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": []
+}
+{% endschema %}

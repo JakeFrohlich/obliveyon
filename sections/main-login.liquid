@@ -1,0 +1,42 @@
+<div class="auth-page">
+  <div class="auth-page__inner">
+    <a href="{{ routes.root_url }}" class="auth-page__back">&#8592; Return</a>
+
+    <div class="auth-page__title-row">
+      <div class="auth-page__title-line"></div>
+      <span class="auth-page__title">Sign In</span>
+      <div class="auth-page__title-line"></div>
+    </div>
+
+    {%- form 'customer_login' -%}
+      {%- if form.errors -%}
+        <p class="auth-form__error">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+
+      <div class="auth-form__field">
+        <label class="auth-form__label" for="CustomerEmail">Email</label>
+        <input class="auth-form__input" type="email" name="customer[email]" id="CustomerEmail" autocomplete="email" autocorrect="off" autocapitalize="off" placeholder="your@email.com">
+      </div>
+
+      <div class="auth-form__field">
+        <label class="auth-form__label" for="CustomerPassword">Password</label>
+        <input class="auth-form__input" type="password" name="customer[password]" id="CustomerPassword" autocomplete="current-password" placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="auth-form__submit">Sign In</button>
+    {%- endform -%}
+
+    <div class="auth-form__link-row">
+      <a href="{{ routes.account_register_url }}" class="auth-form__link">Create Account</a>
+      &nbsp;&nbsp;·&nbsp;&nbsp;
+      <a href="{{ routes.account_recover_url }}" class="auth-form__link">Forgot Password?</a>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Login",
+  "settings": []
+}
+{% endschema %}

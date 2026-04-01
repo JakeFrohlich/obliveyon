@@ -1,0 +1,46 @@
+<div class="container account-page">
+  <a href="{{ routes.account_url }}" style="font-family:var(--font-medieval);font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(255,255,255,0.25);display:inline-block;margin-bottom:2rem;transition:color 0.3s">&#8592; Account</a>
+
+  <h1 class="account-page__greeting">Order {{ order.name }}</h1>
+  <p class="account-page__email">{{ order.created_at | date: '%B %d, %Y' }} &nbsp;·&nbsp; {{ order.financial_status_label }}</p>
+
+  <p class="account-page__section-title" style="margin-top:2rem">Items</p>
+
+  {%- for line_item in order.line_items -%}
+    <div class="cart-page__item">
+      {%- if line_item.image -%}
+        <img class="cart-page__item-img" src="{{ line_item.image | image_url: width: 200 }}" alt="{{ line_item.image.alt | escape }}" loading="lazy">
+      {%- endif -%}
+      <div style="flex:1">
+        <p class="cart-page__item-name">{{ line_item.title }}</p>
+        {%- if line_item.variant.title != 'Default Title' -%}
+          <p class="cart-page__item-variant">{{ line_item.variant.title }}</p>
+        {%- endif -%}
+        <p class="cart-page__item-variant">Qty: {{ line_item.quantity }}</p>
+        <p class="cart-page__item-price">{{ line_item.final_line_price | money }}</p>
+      </div>
+    </div>
+  {%- endfor -%}
+
+  <div class="cart-page__summary">
+    <div class="cart-page__summary-row">
+      <span class="cart-page__summary-label">Subtotal</span>
+      <span class="cart-page__summary-value">{{ order.subtotal_price | money }}</span>
+    </div>
+    <div class="cart-page__summary-row">
+      <span class="cart-page__summary-label">Shipping</span>
+      <span class="cart-page__summary-value">{{ order.shipping_price | money }}</span>
+    </div>
+    <div class="cart-page__summary-row">
+      <span class="cart-page__summary-label">Total</span>
+      <span class="cart-page__summary-value">{{ order.total_price | money }}</span>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Order",
+  "settings": []
+}
+{% endschema %}

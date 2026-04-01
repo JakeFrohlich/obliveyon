@@ -1,0 +1,65 @@
+<div class="credits-page">
+  {%- if section.settings.video_url != blank -%}
+    <video class="credits-page__bg" autoplay loop muted playsinline>
+      <source src="{{ section.settings.video_url }}" type="video/mp4">
+    </video>
+  {%- endif -%}
+  <div class="credits-page__overlay"></div>
+
+  <div class="credits-page__content">
+    <a href="{{ routes.root_url }}" class="credits-page__back">&#8592; Return</a>
+
+    <div class="credits-page__title-ornament">
+      <div class="credits-page__title-ornament-line"></div>
+      <span class="credits-page__title-ornament-label">Credits</span>
+      <div class="credits-page__title-ornament-line"></div>
+    </div>
+
+    <h1 class="credits-page__brand">Obliveyon</h1>
+    <p class="credits-page__sub">A database of one.</p>
+
+    <div class="credits-page__body">
+      <p>Obliveyon is a reflection of oneself.</p>
+
+      <p>Everything here is an honest attempt at one's inner reflection — the aesthetic, the feeling, the way it looks. Everything is done for a reason. Not to impress, but to become who you were always meant to be. To show that what you carry inside can become something others feel without you saying a word. A path that is recognizable not by telling, but by showing.</p>
+
+      <p>Darkness has always belonged to the wrong side — and it is present. He is changing that. Obliveyon is the opposite, taking something the world sees as dark and turning it into something that points toward God.</p>
+
+      <p>Obliveyon is not about following. It is about the version of yourself you keep putting off — the one God has been calling you to be, fulfilling the destiny He has always promised you, the one only you can fulfill...</p>
+
+      <div class="credits-page__motto-wrap">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
+          <div style="width:4px;height:4px;transform:rotate(45deg);background:rgba(255,255,255,0.2)"></div>
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
+        </div>
+        <p class="credits-page__motto">Be the light in the darkness.</p>
+        <p class="credits-page__motto-sub">Not despite who you are. Because of it.</p>
+        <div style="display:flex;align-items:center;gap:1rem;margin-top:1.5rem">
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
+          <div style="width:4px;height:4px;transform:rotate(45deg);background:rgba(255,255,255,0.2)"></div>
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.06)"></div>
+        </div>
+      </div>
+
+      <div>
+        <p class="credits-page__founder-name">Founded by a Dream</p>
+        <p class="credits-page__founder-role">Creator &nbsp;·&nbsp; Visionary &nbsp;·&nbsp; Still becoming.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Credits",
+  "settings": [
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Background video URL",
+      "info": "Upload your video to Shopify Files and paste the URL here."
+    }
+  ]
+}
+{% endschema %}

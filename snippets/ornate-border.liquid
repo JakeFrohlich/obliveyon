@@ -1,0 +1,70 @@
+{% comment %}
+  Renders an SVG ornate border overlay.
+  Usage: {% render 'ornate-border', variant: 'large' %}
+  Variants: large (hero button), medium (product frame), small (secondary button), card (product card)
+{% endcomment %}
+
+{% if variant == 'large' %}
+  <svg class="hero-btn--primary__svg" viewBox="0 0 340 80" preserveAspectRatio="none" style="overflow:visible" aria-hidden="true">
+    <defs><filter id="glow-main"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g filter="url(#glow-main)">
+      <rect x="1" y="1" width="338" height="78" rx="1" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"/>
+      <line x1="-4" y1="0" x2="35" y2="0" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+      <line x1="0" y1="-4" x2="0" y2="28" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+      <line x1="344" y1="0" x2="305" y2="0" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+      <line x1="340" y1="-4" x2="340" y2="28" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+      <line x1="-4" y1="80" x2="35" y2="80" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+      <line x1="0" y1="84" x2="0" y2="52" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+      <line x1="344" y1="80" x2="305" y2="80" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+      <line x1="340" y1="84" x2="340" y2="52" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+      <line x1="170" y1="-8" x2="170" y2="8" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+      <line x1="162" y1="0" x2="178" y2="0" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+      <circle cx="170" cy="0" r="2" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.6"/>
+      <line x1="170" y1="72" x2="170" y2="88" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+      <line x1="162" y1="80" x2="178" y2="80" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+      <circle cx="170" cy="80" r="2" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.6"/>
+    </g>
+  </svg>
+
+{% elsif variant == 'small' %}
+  <svg class="hero-btn--secondary__svg" viewBox="0 0 220 48" preserveAspectRatio="none" aria-hidden="true">
+    <defs><filter id="glow-sm"><feGaussianBlur stdDeviation="1" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g filter="url(#glow-sm)">
+      <line x1="0" y1="1" x2="22" y2="1" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+      <line x1="1" y1="0" x2="1" y2="15" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+      <line x1="220" y1="1" x2="198" y2="1" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+      <line x1="219" y1="0" x2="219" y2="15" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+      <line x1="0" y1="47" x2="22" y2="47" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+      <line x1="1" y1="48" x2="1" y2="33" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+      <line x1="220" y1="47" x2="198" y2="47" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+      <line x1="219" y1="48" x2="219" y2="33" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+    </g>
+  </svg>
+
+{% elsif variant == 'card' %}
+  <svg class="product-card__corner-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="0" x2="12" y2="0" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+    <line x1="0" y1="0" x2="0" y2="12" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+    <line x1="100" y1="0" x2="88" y2="0" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+    <line x1="100" y1="0" x2="100" y2="12" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+    <line x1="0" y1="100" x2="12" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+    <line x1="0" y1="100" x2="0" y2="88" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+    <line x1="100" y1="100" x2="88" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+    <line x1="100" y1="100" x2="100" y2="88" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+    <polygon points="50,2 52,4 50,6 48,4" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.3"/>
+    <polygon points="50,94 52,96 50,98 48,96" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.3"/>
+  </svg>
+
+{% else %}
+  {%- comment -%}medium variant — product frame corners{%- endcomment -%}
+  <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="0" x2="8" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="0.4"/>
+    <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(255,255,255,0.25)" stroke-width="0.4"/>
+    <line x1="100" y1="0" x2="92" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="0.4"/>
+    <line x1="100" y1="0" x2="100" y2="8" stroke="rgba(255,255,255,0.25)" stroke-width="0.4"/>
+    <line x1="0" y1="100" x2="8" y2="100" stroke="rgba(255,255,255,0.25)" stroke-width="0.4"/>
+    <line x1="0" y1="100" x2="0" y2="92" stroke="rgba(255,255,255,0.25)" stroke-width="0.4"/>
+    <line x1="100" y1="100" x2="92" y2="100" stroke="rgba(255,255,255,0.25)" stroke-width="0.4"/>
+    <line x1="100" y1="100" x2="100" y2="92" stroke="rgba(255,255,255,0.25)" stroke-width="0.4"/>
+  </svg>
+{% endif %}

@@ -1,0 +1,90 @@
+<div class="hero-video">
+  {%- if section.settings.video_url != blank -%}
+    <video class="hero-video__bg" autoplay loop muted playsinline>
+      <source src="{{ section.settings.video_url }}" type="video/mp4">
+    </video>
+  {%- elsif section.settings.bg_image != blank -%}
+    <img class="hero-video__bg" src="{{ section.settings.bg_image | image_url: width: 1920 }}" alt="" loading="eager">
+  {%- else -%}
+    <div class="hero-video__bg" style="background:#060504"></div>
+  {%- endif -%}
+
+  <div class="hero-video__vignette"></div>
+
+  <div class="hero-video__menu">
+    <!-- Press Play -->
+    <a href="{{ section.settings.btn1_link | default: routes.collections_url }}" class="hero-btn--primary">
+      {% render 'ornate-border', variant: 'large' %}
+      <span class="hero-btn--primary__text">{{ section.settings.btn1_text | default: 'Press Play' }}</span>
+    </a>
+
+    <!-- Settings -->
+    <a href="{{ section.settings.btn2_link | default: '/pages/settings' }}" class="hero-btn--secondary">
+      {% render 'ornate-border', variant: 'small' %}
+      <span class="hero-btn--secondary__text">{{ section.settings.btn2_text | default: 'Settings' }}</span>
+    </a>
+
+    <!-- Credits -->
+    <a href="{{ section.settings.btn3_link | default: '/pages/credits' }}" class="hero-btn--secondary">
+      {% render 'ornate-border', variant: 'small' %}
+      <span class="hero-btn--secondary__text">{{ section.settings.btn3_text | default: 'Credits' }}</span>
+    </a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero Video",
+  "settings": [
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Video URL (MP4)",
+      "info": "Upload your video to Files in Shopify Admin, then paste the URL here."
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Fallback background image"
+    },
+    {
+      "type": "text",
+      "id": "btn1_text",
+      "label": "Button 1 text",
+      "default": "Press Play"
+    },
+    {
+      "type": "url",
+      "id": "btn1_link",
+      "label": "Button 1 link"
+    },
+    {
+      "type": "text",
+      "id": "btn2_text",
+      "label": "Button 2 text",
+      "default": "Settings"
+    },
+    {
+      "type": "url",
+      "id": "btn2_link",
+      "label": "Button 2 link"
+    },
+    {
+      "type": "text",
+      "id": "btn3_text",
+      "label": "Button 3 text",
+      "default": "Credits"
+    },
+    {
+      "type": "url",
+      "id": "btn3_link",
+      "label": "Button 3 link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Video"
+    }
+  ]
+}
+{% endschema %}

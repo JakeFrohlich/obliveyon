@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-video",
+      "settings": {
+        "btn1_text": "Press Play",
+        "btn2_text": "Settings",
+        "btn3_text": "Credits"
+      }
+    }
+  },
+  "order": ["hero"]
+}

@@ -1,0 +1,49 @@
+<header class="site-header" role="banner">
+  <div class="site-header__inner">
+    <a href="{{ routes.root_url }}" class="site-header__logo">Obliveyon</a>
+
+    <nav class="site-header__nav" aria-label="Main navigation">
+      <a href="{{ routes.collections_url }}" class="site-header__nav-link">Shop</a>
+      <a href="{{ routes.collections_url }}/new-arrivals" class="site-header__nav-link">New Arrivals</a>
+      {%- if customer -%}
+        <a href="{{ routes.account_url }}" class="site-header__nav-link">Account</a>
+        <a href="{{ routes.account_logout_url }}" class="site-header__nav-link">Sign Out</a>
+      {%- else -%}
+        <a href="{{ routes.account_login_url }}" class="site-header__nav-link">Sign In</a>
+      {%- endif -%}
+    </nav>
+
+    <div class="site-header__actions">
+      <button class="site-header__cart-btn" data-open-cart aria-label="Open cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+        <span class="site-header__cart-count" data-cart-count style="{% if cart.item_count == 0 %}display:none{% endif %}">{{ cart.item_count }}</span>
+      </button>
+
+      <button class="site-header__mobile-toggle" data-mobile-toggle aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="site-header__mobile-menu" data-mobile-menu aria-label="Mobile navigation">
+    <a href="{{ routes.collections_url }}" class="site-header__mobile-link">Shop</a>
+    <a href="{{ routes.collections_url }}/new-arrivals" class="site-header__mobile-link">New Arrivals</a>
+    {%- if customer -%}
+      <a href="{{ routes.account_url }}" class="site-header__mobile-link">Account</a>
+      <a href="{{ routes.account_logout_url }}" class="site-header__mobile-link">Sign Out</a>
+    {%- else -%}
+      <a href="{{ routes.account_login_url }}" class="site-header__mobile-link">Sign In</a>
+      <a href="{{ routes.account_register_url }}" class="site-header__mobile-link">Create Account</a>
+    {%- endif -%}
+  </nav>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "credits-content": {
+      "type": "credits-content",
+      "settings": {}
+    }
+  },
+  "order": ["credits-content"]
+}

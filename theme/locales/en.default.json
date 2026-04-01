@@ -1,0 +1,53 @@
+{
+  "general": {
+    "cart": "Cart",
+    "shop": "Shop",
+    "search": "Search",
+    "close": "Close",
+    "loading": "Loading...",
+    "empty": "No items found"
+  },
+  "products": {
+    "add_to_cart": "Add to Cart",
+    "sold_out": "Sold Out",
+    "select_size": "Select a Size",
+    "added": "Added to Cart",
+    "only_left": "Only {{ count }} left in stock",
+    "size": "Size"
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "continue_shopping": "Continue Shopping"
+  },
+  "customer": {
+    "sign_in": "Sign In",
+    "sign_out": "Sign Out",
+    "create_account": "Create Account",
+    "account": "Account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "order_history": "Order History",
+    "no_orders": "No orders yet",
+    "start_shopping": "Start Shopping",
+    "already_have_account": "Already have an account?",
+    "dont_have_account": "Don't have an account?"
+  },
+  "newsletter": {
+    "title": "Stay Connected",
+    "description": "Early access to drops, exclusive pieces, and news from the void.",
+    "placeholder": "Enter your email",
+    "submit": "Join",
+    "success": "Welcome to the void."
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "open_cart": "Open cart",
+    "close_cart": "Close cart",
+    "toggle_menu": "Toggle menu"
+  }
+}

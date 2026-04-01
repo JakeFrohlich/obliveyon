@@ -1,0 +1,72 @@
+<div class="collection-page">
+  <div class="collection-page__header container">
+    <a href="{{ routes.root_url }}" class="collection-page__breadcrumb">&#8592; Return</a>
+    <div class="collection-page__title-group">
+      <p class="collection-page__subtitle">Obliveyon</p>
+      <h1 class="collection-page__title">{{ collection.title | default: 'Collection' }}</h1>
+    </div>
+    <div class="collection-page__rule"></div>
+    <div class="collection-page__filter-row">
+      <p class="collection-page__filter-active">All</p>
+    </div>
+  </div>
+
+  <div class="collection-page__grid-wrap container">
+    <div class="collection-page__grid">
+      {%- for product in collection.products -%}
+        {% render 'product-card', product: product, index: forloop.index0 %}
+      {%- else -%}
+        {%- for i in (1..5) -%}
+          <div class="product-card--empty">
+            {% render 'ornate-border', variant: 'card' %}
+          </div>
+        {%- endfor -%}
+      {%- endfor -%}
+
+      {%- comment -%}Empty slots to fill row{%- endcomment -%}
+      {%- assign remainder = collection.products_count | modulo: 5 -%}
+      {%- if remainder > 0 and collection.products_count > 0 -%}
+        {%- assign empty_count = 5 | minus: remainder -%}
+        {%- for i in (1..empty_count) -%}
+          <div class="product-card--empty">
+            {% render 'ornate-border', variant: 'card' %}
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if collection.products_count > section.settings.products_per_page -%}
+      <div class="collection-page__divider"></div>
+      <div class="collection-page__grid">
+        {%- for i in (1..5) -%}
+          <div class="product-card--empty">
+            {% render 'ornate-border', variant: 'card' %}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if paginate.pages > 1 -%}
+      <div style="text-align:center;margin-top:3rem">
+        {{ paginate | default_pagination }}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection Grid",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "default": 20
+    }
+  ]
+}
+{% endschema %}
