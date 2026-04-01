@@ -1,0 +1,11 @@
+{% comment %}
+  Renders an ornate horizontal divider.
+  Usage: {% render 'ornate-divider', variant: 'simple' %}
+  Variants: simple (default), cross
+{% endcomment %}
+
+<div class="ornate-divider{% if variant == 'cross' %} ornate-divider--cross{% endif %}">
+  <div class="ornate-divider__line"></div>
+  <div class="ornate-divider__diamond"></div>
+  <div class="ornate-divider__line"></div>
+</div>

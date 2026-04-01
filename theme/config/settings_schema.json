@@ -100,5 +100,43 @@
         "default": "drawer"
       }
     ]
+  },
+  {
+    "name": "Branding",
+    "settings": [
+      {
+        "type": "text",
+        "id": "brand_tagline",
+        "label": "Brand tagline",
+        "default": "Be the light in the darkness."
+      }
+    ]
+  },
+  {
+    "name": "Ambient effects",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_film_grain",
+        "label": "Enable film grain overlay",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_ember_particles",
+        "label": "Enable ember particles",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "ember_count",
+        "label": "Number of ember particles",
+        "min": 5,
+        "max": 50,
+        "step": 5,
+        "default": 20,
+        "unit": "particles"
+      }
+    ]
   }
 ]

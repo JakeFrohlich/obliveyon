@@ -1,0 +1,50 @@
+<div class="auth-page">
+  <div class="auth-page__inner">
+    <a href="{{ routes.root_url }}" class="auth-page__back">&#8592; Return</a>
+
+    <div class="auth-page__title-row">
+      <div class="auth-page__title-line"></div>
+      <span class="auth-page__title">Create Account</span>
+      <div class="auth-page__title-line"></div>
+    </div>
+
+    {%- form 'create_customer' -%}
+      {%- if form.errors -%}
+        <p class="auth-form__error">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+
+      <div class="auth-form__field">
+        <label class="auth-form__label" for="FirstName">First Name</label>
+        <input class="auth-form__input" type="text" name="customer[first_name]" id="FirstName" autocomplete="given-name" placeholder="First">
+      </div>
+
+      <div class="auth-form__field">
+        <label class="auth-form__label" for="LastName">Last Name</label>
+        <input class="auth-form__input" type="text" name="customer[last_name]" id="LastName" autocomplete="family-name" placeholder="Last">
+      </div>
+
+      <div class="auth-form__field">
+        <label class="auth-form__label" for="RegisterEmail">Email</label>
+        <input class="auth-form__input" type="email" name="customer[email]" id="RegisterEmail" autocomplete="email" autocorrect="off" autocapitalize="off" placeholder="your@email.com">
+      </div>
+
+      <div class="auth-form__field">
+        <label class="auth-form__label" for="RegisterPassword">Password</label>
+        <input class="auth-form__input" type="password" name="customer[password]" id="RegisterPassword" autocomplete="new-password" placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="auth-form__submit">Create Account</button>
+    {%- endform -%}
+
+    <div class="auth-form__link-row">
+      <a href="{{ routes.account_login_url }}" class="auth-form__link">Already have an account? Sign In</a>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Register",
+  "settings": []
+}
+{% endschema %}
