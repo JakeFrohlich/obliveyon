@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/shop/ProductCard";
-import ProductFilters from "@/components/shop/ProductFilters";
 import { Suspense } from "react";
+import Link from "next/link";
+import Footer from "@/components/shop/Footer";
 
 interface ShopPageProps {
   searchParams: Promise<{
@@ -13,23 +14,47 @@ interface ShopPageProps {
   }>;
 }
 
+const STATIC_PRODUCTS = [
+  {
+    name: "The Original Obliveyon",
+    href: "/product/the-original-obliveyon",
+    image: "/The orginal Obliveyon.png",
+    price: "$65+",
+    category: "Hoodie",
+  },
+  {
+    name: "Acid Wash",
+    href: "/product/the-original-obliveyon?color=1",
+    image: "/try 2.png",
+    price: "$65+",
+    category: "Hoodie",
+  },
+  {
+    name: "White",
+    href: "/product/the-original-obliveyon?color=2",
+    image: "/White 1.png",
+    price: "$65+",
+    category: "Hoodie",
+  },
+  {
+    name: "Black",
+    href: "/product/the-original-obliveyon?color=3",
+    image: "/black 1st.png",
+    price: "$65+",
+    category: "Hoodie",
+  },
+];
+
 async function ProductGrid({ searchParams }: ShopPageProps) {
   const params = await searchParams;
 
   const where: Record<string, unknown> = {};
-
-  if (params.category && params.category !== "all") {
-    where.category = params.category;
-  }
-  if (params.size) {
-    where.sizes = { has: params.size };
-  }
+  if (params.category && params.category !== "all") where.category = params.category;
+  if (params.size) where.sizes = { has: params.size };
   if (params.minPrice || params.maxPrice) {
     where.price = {};
-    if (params.minPrice)
-      (where.price as Record<string, number>).gte = parseFloat(params.minPrice);
-    if (params.maxPrice)
-      (where.price as Record<string, number>).lte = parseFloat(params.maxPrice);
+    if (params.minPrice) (where.price as Record<string, number>).gte = parseFloat(params.minPrice);
+    if (params.maxPrice) (where.price as Record<string, number>).lte = parseFloat(params.maxPrice);
   }
   if (params.search) {
     where.OR = [
@@ -40,61 +65,180 @@ async function ProductGrid({ searchParams }: ShopPageProps) {
 
   let products;
   try {
-    products = await prisma.product.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-    });
+    products = await prisma.product.findMany({ where, orderBy: { createdAt: "desc" } });
   } catch {
-    return (
-      <div className="text-center py-20">
-        <p className="text-text-secondary text-sm">Unable to load products — database is currently unavailable.</p>
-        <p className="text-text-muted text-xs mt-2">Please try again later.</p>
-      </div>
-    );
+    return null;
   }
 
-  if (products.length === 0) {
-    return (
-      <div className="text-center py-20">
-        <p className="text-text-secondary text-sm">No products found</p>
-      </div>
-    );
-  }
+  if (products.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <>
       {products.map((product, index) => (
         <ProductCard key={product.id} product={product} index={index} />
       ))}
-    </div>
+    </>
   );
 }
 
 export default function ShopPage(props: ShopPageProps) {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-bold tracking-[0.15em] uppercase mb-2">Shop</h1>
-      <p className="text-text-secondary text-sm mb-8">Browse the full collection</p>
+    <div
+      className="min-h-screen"
+      style={{ background: "#000000" }}
+    >
+      {/* Header */}
+      <div className="px-6 sm:px-10 lg:px-16 pt-12 pb-8">
+        <Link
+          href="/"
+          className="text-[10px] tracking-[0.4em] uppercase text-white/25 hover:text-white/50 transition-colors duration-300"
+          style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+        >
+          ← Return
+        </Link>
+        <div className="text-center mt-6">
+          <p
+            className="text-[9px] tracking-[0.5em] uppercase text-white/20 mb-3"
+            style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+          >
+            Obliveyon
+          </p>
+          <h1
+            className="text-2xl sm:text-3xl tracking-[0.25em] uppercase text-white"
+            style={{
+              fontFamily: "var(--font-gothic)",
+              fontWeight: 300,
+              textShadow: "0 0 40px rgba(255,255,255,0.06)",
+            }}
+          >
+            Collection
+          </h1>
+        </div>
+        <div className="h-px mt-6" style={{ background: "rgba(255,255,255,0.06)" }} />
 
-      <Suspense fallback={null}>
-        <ProductFilters />
-      </Suspense>
+        <div className="flex justify-center mt-6">
+          <p
+            className="text-[10px] tracking-[0.35em] uppercase pb-2"
+            style={{
+              fontFamily: "var(--font-medieval)",
+              fontWeight: 300,
+              color: "rgba(255,255,255,0.7)",
+              borderBottom: "1px solid rgba(255,255,255,0.3)",
+            }}
+          >
+            All
+          </p>
+        </div>
+      </div>
 
-      <Suspense
-        fallback={
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-[3/4] bg-bg-secondary rounded-lg mb-3" />
-                <div className="h-4 bg-bg-secondary rounded w-3/4 mb-2" />
-                <div className="h-3 bg-bg-secondary rounded w-1/4" />
+      {/* Product grid — small squares with borders */}
+      <div className="px-6 sm:px-10 lg:px-16 pb-16">
+        {/* Row 1 */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {STATIC_PRODUCTS.map((product) => (
+            <Link
+              key={product.name}
+              href={product.href}
+              className="group block"
+            >
+              <div
+                className="aspect-square overflow-hidden relative"
+                style={{ border: "1px solid rgba(255,255,255,0.1)" }}
+              >
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                  style={{ filter: "brightness(0.9)" }}
+                />
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%)" }}
+                />
+                {/* Corner accents */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <line x1="0" y1="0" x2="12" y2="0" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+                  <line x1="0" y1="0" x2="0" y2="12" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+                  <line x1="100" y1="0" x2="88" y2="0" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+                  <line x1="100" y1="0" x2="100" y2="12" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+                  <line x1="0" y1="100" x2="12" y2="100" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+                  <line x1="0" y1="100" x2="0" y2="88" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+                  <line x1="100" y1="100" x2="88" y2="100" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+                  <line x1="100" y1="100" x2="100" y2="88" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+                  <polygon points="50,2 52,4 50,6 48,4" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.3" />
+                  <polygon points="50,94 52,96 50,98 48,96" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.3" />
+                </svg>
               </div>
-            ))}
+              <div className="mt-2">
+                <p
+                  className="text-[10px] tracking-[0.2em] uppercase text-white/70 group-hover:text-white/90 transition-colors duration-300 truncate"
+                  style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+                >
+                  {product.name}
+                </p>
+                <p
+                  className="text-[8px] tracking-wider text-white/40 mt-0.5"
+                  style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+                >
+                  {product.price}
+                </p>
+              </div>
+            </Link>
+          ))}
+
+          {/* Empty slot for row 1 */}
+          <div className="aspect-square relative" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ pointerEvents: "none" }}>
+              <line x1="0" y1="0" x2="12" y2="0" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+              <line x1="0" y1="0" x2="0" y2="12" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+              <line x1="100" y1="0" x2="88" y2="0" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+              <line x1="100" y1="0" x2="100" y2="12" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+              <line x1="0" y1="100" x2="12" y2="100" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+              <line x1="0" y1="100" x2="0" y2="88" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+              <line x1="100" y1="100" x2="88" y2="100" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+              <line x1="100" y1="100" x2="100" y2="88" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+              <polygon points="50,2 52,4 50,6 48,4" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.3" />
+              <polygon points="50,94 52,96 50,98 48,96" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.3" />
+            </svg>
           </div>
-        }
-      >
-        <ProductGrid searchParams={props.searchParams} />
-      </Suspense>
+        </div>
+
+        {/* Divider */}
+        <div className="h-px my-4" style={{ background: "rgba(255,255,255,0.08)" }} />
+
+        {/* Row 2 — empty slots for future products */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={`empty-2-${i}`}
+              className="aspect-square relative"
+              style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+            >
+              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ pointerEvents: "none" }}>
+                <line x1="0" y1="0" x2="12" y2="0" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+                <line x1="0" y1="0" x2="0" y2="12" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+                <line x1="100" y1="0" x2="88" y2="0" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+                <line x1="100" y1="0" x2="100" y2="12" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+                <line x1="0" y1="100" x2="12" y2="100" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+                <line x1="0" y1="100" x2="0" y2="88" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+                <line x1="100" y1="100" x2="88" y2="100" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+                <line x1="100" y1="100" x2="100" y2="88" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+                <polygon points="50,2 52,4 50,6 48,4" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.3" />
+                <polygon points="50,94 52,96 50,98 48,96" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.3" />
+              </svg>
+            </div>
+          ))}
+        </div>
+
+        {/* DB products below */}
+        <Suspense
+          fallback={null}
+        >
+          <ProductGrid searchParams={props.searchParams} />
+        </Suspense>
+      </div>
+
+      <Footer />
     </div>
   );
 }

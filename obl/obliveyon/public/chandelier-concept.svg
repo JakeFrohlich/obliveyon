@@ -1,0 +1,231 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" width="800" height="1200">
+  <defs>
+    <!-- Glow filter for chandelier -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Soft light from above -->
+    <radialGradient id="topLight" cx="50%" cy="5%" r="40%">
+      <stop offset="0%" stop-color="rgba(200,210,220,0.15)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <!-- Text glow -->
+    <filter id="textGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feFlood flood-color="#a0c4e8" flood-opacity="0.6" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glowColor"/>
+      <feMerge>
+        <feMergeNode in="glowColor"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Chain pattern -->
+    <pattern id="chainLink" x="0" y="0" width="12" height="20" patternUnits="userSpaceOnUse">
+      <ellipse cx="6" cy="10" rx="4" ry="8" fill="none" stroke="#8a8a8a" stroke-width="1.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Pure black background -->
+  <rect width="800" height="1200" fill="#000000"/>
+
+  <!-- Subtle top light -->
+  <rect width="800" height="1200" fill="url(#topLight)"/>
+
+  <!-- ═══════ CHANDELIER ═══════ -->
+  <g transform="translate(400, 80)" filter="url(#glow)">
+    <!-- Ceiling mount plate -->
+    <rect x="-30" y="-10" width="60" height="12" rx="3" fill="#4a4a4a" stroke="#6a6a6a" stroke-width="0.8"/>
+    <rect x="-20" y="2" width="40" height="4" rx="2" fill="#3a3a3a"/>
+
+    <!-- Main vertical stem -->
+    <rect x="-3" y="6" width="6" height="50" rx="2" fill="#5a5a5a" stroke="#7a7a7a" stroke-width="0.5"/>
+
+    <!-- Upper decorative ring -->
+    <ellipse cx="0" cy="30" rx="20" ry="4" fill="none" stroke="#6a6a6a" stroke-width="1.5"/>
+    <ellipse cx="0" cy="30" rx="14" ry="3" fill="none" stroke="#555" stroke-width="0.8"/>
+
+    <!-- Main chandelier body - circular rim -->
+    <ellipse cx="0" cy="70" rx="120" ry="18" fill="none" stroke="#7a7a7a" stroke-width="2.5"/>
+    <ellipse cx="0" cy="70" rx="110" ry="15" fill="none" stroke="#555" stroke-width="1"/>
+    <ellipse cx="0" cy="70" rx="130" ry="20" fill="none" stroke="#4a4a4a" stroke-width="0.8"/>
+
+    <!-- Engraved text on rim -->
+    <text x="0" y="74" text-anchor="middle" font-family="Georgia, serif" font-size="9"
+          letter-spacing="4" fill="#a0c4e8" filter="url(#textGlow)" opacity="0.8">
+      THE ORIGINAL OBLIVEYON
+    </text>
+
+    <!-- Cybersigil engravings on rim -->
+    <!-- Left sigils -->
+    <line x1="-95" y1="62" x2="-85" y2="68" stroke="#6a7a8a" stroke-width="0.6" opacity="0.5"/>
+    <line x1="-90" y1="60" x2="-90" y2="70" stroke="#6a7a8a" stroke-width="0.6" opacity="0.5"/>
+    <circle cx="-92" cy="65" r="3" fill="none" stroke="#6a7a8a" stroke-width="0.5" opacity="0.4"/>
+    <!-- Right sigils -->
+    <line x1="95" y1="62" x2="85" y2="68" stroke="#6a7a8a" stroke-width="0.6" opacity="0.5"/>
+    <line x1="90" y1="60" x2="90" y2="70" stroke="#6a7a8a" stroke-width="0.6" opacity="0.5"/>
+    <circle cx="92" cy="65" r="3" fill="none" stroke="#6a7a8a" stroke-width="0.5" opacity="0.4"/>
+
+    <!-- Support arms from stem to rim (4 arms) -->
+    <line x1="0" y1="56" x2="-100" y2="65" stroke="#6a6a6a" stroke-width="1.5"/>
+    <line x1="0" y1="56" x2="100" y2="65" stroke="#6a6a6a" stroke-width="1.5"/>
+    <line x1="0" y1="56" x2="-60" y2="68" stroke="#5a5a5a" stroke-width="1"/>
+    <line x1="0" y1="56" x2="60" y2="68" stroke="#5a5a5a" stroke-width="1"/>
+
+    <!-- Candle holders on rim -->
+    <!-- Left candles -->
+    <g transform="translate(-110, 58)">
+      <rect x="-3" y="0" width="6" height="8" rx="1" fill="#5a5a5a"/>
+      <rect x="-1.5" y="-18" width="3" height="18" rx="1" fill="#e8e0d0"/>
+      <ellipse cx="0" cy="-20" rx="3" ry="5" fill="#ffb830" opacity="0.7"/>
+      <ellipse cx="0" cy="-22" rx="1.5" ry="3" fill="#ffe4a0" opacity="0.9"/>
+    </g>
+    <g transform="translate(-70, 62)">
+      <rect x="-3" y="0" width="6" height="8" rx="1" fill="#5a5a5a"/>
+      <rect x="-1.5" y="-16" width="3" height="16" rx="1" fill="#e8e0d0"/>
+      <ellipse cx="0" cy="-18" rx="3" ry="5" fill="#ffb830" opacity="0.6"/>
+      <ellipse cx="0" cy="-20" rx="1.5" ry="3" fill="#ffe4a0" opacity="0.8"/>
+    </g>
+    <!-- Right candles -->
+    <g transform="translate(110, 58)">
+      <rect x="-3" y="0" width="6" height="8" rx="1" fill="#5a5a5a"/>
+      <rect x="-1.5" y="-18" width="3" height="18" rx="1" fill="#e8e0d0"/>
+      <ellipse cx="0" cy="-20" rx="3" ry="5" fill="#ffb830" opacity="0.7"/>
+      <ellipse cx="0" cy="-22" rx="1.5" ry="3" fill="#ffe4a0" opacity="0.9"/>
+    </g>
+    <g transform="translate(70, 62)">
+      <rect x="-3" y="0" width="6" height="8" rx="1" fill="#5a5a5a"/>
+      <rect x="-1.5" y="-16" width="3" height="16" rx="1" fill="#e8e0d0"/>
+      <ellipse cx="0" cy="-18" rx="3" ry="5" fill="#ffb830" opacity="0.6"/>
+      <ellipse cx="0" cy="-20" rx="1.5" ry="3" fill="#ffe4a0" opacity="0.8"/>
+    </g>
+
+    <!-- Bottom finial on chandelier -->
+    <line x1="0" y1="88" x2="0" y2="100" stroke="#6a6a6a" stroke-width="1.5"/>
+    <circle cx="0" cy="103" r="4" fill="none" stroke="#6a6a6a" stroke-width="1.2"/>
+    <path d="M0 107 L0 115" stroke="#6a6a6a" stroke-width="1.2"/>
+  </g>
+
+  <!-- ═══════ CHAIN ═══════ -->
+  <g transform="translate(400, 195)">
+    <!-- Chain links dropping down -->
+    <ellipse cx="0" cy="10" rx="5" ry="9" fill="none" stroke="#7a7a7a" stroke-width="1.8"/>
+    <ellipse cx="0" cy="28" rx="4" ry="8" fill="none" stroke="#6a6a6a" stroke-width="1.5" transform="rotate(90, 0, 28)"/>
+    <ellipse cx="0" cy="44" rx="5" ry="9" fill="none" stroke="#7a7a7a" stroke-width="1.8"/>
+    <ellipse cx="0" cy="62" rx="4" ry="8" fill="none" stroke="#6a6a6a" stroke-width="1.5" transform="rotate(90, 0, 62)"/>
+    <ellipse cx="0" cy="78" rx="5" ry="9" fill="none" stroke="#7a7a7a" stroke-width="1.8"/>
+    <ellipse cx="0" cy="96" rx="4" ry="8" fill="none" stroke="#6a6a6a" stroke-width="1.5" transform="rotate(90, 0, 96)"/>
+    <ellipse cx="0" cy="112" rx="5" ry="9" fill="none" stroke="#7a7a7a" stroke-width="1.8"/>
+    <ellipse cx="0" cy="130" rx="4" ry="8" fill="none" stroke="#6a6a6a" stroke-width="1.5" transform="rotate(90, 0, 130)"/>
+    <ellipse cx="0" cy="146" rx="5" ry="9" fill="none" stroke="#7a7a7a" stroke-width="1.8"/>
+    <!-- Hook at bottom of chain -->
+    <path d="M0 155 Q0 170 -8 175 Q-16 180 -16 170" fill="none" stroke="#7a7a7a" stroke-width="2"/>
+  </g>
+
+  <!-- ═══════ HOODIE ═══════ -->
+  <g transform="translate(400, 380)">
+    <!-- Hood (hanging from hook) -->
+    <path d="M-8,-15 Q-8,-30 0,-35 Q8,-30 8,-15" fill="#e8e2da" stroke="#d0c8bc" stroke-width="1"/>
+
+    <!-- Hood shape - the top part -->
+    <path d="M-55,0 Q-60,-40 -15,-55 Q0,-60 15,-55 Q60,-40 55,0"
+          fill="#e8e2da" stroke="#ccc5ba" stroke-width="1.5"/>
+
+    <!-- Hood opening shadow -->
+    <path d="M-35,0 Q-30,-25 0,-32 Q30,-25 35,0"
+          fill="#b0a898" opacity="0.5"/>
+
+    <!-- Shoulders -->
+    <path d="M-55,0 Q-80,5 -110,30 L-110,50" fill="#e8e2da" stroke="#d0c8bc" stroke-width="1"/>
+    <path d="M55,0 Q80,5 110,30 L110,50" fill="#e8e2da" stroke="#d0c8bc" stroke-width="1"/>
+
+    <!-- Main body of hoodie -->
+    <path d="M-110,50 L-110,350 Q-110,370 -90,370 L90,370 Q110,370 110,350 L110,50"
+          fill="#e8e2da" stroke="#d0c8bc" stroke-width="1.5"/>
+
+    <!-- Zipper line down center -->
+    <line x1="0" y1="-10" x2="0" y2="370" stroke="#c0b8a8" stroke-width="2"/>
+    <!-- Zipper teeth marks -->
+    <line x1="-3" y1="10" x2="3" y2="10" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="25" x2="3" y2="25" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="40" x2="3" y2="40" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="55" x2="3" y2="55" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="70" x2="3" y2="70" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="85" x2="3" y2="85" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="100" x2="3" y2="100" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="115" x2="3" y2="115" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="130" x2="3" y2="130" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="145" x2="3" y2="145" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="160" x2="3" y2="160" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="175" x2="3" y2="175" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="190" x2="3" y2="190" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="205" x2="3" y2="205" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="220" x2="3" y2="220" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="235" x2="3" y2="235" stroke="#b0a898" stroke-width="0.8"/>
+    <line x1="-3" y1="250" x2="3" y2="250" stroke="#b0a898" stroke-width="0.8"/>
+
+    <!-- Zipper pull -->
+    <rect x="-4" y="-5" width="8" height="10" rx="2" fill="#a09888" stroke="#8a8078" stroke-width="0.8"/>
+
+    <!-- Left sleeve -->
+    <path d="M-110,50 L-160,90 L-165,200 Q-165,215 -150,215 L-130,215 Q-115,215 -110,200 L-110,120"
+          fill="#e8e2da" stroke="#d0c8bc" stroke-width="1.5"/>
+
+    <!-- Right sleeve -->
+    <path d="M110,50 L160,90 L165,200 Q165,215 150,215 L130,215 Q115,215 110,200 L110,120"
+          fill="#e8e2da" stroke="#d0c8bc" stroke-width="1.5"/>
+
+    <!-- Obliveyon logo on chest (subtle) -->
+    <text x="0" y="140" text-anchor="middle" font-family="Georgia, serif" font-size="14"
+          letter-spacing="6" fill="#c8c0b4" opacity="0.6">
+      OBLIVEYON
+    </text>
+
+    <!-- Kangaroo pocket outline -->
+    <path d="M-60,220 L-60,290 Q-60,310 -40,310 L40,310 Q60,310 60,290 L60,220"
+          fill="none" stroke="#d0c8bc" stroke-width="1" opacity="0.6"/>
+
+    <!-- Subtle fabric folds/shadows -->
+    <line x1="-40" y1="50" x2="-50" y2="200" stroke="#d0c8bc" stroke-width="0.5" opacity="0.4"/>
+    <line x1="40" y1="50" x2="50" y2="200" stroke="#d0c8bc" stroke-width="0.5" opacity="0.4"/>
+    <line x1="-70" y1="100" x2="-75" y2="300" stroke="#d0c8bc" stroke-width="0.5" opacity="0.3"/>
+    <line x1="70" y1="100" x2="75" y2="300" stroke="#d0c8bc" stroke-width="0.5" opacity="0.3"/>
+
+    <!-- Ribbing at bottom -->
+    <rect x="-90" y="355" width="180" height="15" rx="2" fill="#ddd6cc" stroke="#c8c0b4" stroke-width="0.8"/>
+    <!-- Ribbing lines -->
+    <line x1="-80" y1="358" x2="-80" y2="367" stroke="#c8c0b4" stroke-width="0.3"/>
+    <line x1="-60" y1="358" x2="-60" y2="367" stroke="#c8c0b4" stroke-width="0.3"/>
+    <line x1="-40" y1="358" x2="-40" y2="367" stroke="#c8c0b4" stroke-width="0.3"/>
+    <line x1="-20" y1="358" x2="-20" y2="367" stroke="#c8c0b4" stroke-width="0.3"/>
+    <line x1="0" y1="358" x2="0" y2="367" stroke="#c8c0b4" stroke-width="0.3"/>
+    <line x1="20" y1="358" x2="20" y2="367" stroke="#c8c0b4" stroke-width="0.3"/>
+    <line x1="40" y1="358" x2="40" y2="367" stroke="#c8c0b4" stroke-width="0.3"/>
+    <line x1="60" y1="358" x2="60" y2="367" stroke="#c8c0b4" stroke-width="0.3"/>
+    <line x1="80" y1="358" x2="80" y2="367" stroke="#c8c0b4" stroke-width="0.3"/>
+
+    <!-- Sleeve ribbing -->
+    <ellipse cx="-147" cy="210" rx="18" ry="5" fill="#ddd6cc" stroke="#c8c0b4" stroke-width="0.8"/>
+    <ellipse cx="147" cy="210" rx="18" ry="5" fill="#ddd6cc" stroke="#c8c0b4" stroke-width="0.8"/>
+  </g>
+
+  <!-- ═══════ LIGHTING EFFECTS ═══════ -->
+  <!-- Top-down cold white light cone -->
+  <polygon points="350,0 450,0 550,400 250,400" fill="rgba(200,210,220,0.03)"/>
+
+  <!-- Candle warm glow on hoodie -->
+  <ellipse cx="290" cy="300" rx="80" ry="150" fill="rgba(255,180,50,0.02)"/>
+  <ellipse cx="510" cy="300" rx="80" ry="150" fill="rgba(255,180,50,0.02)"/>
+
+  <!-- Subtle vignette -->
+  <rect width="800" height="1200" fill="url(#vignette)" opacity="0.5"/>
+  <defs>
+    <radialGradient id="vignette" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.6)"/>
+    </radialGradient>
+  </defs>
+</svg>

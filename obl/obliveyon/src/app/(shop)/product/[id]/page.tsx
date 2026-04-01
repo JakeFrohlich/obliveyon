@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ProductDetail from "@/components/shop/ProductDetail";
 import RelatedProducts from "@/components/shop/RelatedProducts";
 import type { Metadata } from "next";
+import Footer from "@/components/shop/Footer";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -59,9 +60,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <ProductDetail product={product} />
-      {related.length > 0 && <RelatedProducts products={related} />}
+    <div style={{ background: "#000000" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <ProductDetail product={product} />
+        {related.length > 0 && <RelatedProducts products={related} />}
+      </div>
+      <Footer />
     </div>
   );
 }
