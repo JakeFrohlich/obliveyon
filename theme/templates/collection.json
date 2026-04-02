@@ -1,11 +1,11 @@
 {
   "sections": {
-    "collection-grid": {
-      "type": "collection-grid",
+    "main-collection": {
+      "type": "main-collection",
       "settings": {
         "products_per_page": 20
       }
     }
   },
-  "order": ["collection-grid"]
+  "order": ["main-collection"]
 }

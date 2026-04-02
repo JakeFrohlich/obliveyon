@@ -1,9 +1,9 @@
 {
   "sections": {
-    "credits-content": {
-      "type": "credits-content",
+    "page-credits": {
+      "type": "page-credits",
       "settings": {}
     }
   },
-  "order": ["credits-content"]
+  "order": ["page-credits"]
 }

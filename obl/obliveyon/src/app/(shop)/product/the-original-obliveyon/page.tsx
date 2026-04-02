@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Footer from "@/components/shop/Footer";
 import { useCart } from "@/hooks/use-cart";
 
-// Shopify variant IDs keyed by "color|size" — Original is display-only, not orderable
+// Shopify variant IDs keyed by "color|size"
 const SHOPIFY_VARIANTS: Record<string, number> = {
   "White|S":      50142432854317,
   "White|M":      50142432952621,
@@ -19,13 +19,17 @@ const SHOPIFY_VARIANTS: Record<string, number> = {
   "Black|M":      50142433018157,
   "Black|L":      50142433116461,
   "Black|XL":     50142433214765,
+  "Original|S":   50142432919853,
+  "Original|M":   50142433018157,
+  "Original|L":   50142433116461,
+  "Original|XL":  50142433214765,
 };
 
 const COLORS = [
-  { label: "Original", short: "O", swatch: "#2a2420", orderOnly: false },
-  { label: "Acid Wash", short: "A", swatch: "#5a5a5a", orderOnly: true },
-  { label: "White",    short: "W", swatch: "#f0ede8", orderOnly: true },
-  { label: "Black",   short: "B", swatch: "#0a0908", orderOnly: true },
+  { label: "Original", short: "O", swatch: "#2a2420" },
+  { label: "Acid Wash", short: "A", swatch: "#5a5a5a" },
+  { label: "White",    short: "W", swatch: "#f0ede8" },
+  { label: "Black",   short: "B", swatch: "#0a0908" },
 ];
 
 const SIZES = ["S", "M", "L", "XL"];
@@ -85,10 +89,8 @@ export default function OriginalObliveyon() {
     setSlideIndex((prev) => (prev + 1) % currentSlides.length);
   }
 
-  const isOrderable = COLORS[selectedColor].orderOnly;
-
   function handleAddToCart() {
-    if (!selectedSize || !isOrderable) return;
+    if (!selectedSize) return;
     addItem({
       productId: "the-original-obliveyon",
       name: `The Original Obliveyon — ${COLORS[selectedColor].label}`,
@@ -511,7 +513,7 @@ export default function OriginalObliveyon() {
             {/* Add to cart */}
             <button
               onClick={handleAddToCart}
-              disabled={!selectedSize || !isOrderable}
+              disabled={!selectedSize}
               className="relative w-full max-w-sm mx-auto py-4 text-sm tracking-[0.5em] uppercase transition-all duration-300 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed overflow-hidden"
               style={{
                 fontFamily: "var(--font-medieval)",
@@ -522,7 +524,7 @@ export default function OriginalObliveyon() {
                 boxShadow: added ? "none" : "0 0 20px rgba(255,255,255,0.06)",
               }}
             >
-              {added ? "Added" : !isOrderable ? "View Only" : !selectedSize ? "Select a Size" : "Add to Cart"}
+              {added ? "Added" : !selectedSize ? "Select a Size" : "Add to Cart"}
             </button>
           </div>
         </div>

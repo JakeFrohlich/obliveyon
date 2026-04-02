@@ -1,0 +1,855 @@
+<script type="application/json" id="product-variants-json">
+  {{ product.variants | json }}
+</script>
+
+<style>
+  .product-detail {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    overflow: hidden;
+    background: #000;
+  }
+  .product-detail__ambient-left {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 18% 60%, rgba(180,120,40,0.05) 0%, transparent 55%);
+    animation: candleFlicker 6s ease-in-out infinite alternate;
+  }
+  .product-detail__ambient-right {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 82% 38%, rgba(160,100,30,0.04) 0%, transparent 50%);
+    animation: candleFlicker 8s ease-in-out infinite alternate-reverse;
+  }
+
+  /* ---- LEFT: Media Panel ---- */
+  .product-detail__media-panel {
+    position: relative;
+    width: 58%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  .product-detail__chandelier {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    padding-top: 0.5rem;
+    opacity: 0.45;
+  }
+  .product-detail__media-main {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+  }
+  .product-detail__media-main img,
+  .product-detail__media-main video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.92);
+    transition: opacity 0.4s ease;
+  }
+  .product-detail__media-vignette-bottom {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 38%);
+  }
+  .product-detail__media-vignette-right {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to right, transparent 72%, rgba(0,0,0,0.9) 100%);
+  }
+
+  /* Full medieval frame SVG for main image */
+  .product-detail__frame-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  /* Thumbnails */
+  .product-detail__thumbs {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 5;
+  }
+  .product-detail__thumb {
+    width: 56px;
+    height: 72px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    opacity: 0.5;
+    transition: opacity 0.3s, border-color 0.3s;
+    cursor: pointer;
+    padding: 0;
+  }
+  .product-detail__thumb.is-active,
+  .product-detail__thumb:hover {
+    border-color: rgba(255,255,255,0.5);
+    opacity: 1;
+  }
+  .product-detail__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Color swatches below main image */
+  .product-detail__swatches-row {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    display: flex;
+    gap: 0.4rem;
+    z-index: 5;
+  }
+  .product-detail__swatch-dot {
+    width: 26px;
+    height: 26px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 0;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .product-detail__swatch-dot.is-selected {
+    border-color: rgba(255,255,255,0.6);
+    box-shadow: 0 0 8px rgba(255,255,255,0.15);
+  }
+
+  /* Carousel arrows */
+  .carousel-arrows {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 5rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 5;
+  }
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.4);
+    transition: border-color 0.3s, color 0.3s;
+    background: none;
+    cursor: pointer;
+  }
+  .carousel-arrow:hover {
+    border-color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.85);
+  }
+  /* Diamond-shaped arrow frames */
+  .carousel-arrow-diamond {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    transition: color 0.3s;
+  }
+  .carousel-arrow-diamond:hover { color: rgba(255,255,255,0.9); }
+  .carousel-arrow-diamond svg.diamond-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    opacity: 0.5;
+  }
+  .carousel-arrow-diamond:hover svg.diamond-frame { opacity: 1; }
+
+  /* ---- RIGHT: Info Panel ---- */
+  .product-detail__info-panel {
+    position: relative;
+    width: 42%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2.5rem 3.5rem;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.97);
+    border-left: 1px solid rgba(255,255,255,0.04);
+  }
+
+  /* Ornate panel border (SVG overlay) */
+  .product-detail__panel-border {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .product-detail__back {
+    position: absolute;
+    top: 2rem;
+    left: 2.5rem;
+    font-family: var(--font-medieval);
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    transition: color 0.3s;
+  }
+  .product-detail__back:hover { color: rgba(255,255,255,0.55); }
+
+  .product-detail__category {
+    font-family: var(--font-medieval);
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.65em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    margin-bottom: 1rem;
+  }
+
+  .product-detail__title {
+    font-family: var(--font-gothic);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1.15;
+    text-shadow: 0 0 40px rgba(255,255,255,0.06);
+    margin-bottom: 0.75rem;
+  }
+
+  .product-detail__price-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .product-detail__price-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+  }
+  .product-detail__price {
+    font-family: var(--font-medieval);
+    font-size: 1.125rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.6);
+    white-space: nowrap;
+  }
+
+  .product-detail__divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  .product-detail__divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+  .product-detail__divider-diamond { width: 4px; height: 4px; transform: rotate(45deg); background: rgba(255,255,255,0.15); }
+
+  .product-detail__description {
+    font-family: var(--font-medieval);
+    font-size: 0.875rem;
+    font-weight: 300;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 2.5rem;
+  }
+
+  .product-detail__option-label {
+    font-family: var(--font-medieval);
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    margin-bottom: 0.75rem;
+  }
+
+  /* Color swatches */
+  .product-detail__swatches {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .product-detail__swatch {
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    cursor: pointer;
+    background: none;
+    padding: 0;
+  }
+  .product-detail__swatch.is-selected {
+    border-color: rgba(255,255,255,0.55);
+    box-shadow: 0 0 10px rgba(255,255,255,0.12);
+  }
+  .product-detail__swatch:hover { border-color: rgba(255,255,255,0.35); }
+
+  /* Size selector */
+  .product-detail__sizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  .product-detail__size-btn {
+    padding: 0.625rem 1.25rem;
+    font-family: var(--font-medieval);
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    background: transparent;
+    color: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+    cursor: pointer;
+  }
+  .product-detail__size-btn:hover {
+    border-color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.75);
+  }
+  .product-detail__size-btn.is-selected {
+    background: rgba(255,255,255,0.95);
+    color: #000;
+    border-color: rgba(255,255,255,0.9);
+  }
+
+  /* Quantity selector */
+  .product-detail__qty-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .product-detail__qty-label {
+    font-family: var(--font-medieval);
+    font-size: 9px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    flex-shrink: 0;
+  }
+  .product-detail__qty-control {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .product-detail__qty-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: rgba(255,255,255,0.4);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s, background 0.3s;
+    font-family: var(--font-medieval);
+    line-height: 1;
+  }
+  .product-detail__qty-btn:hover {
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.05);
+  }
+  .product-detail__qty-input {
+    width: 44px;
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    height: 36px;
+    font-family: var(--font-medieval);
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.7);
+    outline: none;
+    -moz-appearance: textfield;
+  }
+  .product-detail__qty-input::-webkit-outer-spin-button,
+  .product-detail__qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* Add to Cart */
+  .product-detail__add-btn {
+    width: 100%;
+    padding: 1.125rem;
+    font-family: var(--font-medieval);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.93);
+    color: #000;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    margin-top: 1rem;
+  }
+  .product-detail__add-btn:hover:not(:disabled) {
+    background: rgba(255,255,255,0.78);
+  }
+  .product-detail__add-btn.is-added {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .product-detail__add-btn:disabled {
+    background: transparent;
+    color: rgba(255,255,255,0.25);
+    border: 1px solid rgba(255,255,255,0.07);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .product-detail__stock-note {
+    font-family: var(--font-medieval);
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .product-detail {
+      flex-direction: column;
+      position: relative;
+      overflow-y: auto;
+    }
+    .product-detail__media-panel {
+      width: 100%;
+      height: 55vh;
+      flex-shrink: 0;
+    }
+    .product-detail__info-panel {
+      width: 100%;
+      height: auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    .product-detail__back {
+      position: relative;
+      top: auto;
+      left: auto;
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+  }
+  @media (max-width: 768px) {
+    .product-detail__media-panel { height: 48vh; }
+    .product-detail__info-panel { padding: 1.5rem 1.25rem 3rem; }
+  }
+  @media (max-width: 480px) {
+    .product-detail__media-panel { height: 42vh; }
+  }
+</style>
+
+<div class="product-detail">
+  <div class="product-detail__ambient-left"></div>
+  <div class="product-detail__ambient-right"></div>
+
+  <!-- ===================== LEFT: MEDIA PANEL ===================== -->
+  <div class="product-detail__media-panel">
+
+    <!-- Chandelier hook ornament -->
+    <div class="product-detail__chandelier">
+      {% render 'chandelier-hook' %}
+    </div>
+
+    <!-- Main product image/video with full medieval frame border -->
+    <div class="product-detail__media-main" id="product-main-media">
+      {%- assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media -%}
+      {%- if featured_media -%}
+        {%- if featured_media.media_type == 'video' -%}
+          <video
+            src="{{ featured_media | media_url }}"
+            autoplay loop muted playsinline
+            data-product-media-item="0"
+          ></video>
+        {%- else -%}
+          <img
+            src="{{ featured_media | image_url: width: 1200 }}"
+            alt="{{ featured_media.alt | escape }}"
+            data-product-media-item="0"
+            data-product-main-image
+            id="main-product-image"
+          >
+        {%- endif -%}
+      {%- else -%}
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.02)">
+          <span style="font-family:var(--font-medieval);font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(255,255,255,0.15)">{{ product.title }}</span>
+        </div>
+      {%- endif -%}
+
+      <div class="product-detail__media-vignette-bottom"></div>
+      <div class="product-detail__media-vignette-right"></div>
+
+      <!-- Full medieval frame SVG -->
+      <svg class="product-detail__frame-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <filter id="frame-glow">
+            <feGaussianBlur stdDeviation="0.8" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g filter="url(#frame-glow)">
+          <!-- Outer subtle rectangle -->
+          <rect x="0.5" y="0.5" width="99" height="99" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.3"/>
+
+          <!-- TL corner accent -->
+          <line x1="0" y1="0" x2="10" y2="0" stroke="rgba(255,255,255,0.55)" stroke-width="0.5"/>
+          <line x1="0" y1="0" x2="0" y2="10" stroke="rgba(255,255,255,0.55)" stroke-width="0.5"/>
+          <circle cx="0" cy="0" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.4"/>
+
+          <!-- TR corner accent -->
+          <line x1="100" y1="0" x2="90" y2="0" stroke="rgba(255,255,255,0.55)" stroke-width="0.5"/>
+          <line x1="100" y1="0" x2="100" y2="10" stroke="rgba(255,255,255,0.55)" stroke-width="0.5"/>
+          <circle cx="100" cy="0" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.4"/>
+
+          <!-- BL corner accent -->
+          <line x1="0" y1="100" x2="10" y2="100" stroke="rgba(255,255,255,0.55)" stroke-width="0.5"/>
+          <line x1="0" y1="100" x2="0" y2="90" stroke="rgba(255,255,255,0.55)" stroke-width="0.5"/>
+          <circle cx="0" cy="100" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.4"/>
+
+          <!-- BR corner accent -->
+          <line x1="100" y1="100" x2="90" y2="100" stroke="rgba(255,255,255,0.55)" stroke-width="0.5"/>
+          <line x1="100" y1="100" x2="100" y2="90" stroke="rgba(255,255,255,0.55)" stroke-width="0.5"/>
+          <circle cx="100" cy="100" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.4"/>
+
+          <!-- Sword cross ornament TOP CENTER -->
+          <line x1="50" y1="-3" x2="50" y2="4" stroke="rgba(255,255,255,0.45)" stroke-width="0.4"/>
+          <line x1="47" y1="0" x2="53" y2="0" stroke="rgba(255,255,255,0.35)" stroke-width="0.4"/>
+          <polygon points="50,-2 51,0 50,2 49,0" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.3"/>
+
+          <!-- Sword cross ornament BOTTOM CENTER -->
+          <line x1="50" y1="103" x2="50" y2="96" stroke="rgba(255,255,255,0.45)" stroke-width="0.4"/>
+          <line x1="47" y1="100" x2="53" y2="100" stroke="rgba(255,255,255,0.35)" stroke-width="0.4"/>
+          <polygon points="50,102 51,100 50,98 49,100" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.3"/>
+
+          <!-- Side diamonds -->
+          <polygon points="-2,50 0,47 2,50 0,53" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.4"/>
+          <polygon points="102,50 100,47 98,50 100,53" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.4"/>
+
+          <!-- Filigree lines -->
+          <line x1="0" y1="28" x2="0" y2="72" stroke="rgba(255,255,255,0.08)" stroke-width="0.3"/>
+          <line x1="100" y1="28" x2="100" y2="72" stroke="rgba(255,255,255,0.08)" stroke-width="0.3"/>
+          <line x1="28" y1="0" x2="72" y2="0" stroke="rgba(255,255,255,0.08)" stroke-width="0.3"/>
+          <line x1="28" y1="100" x2="72" y2="100" stroke="rgba(255,255,255,0.08)" stroke-width="0.3"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Thumbnail navigation -->
+    {%- if product.media.size > 1 -%}
+      <div class="product-detail__thumbs">
+        {%- for media in product.media limit: 6 -%}
+          <button
+            class="product-detail__thumb{% if forloop.first %} is-active{% endif %}"
+            data-product-thumb
+            data-full-src="{{ media | image_url: width: 1200 }}"
+            data-alt="{{ media.alt | escape }}"
+            data-media-index="{{ forloop.index0 }}"
+            data-media-type="{{ media.media_type }}"
+            data-media-src="{{ media | media_url }}"
+            aria-label="View image {{ forloop.index }}"
+          >
+            <img src="{{ media | image_url: width: 160 }}" alt="{{ media.alt | escape }}" loading="lazy">
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Carousel arrows (diamond shaped) -->
+    <div class="carousel-arrows">
+      <button class="carousel-arrow-diamond" data-carousel-prev aria-label="Previous image">
+        <svg class="diamond-frame" viewBox="0 0 38 38" fill="none" aria-hidden="true">
+          <polygon points="19,1 37,19 19,37 1,19" stroke="rgba(255,255,255,0.5)" stroke-width="0.8" fill="none"/>
+          <polygon points="19,6 32,19 19,32 6,19" stroke="rgba(255,255,255,0.2)" stroke-width="0.4" fill="none"/>
+        </svg>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="position:relative;z-index:1">
+          <path d="M8 2L4 6L8 10" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="carousel-arrow-diamond" data-carousel-next aria-label="Next image">
+        <svg class="diamond-frame" viewBox="0 0 38 38" fill="none" aria-hidden="true">
+          <polygon points="19,1 37,19 19,37 1,19" stroke="rgba(255,255,255,0.5)" stroke-width="0.8" fill="none"/>
+          <polygon points="19,6 32,19 19,32 6,19" stroke="rgba(255,255,255,0.2)" stroke-width="0.4" fill="none"/>
+        </svg>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="position:relative;z-index:1">
+          <path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+  <!-- end media panel -->
+
+  <!-- ===================== RIGHT: INFO PANEL ===================== -->
+  <div class="product-detail__info-panel">
+
+    <!-- Ornate SVG panel border -->
+    <svg class="product-detail__panel-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <!-- TL -->
+      <line x1="0" y1="0" x2="6" y2="0" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+      <!-- TR -->
+      <line x1="100" y1="0" x2="94" y2="0" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+      <line x1="100" y1="0" x2="100" y2="6" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+      <!-- BL -->
+      <line x1="0" y1="100" x2="6" y2="100" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+      <line x1="0" y1="100" x2="0" y2="94" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+      <!-- BR -->
+      <line x1="100" y1="100" x2="94" y2="100" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+      <line x1="100" y1="100" x2="100" y2="94" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+    </svg>
+
+    <a href="{{ routes.collections_url }}" class="product-detail__back">&#8592; Collection</a>
+
+    {%- if product.type != blank -%}
+      <p class="product-detail__category">{{ product.type }}</p>
+    {%- endif -%}
+
+    <h1 class="product-detail__title">{{ product.title }}</h1>
+
+    <div class="product-detail__price-row">
+      <div class="product-detail__price-line"></div>
+      <p class="product-detail__price" data-product-price>
+        {%- if product.price_varies -%}
+          From {{ product.price_min | money }}
+        {%- else -%}
+          {{ product.selected_or_first_available_variant.price | money }}
+        {%- endif -%}
+      </p>
+      <div class="product-detail__price-line"></div>
+    </div>
+
+    <div class="product-detail__divider">
+      <div class="product-detail__divider-line"></div>
+      <div class="product-detail__divider-diamond"></div>
+      <div class="product-detail__divider-line"></div>
+    </div>
+
+    {%- if product.description != blank -%}
+      <div class="product-detail__description">{{ product.description }}</div>
+    {%- endif -%}
+
+    {%- form 'product', product, data-product-form: '' -%}
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id-input>
+
+      {%- for option in product.options_with_values -%}
+        {%- assign option_name_down = option.name | downcase -%}
+
+        {%- if option_name_down == 'color' or option_name_down == 'colour' -%}
+          <div style="margin-bottom:2rem">
+            <p class="product-detail__option-label">
+              {{ option.name }}
+              <span data-selected-color style="color:rgba(255,255,255,0.45);margin-left:0.5em">{{ option.selected_value }}</span>
+            </p>
+            <div class="product-detail__swatches">
+              {%- for value in option.values -%}
+                {%- assign value_lower = value | downcase | strip -%}
+                {%- assign swatch_color = '#2a2420' -%}
+                {%- if value_lower == 'white' or value_lower == 'cream' or value_lower == 'ivory' -%}{%- assign swatch_color = '#f0ede8' -%}
+                {%- elsif value_lower == 'black' or value_lower == 'jet black' -%}{%- assign swatch_color = '#0a0908' -%}
+                {%- elsif value_lower == 'grey' or value_lower == 'gray' or value_lower == 'ash' -%}{%- assign swatch_color = '#888888' -%}
+                {%- elsif value_lower == 'acid wash' or value_lower == 'acid' -%}{%- assign swatch_color = '#5a5a5a' -%}
+                {%- elsif value_lower == 'navy' or value_lower == 'blue' -%}{%- assign swatch_color = '#1c2a3a' -%}
+                {%- elsif value_lower == 'red' or value_lower == 'crimson' -%}{%- assign swatch_color = '#6b0f0f' -%}
+                {%- elsif value_lower == 'green' or value_lower == 'forest' -%}{%- assign swatch_color = '#1a3a1a' -%}
+                {%- elsif value_lower == 'brown' or value_lower == 'tan' or value_lower == 'caramel' -%}{%- assign swatch_color = '#5c3d2e' -%}
+                {%- elsif value_lower == 'burgundy' or value_lower == 'maroon' or value_lower == 'wine' -%}{%- assign swatch_color = '#4a1028' -%}
+                {%- endif -%}
+                <button
+                  type="button"
+                  class="product-detail__swatch{% if option.selected_value == value %} is-selected{% endif %}"
+                  style="background:{{ swatch_color }}"
+                  data-option-position="{{ option.position }}"
+                  data-option-value="{{ value | escape }}"
+                  data-color-name="{{ value | escape }}"
+                  aria-label="{{ value }}"
+                  title="{{ value }}"
+                >
+                  <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-medieval);font-size:8px;color:rgba(255,255,255,0.55)">{{ value | slice: 0 }}</span>
+                </button>
+              {%- endfor -%}
+            </div>
+          </div>
+
+        {%- elsif option_name_down == 'size' -%}
+          <div style="margin-bottom:2rem">
+            <p class="product-detail__option-label">
+              {{ option.name }}
+              <span data-selected-size style="color:rgba(255,255,255,0.45);margin-left:0.5em">{{ option.selected_value }}</span>
+            </p>
+            <div class="product-detail__sizes">
+              {%- for value in option.values -%}
+                <button
+                  type="button"
+                  class="product-detail__size-btn{% if option.selected_value == value %} is-selected{% endif %}"
+                  data-size-btn
+                  data-option-position="{{ option.position }}"
+                  data-option-value="{{ value | escape }}"
+                  aria-label="Size {{ value }}"
+                >{{ value }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <!-- Quantity selector -->
+      <div class="product-detail__qty-row">
+        <span class="product-detail__qty-label">Qty</span>
+        <div class="product-detail__qty-control">
+          <button type="button" class="product-detail__qty-btn" data-qty-minus aria-label="Decrease quantity">&#8722;</button>
+          <input
+            type="number"
+            name="quantity"
+            value="1"
+            min="1"
+            class="product-detail__qty-input"
+            data-qty-input
+            aria-label="Quantity"
+          >
+          <button type="button" class="product-detail__qty-btn" data-qty-plus aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+
+      <div class="product-detail__divider" style="margin-bottom:1.5rem">
+        <div class="product-detail__divider-line"></div>
+        <div class="product-detail__divider-diamond"></div>
+        <div class="product-detail__divider-line"></div>
+      </div>
+
+      <button
+        type="submit"
+        class="product-detail__add-btn{% unless product.available %} is-sold-out{% endunless %}"
+        data-add-to-cart
+        data-add-label="Add to Cart"
+        {%- unless product.available -%}disabled{%- endunless -%}
+      >
+        <span data-add-text>
+          {%- if product.available -%}Add to Cart{%- else -%}Sold Out{%- endif -%}
+        </span>
+      </button>
+
+      {%- if product.selected_or_first_available_variant.inventory_quantity > 0 and product.selected_or_first_available_variant.inventory_quantity <= 5 -%}
+        <p class="product-detail__stock-note">Only {{ product.selected_or_first_available_variant.inventory_quantity }} remaining</p>
+      {%- endif -%}
+
+    {%- endform -%}
+
+  </div>
+  <!-- end info panel -->
+
+</div>
+
+<script>
+(function() {
+  // Quantity stepper on product page
+  var qtyMinus = document.querySelector('[data-qty-minus]');
+  var qtyPlus  = document.querySelector('[data-qty-plus]');
+  var qtyInput = document.querySelector('[data-qty-input]');
+
+  if (qtyMinus && qtyPlus && qtyInput) {
+    qtyMinus.addEventListener('click', function() {
+      var val = parseInt(qtyInput.value, 10) || 1;
+      if (val > 1) qtyInput.value = val - 1;
+    });
+    qtyPlus.addEventListener('click', function() {
+      var val = parseInt(qtyInput.value, 10) || 1;
+      qtyInput.value = val + 1;
+    });
+  }
+
+  // Color swatch selection
+  document.querySelectorAll('[data-color-name]').forEach(function(swatch) {
+    swatch.addEventListener('click', function() {
+      var pos = swatch.getAttribute('data-option-position');
+      document.querySelectorAll('[data-option-position="' + pos + '"]').forEach(function(s) {
+        s.classList.remove('is-selected');
+      });
+      swatch.classList.add('is-selected');
+      var colorDisplay = document.querySelector('[data-selected-color]');
+      if (colorDisplay) colorDisplay.textContent = swatch.getAttribute('data-color-name');
+    });
+  });
+
+  // Thumbnail gallery
+  var mainImg = document.getElementById('main-product-image');
+  document.querySelectorAll('[data-product-thumb]').forEach(function(thumb) {
+    thumb.addEventListener('click', function() {
+      var src = thumb.getAttribute('data-full-src');
+      var alt = thumb.getAttribute('data-alt') || '';
+      if (mainImg && src) {
+        mainImg.src = src;
+        mainImg.alt = alt;
+      }
+      document.querySelectorAll('[data-product-thumb]').forEach(function(t) {
+        t.classList.remove('is-active');
+      });
+      thumb.classList.add('is-active');
+    });
+  });
+
+  // Carousel prev/next
+  var thumbBtns = Array.from(document.querySelectorAll('[data-product-thumb]'));
+  var currentIndex = 0;
+
+  function goToThumb(index) {
+    if (index < 0) index = thumbBtns.length - 1;
+    if (index >= thumbBtns.length) index = 0;
+    if (thumbBtns[index]) thumbBtns[index].click();
+    currentIndex = index;
+  }
+
+  var prevBtn = document.querySelector('[data-carousel-prev]');
+  var nextBtn = document.querySelector('[data-carousel-next]');
+  if (prevBtn) prevBtn.addEventListener('click', function() { goToThumb(currentIndex - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function() { goToThumb(currentIndex + 1); });
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Main Product",
+  "settings": []
+}
+{% endschema %}

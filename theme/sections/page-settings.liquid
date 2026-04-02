@@ -1,0 +1,366 @@
+<style>
+  .settings-page {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+    background: #000;
+  }
+  .settings-page__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.25;
+  }
+  .settings-page__overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.92) 100%);
+  }
+  .settings-page__back {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    font-family: var(--font-medieval);
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    transition: color 0.3s;
+    z-index: 10;
+    text-decoration: none;
+  }
+  .settings-page__back:hover { color: rgba(255,255,255,0.6); }
+
+  .settings-page__content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 440px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    animation: fadeUp 1.4s ease both;
+  }
+
+  /* Ornate title frame */
+  .settings-page__title-frame {
+    position: relative;
+    display: inline-block;
+    padding: 1.5rem 3rem;
+    margin-bottom: 3rem;
+  }
+  .settings-page__title-frame-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .settings-page__title {
+    font-family: var(--font-gothic);
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 300;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    text-shadow: 0 0 30px rgba(255,255,255,0.15);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Settings controls */
+  .settings-page__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  .settings-page__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 320px;
+    gap: 1.5rem;
+  }
+  .settings-page__row-label {
+    font-family: var(--font-medieval);
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    white-space: nowrap;
+  }
+
+  /* Volume slider */
+  .settings-page__slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 160px;
+    height: 1px;
+    background: rgba(255,255,255,0.15);
+    outline: none;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .settings-page__slider:hover {
+    background: rgba(255,255,255,0.25);
+  }
+  .settings-page__slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    background: rgba(255,255,255,0.8);
+    cursor: pointer;
+    transform: rotate(45deg);
+    border: none;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .settings-page__slider::-webkit-slider-thumb:hover {
+    background: #fff;
+    transform: rotate(45deg) scale(1.2);
+  }
+  .settings-page__slider::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    background: rgba(255,255,255,0.8);
+    cursor: pointer;
+    border: none;
+    border-radius: 0;
+    transform: rotate(45deg);
+  }
+
+  /* Notifications toggle */
+  .settings-page__toggle {
+    position: relative;
+    width: 44px;
+    height: 22px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .settings-page__toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+  .settings-page__toggle-track {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .settings-page__toggle input:checked ~ .settings-page__toggle-track {
+    background: rgba(255,255,255,0.18);
+    border-color: rgba(255,255,255,0.35);
+  }
+  .settings-page__toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: rgba(255,255,255,0.35);
+    transition: transform 0.3s, background 0.3s;
+    pointer-events: none;
+  }
+  .settings-page__toggle input:checked ~ .settings-page__toggle-thumb {
+    transform: translateX(22px);
+    background: rgba(255,255,255,0.85);
+  }
+
+  /* Divider ornament */
+  .settings-page__divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto 0.5rem;
+  }
+  .settings-page__divider-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+  }
+  .settings-page__divider-diamond {
+    width: 4px;
+    height: 4px;
+    transform: rotate(45deg);
+    background: rgba(255,255,255,0.12);
+  }
+
+  /* Volume value label */
+  .settings-page__vol-val {
+    font-family: var(--font-medieval);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.2);
+    min-width: 28px;
+    text-align: right;
+  }
+
+  @media (max-width: 480px) {
+    .settings-page__content { padding: 2rem 1.5rem; }
+    .settings-page__title-frame { padding: 1.25rem 2rem; }
+    .settings-page__row { max-width: 280px; }
+    .settings-page__slider { width: 120px; }
+  }
+</style>
+
+<div class="settings-page">
+  {%- if section.settings.video_url != blank -%}
+    <video class="settings-page__bg" autoplay loop muted playsinline>
+      <source src="{{ section.settings.video_url }}" type="video/mp4">
+    </video>
+  {%- endif -%}
+  <div class="settings-page__overlay"></div>
+
+  <a href="{{ routes.root_url }}" class="settings-page__back">&#8592; Return</a>
+
+  <div class="settings-page__content">
+
+    <!-- Ornate title frame -->
+    <div class="settings-page__title-frame">
+      <svg class="settings-page__title-frame-svg" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <filter id="sett-glow">
+            <feGaussianBlur stdDeviation="1.5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g filter="url(#sett-glow)">
+          <!-- TL -->
+          <line x1="0" y1="0" x2="22" y2="0" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/>
+          <line x1="0" y1="0" x2="0" y2="16" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/>
+          <circle cx="0" cy="0" r="2" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+          <!-- TR -->
+          <line x1="200" y1="0" x2="178" y2="0" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/>
+          <line x1="200" y1="0" x2="200" y2="16" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/>
+          <circle cx="200" cy="0" r="2" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+          <!-- BL -->
+          <line x1="0" y1="60" x2="22" y2="60" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/>
+          <line x1="0" y1="60" x2="0" y2="44" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/>
+          <circle cx="0" cy="60" r="2" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+          <!-- BR -->
+          <line x1="200" y1="60" x2="178" y2="60" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/>
+          <line x1="200" y1="60" x2="200" y2="44" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/>
+          <circle cx="200" cy="60" r="2" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+          <!-- Top center sword cross -->
+          <line x1="100" y1="-6" x2="100" y2="5" stroke="rgba(255,255,255,0.4)" stroke-width="0.7"/>
+          <line x1="95" y1="-1" x2="105" y2="-1" stroke="rgba(255,255,255,0.3)" stroke-width="0.7"/>
+          <!-- Bottom center sword cross -->
+          <line x1="100" y1="66" x2="100" y2="55" stroke="rgba(255,255,255,0.4)" stroke-width="0.7"/>
+          <line x1="95" y1="61" x2="105" y2="61" stroke="rgba(255,255,255,0.3)" stroke-width="0.7"/>
+        </g>
+      </svg>
+      <h1 class="settings-page__title">Settings</h1>
+    </div>
+
+    <!-- Controls -->
+    <div class="settings-page__controls">
+
+      <div class="settings-page__divider">
+        <div class="settings-page__divider-line"></div>
+        <div class="settings-page__divider-diamond"></div>
+        <div class="settings-page__divider-line"></div>
+      </div>
+
+      <!-- Volume -->
+      <div class="settings-page__row">
+        <span class="settings-page__row-label">Sound</span>
+        <input
+          type="range"
+          class="settings-page__slider"
+          id="obl-volume"
+          min="0"
+          max="100"
+          value="50"
+          aria-label="Volume"
+        >
+        <span class="settings-page__vol-val" id="obl-volume-val">50</span>
+      </div>
+
+      <div class="settings-page__divider">
+        <div class="settings-page__divider-line"></div>
+        <div class="settings-page__divider-diamond"></div>
+        <div class="settings-page__divider-line"></div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="settings-page__row">
+        <span class="settings-page__row-label">Notifications</span>
+        <label class="settings-page__toggle" aria-label="Toggle notifications">
+          <input type="checkbox" id="obl-notifications">
+          <div class="settings-page__toggle-track"></div>
+          <div class="settings-page__toggle-thumb"></div>
+        </label>
+      </div>
+
+      <div class="settings-page__divider">
+        <div class="settings-page__divider-line"></div>
+        <div class="settings-page__divider-diamond"></div>
+        <div class="settings-page__divider-line"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // Volume slider — persist to localStorage (cosmetic)
+  var volSlider = document.getElementById('obl-volume');
+  var volVal    = document.getElementById('obl-volume-val');
+  var notifToggle = document.getElementById('obl-notifications');
+
+  // Restore saved values
+  var savedVol = localStorage.getItem('obl_volume');
+  var savedNotif = localStorage.getItem('obl_notifications');
+
+  if (volSlider) {
+    if (savedVol !== null) {
+      volSlider.value = savedVol;
+      if (volVal) volVal.textContent = savedVol;
+    }
+    volSlider.addEventListener('input', function() {
+      var v = volSlider.value;
+      if (volVal) volVal.textContent = v;
+      localStorage.setItem('obl_volume', v);
+    });
+  }
+
+  if (notifToggle) {
+    if (savedNotif === 'true') notifToggle.checked = true;
+    notifToggle.addEventListener('change', function() {
+      localStorage.setItem('obl_notifications', notifToggle.checked ? 'true' : 'false');
+    });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Settings Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Background video URL",
+      "info": "Upload your video to Shopify Admin > Content > Files and paste the URL here."
+    }
+  ]
+}
+{% endschema %}

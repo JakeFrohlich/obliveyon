@@ -1,13 +1,9 @@
 {
   "sections": {
-    "product-hero": {
-      "type": "product-hero",
-      "settings": {}
-    },
-    "related-products": {
-      "type": "related-products",
+    "main-product": {
+      "type": "main-product",
       "settings": {}
     }
   },
-  "order": ["product-hero", "related-products"]
+  "order": ["main-product"]
 }
