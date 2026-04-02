@@ -1,9 +1,11 @@
 {
   "sections": {
-    "main-page": {
-      "type": "main-page",
-      "settings": {}
+    "settings-content": {
+      "type": "settings-content",
+      "settings": {
+        "video_url": "https://cdn.shopify.com/videos/c/o/v/a9fce8b1f2c04ec496983ab6543c8df6.mp4"
+      }
     }
   },
-  "order": ["main-page"]
+  "order": ["settings-content"]
 }

@@ -3,6 +3,7 @@
     "hero": {
       "type": "hero-video",
       "settings": {
+        "video_url": "https://cdn.shopify.com/videos/c/o/v/0d1d6cc6b2204272a308c95d9322edeb.mp4",
         "btn1_text": "Press Play",
         "btn2_text": "Settings",
         "btn3_text": "Credits"

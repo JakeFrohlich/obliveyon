@@ -325,20 +325,45 @@
       });
     },
 
-    /** Image gallery — thumbnail click swaps main image */
+    /** Image/video gallery — thumbnail click swaps main media */
     initGallery: function () {
-      var main = document.querySelector('[data-product-main-image]');
+      var wrapper = document.querySelector('[data-product-media-wrapper]');
       var thumbs = document.querySelectorAll('[data-product-thumb]');
-      if (!main || thumbs.length === 0) return;
+      if (!wrapper || thumbs.length === 0) return;
 
       thumbs.forEach(function (thumb) {
         thumb.addEventListener('click', function () {
-          var src = thumb.getAttribute('data-full-src');
+          var mediaType = thumb.getAttribute('data-media-type') || 'image';
+          var src = thumb.getAttribute('data-full-src') || thumb.getAttribute('data-media-src');
           var alt = thumb.getAttribute('data-alt') || '';
-          if (src) {
-            main.src = src;
-            main.alt = alt;
+
+          /* Replace current media element */
+          var current = wrapper.querySelector('[data-product-main-image], [data-product-main-video]');
+
+          if (mediaType === 'video') {
+            var video = document.createElement('video');
+            video.setAttribute('data-product-main-video', '');
+            video.setAttribute('autoplay', '');
+            video.setAttribute('loop', '');
+            video.setAttribute('muted', '');
+            video.setAttribute('playsinline', '');
+            video.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+            var source = document.createElement('source');
+            source.src = src;
+            source.type = 'video/mp4';
+            video.appendChild(source);
+            if (current) wrapper.replaceChild(video, current);
+            else wrapper.appendChild(video);
+          } else {
+            var img = document.createElement('img');
+            img.setAttribute('data-product-main-image', '');
+            img.src = src;
+            img.alt = alt;
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+            if (current) wrapper.replaceChild(img, current);
+            else wrapper.appendChild(img);
           }
+
           /* Update active state */
           thumbs.forEach(function (t) { t.classList.remove('is-active'); });
           thumb.classList.add('is-active');

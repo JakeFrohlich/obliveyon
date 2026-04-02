@@ -1,0 +1,38 @@
+<div class="credits-page">
+  {%- if section.settings.video_url != blank -%}
+    <video class="credits-page__bg" autoplay loop muted playsinline>
+      <source src="{{ section.settings.video_url }}" type="video/mp4">
+    </video>
+  {%- endif -%}
+  <div class="credits-page__overlay"></div>
+
+  <div class="credits-page__content">
+    <a href="{{ routes.root_url }}" class="credits-page__back">&#8592; Return</a>
+
+    <div class="credits-page__title-ornament">
+      <div class="credits-page__title-ornament-line"></div>
+      <span class="credits-page__title-ornament-label">Settings</span>
+      <div class="credits-page__title-ornament-line"></div>
+    </div>
+
+    <h1 class="credits-page__brand">Obliveyon</h1>
+    <p class="credits-page__sub">{{ shop.name }}</p>
+
+    <div class="credits-page__body" style="text-align:left">
+      {{ page.content }}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Settings Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Background video URL"
+    }
+  ]
+}
+{% endschema %}
