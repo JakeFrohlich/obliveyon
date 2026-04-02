@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Cormorant } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/layout/Providers";
+import Navbar from "@/components/layout/Navbar";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -38,6 +39,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`min-h-screen flex flex-col ${cormorant.variable} ${cormorantDisplay.variable}`}>
         <Providers>
+          <Navbar />
           <main className="flex-1">{children}</main>
         </Providers>
       </body>
