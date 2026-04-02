@@ -6,14 +6,25 @@ export default function CreditsPage() {
   const router = useRouter();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden select-none">
+    <div className="fixed inset-0 z-50 overflow-y-auto select-none">
+      {/* Back button — top left, always visible */}
+      <button
+        onClick={() => router.push("/")}
+        className="fixed top-6 left-6 z-20 text-[11px] tracking-[0.4em] uppercase transition-colors duration-300 cursor-pointer"
+        style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.85)", textShadow: "0 0 12px rgba(0,0,0,0.9)" }}
+        onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.85)"; }}
+      >
+        ← Return
+      </button>
+
       {/* Video background — reuse sword video, feels right for credits */}
       <video
         autoPlay
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        className="fixed inset-0 w-full h-full object-cover"
         style={{ opacity: 0.35 }}
       >
         <source src="/The real sword press play.mp4" type="video/mp4" />
@@ -21,7 +32,7 @@ export default function CreditsPage() {
 
       {/* Deep dark overlay */}
       <div
-        className="absolute inset-0"
+        className="fixed inset-0"
         style={{
           background:
             "radial-gradient(ellipse at 50% 40%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.85) 100%)",
@@ -30,18 +41,9 @@ export default function CreditsPage() {
 
       {/* Content */}
       <div
-        className="relative z-10 w-full max-w-xl px-8 text-center"
+        className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center max-w-xl px-8 text-center mx-auto py-24"
         style={{ animation: "fadeUp 1.6s ease both" }}
       >
-        {/* Back */}
-        <button
-          onClick={() => router.push("/")}
-          className="mb-12 text-[10px] tracking-[0.4em] uppercase text-white/25 hover:text-white/50 transition-colors duration-300 cursor-pointer"
-          style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
-        >
-          ← Return
-        </button>
-
         {/* Title ornament */}
         <div className="flex items-center gap-4 mb-10">
           <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.08)" }} />
@@ -76,14 +78,14 @@ export default function CreditsPage() {
         {/* Body copy */}
         <div className="flex flex-col gap-7">
           <p
-            className="text-sm sm:text-base leading-loose text-white/60"
+            className="text-sm sm:text-base leading-loose text-white/60 text-center"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, letterSpacing: "0.04em" }}
           >
             Obliveyon is a reflection of oneself.
           </p>
 
           <p
-            className="text-sm sm:text-base leading-loose text-white/50"
+            className="text-sm sm:text-base leading-loose text-white/50 text-center"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, letterSpacing: "0.04em" }}
           >
             Everything here is an honest attempt at one&apos;s inner reflection — the
@@ -94,7 +96,7 @@ export default function CreditsPage() {
           </p>
 
           <p
-            className="text-sm sm:text-base leading-loose text-white/50"
+            className="text-sm sm:text-base leading-loose text-white/50 text-center"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, letterSpacing: "0.04em" }}
           >
             Darkness has always belonged to the wrong side — and it is present.
@@ -103,7 +105,7 @@ export default function CreditsPage() {
           </p>
 
           <p
-            className="text-sm sm:text-base leading-loose text-white/50"
+            className="text-sm sm:text-base leading-loose text-white/50 text-center"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, letterSpacing: "0.04em" }}
           >
             Obliveyon is not about following. It is about the version of yourself

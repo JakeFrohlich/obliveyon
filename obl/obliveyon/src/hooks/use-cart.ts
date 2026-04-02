@@ -49,11 +49,11 @@ export function useCart() {
 
   const addItem = useCallback((item: Omit<CartItem, "id">) => {
     const existing = cart.find(
-      (i) => i.productId === item.productId && i.size === item.size
+      (i) => i.productId === item.productId && i.size === item.size && i.color === item.color
     );
     if (existing) {
       cart = cart.map((i) =>
-        i.productId === item.productId && i.size === item.size
+        i.productId === item.productId && i.size === item.size && i.color === item.color
           ? { ...i, quantity: i.quantity + item.quantity }
           : i
       );
