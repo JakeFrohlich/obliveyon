@@ -1,0 +1,26 @@
+{%- assign related_products = product.collections.first.products | where: 'id', product.id | map: 'id' -%}
+{%- assign other_products = product.collections.first.products -%}
+
+{%- if other_products.size > 1 -%}
+  <div style="padding:4rem 1.5rem;background:#000">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:2rem">
+        <p style="font-family:var(--font-medieval);font-size:9px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(255,255,255,0.25)">You Might Also Like</p>
+      </div>
+      <div class="collection-page__grid">
+        {%- for p in other_products limit: 5 -%}
+          {%- unless p.id == product.id -%}
+            {% render 'product-card', product: p, index: forloop.index0 %}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Related Products",
+  "settings": []
+}
+{% endschema %}

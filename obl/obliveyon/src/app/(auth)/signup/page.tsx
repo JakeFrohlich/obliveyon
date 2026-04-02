@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import MedievalBackground from "@/components/ui/MedievalBackground";
 
 const DROP_DATE = new Date("2026-05-21T00:00:00");
@@ -31,23 +32,51 @@ function useCountdown(target: Date) {
 }
 
 export default function SignupPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   const countdown = useCountdown(DROP_DATE);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setLoading(false);
-    setSubmitted(true);
+    setError("");
+    try {
+      const res = await fetch("/api/klaviyo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, phone }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Something went wrong. Try again.");
+      } else {
+        setSubmitted(true);
+      }
+    } catch {
+      setError("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-6 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
+      {/* Back button — top left */}
+      <button
+        onClick={() => router.push("/")}
+        className="fixed top-6 left-6 z-20 text-[11px] tracking-[0.4em] uppercase transition-colors duration-300 cursor-pointer"
+        style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.85)", textShadow: "0 0 12px rgba(0,0,0,0.9)" }}
+        onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.85)"; }}
+      >
+        ← Return
+      </button>
+
       <MedievalBackground />
 
       {/* Full bleed content — no box, just layered over the video */}
@@ -190,6 +219,12 @@ export default function SignupPage() {
                 placeholder="Phone number"
               />
             </div>
+
+            {error && (
+              <p className="text-[11px] tracking-wider text-center" style={{ color: "rgba(255,160,160,0.9)", fontFamily: "var(--font-medieval)" }}>
+                {error}
+              </p>
+            )}
 
             <button
               type="submit"

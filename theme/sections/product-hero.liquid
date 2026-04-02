@@ -1,0 +1,156 @@
+<script type="application/json" id="product-variants-json">
+  {{ product.variants | json }}
+</script>
+
+<div class="product-detail">
+  <div class="product-detail__glow-left"></div>
+  <div class="product-detail__glow-right"></div>
+
+  <!-- Left: Media Panel -->
+  <div class="product-detail__media-panel" style="width:58%">
+    <div class="product-detail__media-main" data-product-main-media>
+      {%- assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media -%}
+      {%- if featured_media -%}
+        {%- if featured_media.media_type == 'video' -%}
+          <video src="{{ featured_media | media_url }}" autoplay loop muted playsinline data-product-media-item="0"></video>
+        {%- else -%}
+          <img src="{{ featured_media | image_url: width: 1200 }}" alt="{{ featured_media.alt | escape }}" data-product-media-item="0" data-product-main-image>
+        {%- endif -%}
+      {%- else -%}
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.02)">
+          <span style="font-family:var(--font-medieval);font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(255,255,255,0.15)">{{ product.title }}</span>
+        </div>
+      {%- endif -%}
+      <div class="product-detail__media-vignette-bottom"></div>
+      <div class="product-detail__media-vignette-right"></div>
+      {% render 'ornate-border', variant: 'medium' %}
+    </div>
+
+    <!-- Thumbnails -->
+    {%- if product.media.size > 1 -%}
+      <div class="product-detail__thumbs">
+        {%- for media in product.media limit: 6 -%}
+          <button
+            class="product-detail__thumb{% if forloop.first %} is-active{% endif %}"
+            data-product-thumb
+            data-full-src="{{ media | image_url: width: 1200 }}"
+            data-alt="{{ media.alt | escape }}"
+            data-media-index="{{ forloop.index0 }}"
+            data-media-type="{{ media.media_type }}"
+            data-media-src="{{ media | media_url }}"
+            aria-label="View image {{ forloop.index }}"
+          >
+            <img src="{{ media | image_url: width: 160 }}" alt="{{ media.alt | escape }}" loading="lazy">
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {% render 'carousel-arrows' %}
+  </div>
+
+  <!-- Right: Info Panel -->
+  <div class="product-detail__info-panel" style="width:42%">
+    <a href="{{ routes.collections_url }}" class="product-detail__back">&#8592; Collection</a>
+
+    {%- if product.type != blank -%}
+      <p class="product-detail__category">{{ product.type }}</p>
+    {%- endif -%}
+
+    <h1 class="product-detail__title">{{ product.title }}</h1>
+
+    <p class="product-detail__price" data-product-price>
+      {%- if product.price_varies -%}
+        From {{ product.price_min | money }}
+      {%- else -%}
+        {{ product.price | money }}
+      {%- endif -%}
+    </p>
+
+    <div class="product-detail__divider">
+      <div class="product-detail__divider-line"></div>
+      <div class="product-detail__divider-diamond"></div>
+      <div class="product-detail__divider-line"></div>
+    </div>
+
+    {%- if product.description != blank -%}
+      <div class="product-detail__description">{{ product.description }}</div>
+    {%- endif -%}
+
+    {%- form 'product', product, data-product-form: '' -%}
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+      {%- for option in product.options_with_values -%}
+        {%- assign option_name_down = option.name | downcase -%}
+
+        {%- if option_name_down == 'color' or option_name_down == 'colour' -%}
+          <div style="margin-bottom:2rem">
+            <p class="product-detail__option-label">{{ option.name }} <span data-selected-color style="color:rgba(255,255,255,0.5)"></span></p>
+            <div class="product-detail__swatches">
+              {%- for value in option.values -%}
+                {%- assign value_lower = value | downcase -%}
+                {%- assign swatch_color = '#2a2420' -%}
+                {%- if value_lower == 'white' -%}{%- assign swatch_color = '#f0ede8' -%}
+                {%- elsif value_lower == 'black' -%}{%- assign swatch_color = '#0a0908' -%}
+                {%- elsif value_lower == 'acid wash' -%}{%- assign swatch_color = '#5a5a5a' -%}
+                {%- endif -%}
+                <button
+                  type="button"
+                  class="product-detail__swatch{% if option.selected_value == value %} is-selected{% endif %}"
+                  style="background:{{ swatch_color }}"
+                  data-option-position="{{ option.position }}"
+                  data-option-value="{{ value | escape }}"
+                  data-color-name="{{ value | escape }}"
+                  aria-label="{{ value }}"
+                  title="{{ value }}"
+                >
+                  <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-medieval);font-size:8px;color:rgba(255,255,255,0.6)">{{ value | slice: 0 }}</span>
+                </button>
+              {%- endfor -%}
+            </div>
+          </div>
+
+        {%- elsif option_name_down == 'size' -%}
+          <div style="margin-bottom:2rem">
+            <p class="product-detail__option-label">{{ option.name }} <span data-selected-size style="color:rgba(255,255,255,0.5)"></span></p>
+            <div class="product-detail__sizes">
+              {%- for value in option.values -%}
+                <button
+                  type="button"
+                  class="product-detail__size-btn{% if option.selected_value == value %} is-selected{% endif %}"
+                  data-size-btn
+                  data-option-position="{{ option.position }}"
+                  data-option-value="{{ value | escape }}"
+                  aria-label="Size {{ value }}"
+                >{{ value }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <button
+        type="submit"
+        class="product-detail__add-btn{% unless product.available %} is-sold-out{% endunless %}"
+        data-add-to-cart
+        data-add-label="Add to Cart"
+        {%- unless product.available -%}disabled{%- endunless -%}
+      >
+        <span data-add-text>
+          {%- if product.available -%}Add to Cart{%- else -%}Sold Out{%- endif -%}
+        </span>
+      </button>
+
+      {%- if product.selected_or_first_available_variant.inventory_quantity > 0 and product.selected_or_first_available_variant.inventory_quantity <= 5 -%}
+        <p class="product-detail__stock-note">Only {{ product.selected_or_first_available_variant.inventory_quantity }} remaining</p>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product Hero",
+  "settings": []
+}
+{% endschema %}

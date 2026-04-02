@@ -3,12 +3,29 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Footer from "@/components/shop/Footer";
+import { useCart } from "@/hooks/use-cart";
+
+// Shopify variant IDs keyed by "color|size" — Original is display-only, not orderable
+const SHOPIFY_VARIANTS: Record<string, number> = {
+  "White|S":      50142432854317,
+  "White|M":      50142432952621,
+  "White|L":      50142433050925,
+  "White|XL":     50142433149229,
+  "Acid Wash|S":  50142432887085,
+  "Acid Wash|M":  50142432985389,
+  "Acid Wash|L":  50142433083693,
+  "Acid Wash|XL": 50142433181997,
+  "Black|S":      50142432919853,
+  "Black|M":      50142433018157,
+  "Black|L":      50142433116461,
+  "Black|XL":     50142433214765,
+};
 
 const COLORS = [
-  { label: "Original", short: "O", swatch: "#2a2420" },
-  { label: "Acid Wash", short: "A", swatch: "#5a5a5a" },
-  { label: "White",    short: "W", swatch: "#f0ede8" },
-  { label: "Black",   short: "B", swatch: "#0a0908" },
+  { label: "Original", short: "O", swatch: "#2a2420", orderOnly: false },
+  { label: "Acid Wash", short: "A", swatch: "#5a5a5a", orderOnly: true },
+  { label: "White",    short: "W", swatch: "#f0ede8", orderOnly: true },
+  { label: "Black",   short: "B", swatch: "#0a0908", orderOnly: true },
 ];
 
 const SIZES = ["S", "M", "L", "XL"];
@@ -47,7 +64,9 @@ export default function OriginalObliveyon() {
   const [selectedSize, setSelectedSize] = useState("");
   const [added, setAdded] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const router = useRouter();
+  const { addItem } = useCart();
 
   const currentSlides = COLOR_SLIDES[COLORS[selectedColor].label] || [];
   const currentSlide = currentSlides[slideIndex] || currentSlides[0];
@@ -66,9 +85,21 @@ export default function OriginalObliveyon() {
     setSlideIndex((prev) => (prev + 1) % currentSlides.length);
   }
 
+  const isOrderable = COLORS[selectedColor].orderOnly;
+
   function handleAddToCart() {
-    if (!selectedSize) return;
+    if (!selectedSize || !isOrderable) return;
+    addItem({
+      productId: "the-original-obliveyon",
+      name: `The Original Obliveyon — ${COLORS[selectedColor].label}`,
+      price: 65,
+      size: selectedSize,
+      quantity,
+      image: (currentSlides.find((s) => s.type === "image") || currentSlides[0])?.src || "/The orginal Obliveyon.png",
+      color: COLORS[selectedColor].label,
+    });
     setAdded(true);
+    setQuantity(1);
     setTimeout(() => setAdded(false), 2000);
   }
 
@@ -86,8 +117,10 @@ export default function OriginalObliveyon() {
         {/* Back */}
         <button
           onClick={() => router.push("/shop")}
-          className="self-start text-[10px] tracking-[0.4em] uppercase text-white/25 hover:text-white/50 transition-colors duration-300 cursor-pointer mb-6"
-          style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+          className="self-start text-[11px] tracking-[0.4em] uppercase transition-colors duration-300 cursor-pointer mb-6"
+          style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.85)" }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.85)"; }}
         >
           ← Collection
         </button>
@@ -195,39 +228,35 @@ export default function OriginalObliveyon() {
             }} />
           </div>
 
-          {/* Left arrow */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-2 lg:left-[calc(50%-310px)] top-1/2 -translate-y-1/2 z-20 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110"
-          >
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.4))" }}>
-              {/* Outer diamond frame */}
-              <polygon points="14,1 27,14 14,27 1,14" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
-              {/* Inner diamond */}
-              <polygon points="14,5 23,14 14,23 5,14" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.6" />
-              {/* Arrow */}
-              <path d="M16 9L11 14L16 19" stroke="rgba(255,255,255,0.85)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-              {/* Center dot */}
-              <circle cx="14" cy="14" r="0.8" fill="rgba(255,255,255,0.4)" />
-            </svg>
-          </button>
+          {/* Left arrow — only shown when multiple slides */}
+          {hasMultipleSlides && (
+            <button
+              onClick={prevSlide}
+              className="absolute left-2 lg:left-[calc(50%-310px)] top-1/2 -translate-y-1/2 z-20 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110"
+            >
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.4))" }}>
+                <polygon points="14,1 27,14 14,27 1,14" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
+                <polygon points="14,5 23,14 14,23 5,14" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.6" />
+                <path d="M16 9L11 14L16 19" stroke="rgba(255,255,255,0.85)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="14" cy="14" r="0.8" fill="rgba(255,255,255,0.4)" />
+              </svg>
+            </button>
+          )}
 
-          {/* Right arrow */}
-          <button
-            onClick={nextSlide}
-            className="absolute right-2 lg:right-[calc(50%-310px)] top-1/2 -translate-y-1/2 z-20 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110"
-          >
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.4))" }}>
-              {/* Outer diamond frame */}
-              <polygon points="14,1 27,14 14,27 1,14" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
-              {/* Inner diamond */}
-              <polygon points="14,5 23,14 14,23 5,14" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.6" />
-              {/* Arrow */}
-              <path d="M12 9L17 14L12 19" stroke="rgba(255,255,255,0.85)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-              {/* Center dot */}
-              <circle cx="14" cy="14" r="0.8" fill="rgba(255,255,255,0.2)" />
-            </svg>
-          </button>
+          {/* Right arrow — only shown when multiple slides */}
+          {hasMultipleSlides && (
+            <button
+              onClick={nextSlide}
+              className="absolute right-2 lg:right-[calc(50%-310px)] top-1/2 -translate-y-1/2 z-20 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110"
+            >
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.4))" }}>
+                <polygon points="14,1 27,14 14,27 1,14" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
+                <polygon points="14,5 23,14 14,23 5,14" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.6" />
+                <path d="M12 9L17 14L12 19" stroke="rgba(255,255,255,0.85)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="14" cy="14" r="0.8" fill="rgba(255,255,255,0.2)" />
+              </svg>
+            </button>
+          )}
 
           {/* Slide dots */}
           {hasMultipleSlides && (
@@ -250,7 +279,7 @@ export default function OriginalObliveyon() {
         <div className="flex gap-3 -mt-8">
           {COLORS.map((color, i) => (
             <button
-              key={color.value || i}
+              key={color.label || i}
               onClick={() => handleColorChange(i)}
               className="flex flex-col items-center gap-2 cursor-pointer group"
             >
@@ -297,7 +326,7 @@ export default function OriginalObliveyon() {
 
       {/* ── RIGHT PANEL ── */}
       <div
-        className="relative w-full lg:w-[42%] lg:h-full flex flex-col justify-center items-center px-6 lg:px-14 overflow-y-auto text-center"
+        className="relative w-full lg:w-[42%] lg:h-full flex flex-col justify-start lg:justify-center items-center px-6 lg:px-10 xl:px-14 overflow-y-auto text-center"
         style={{ background: "#000000" }}
       >
         <div className="py-12 relative w-full">
@@ -379,20 +408,20 @@ export default function OriginalObliveyon() {
             </div>
 
             {/* Description */}
-            <p className="text-base leading-loose text-white/35 mb-10 px-4"
-              style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, letterSpacing: "0.04em", textAlign: "center" }}>
+            <p className="text-sm leading-loose mb-10 px-4"
+              style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, letterSpacing: "0.04em", textAlign: "center", color: "rgba(255,255,255,0.65)" }}>
               The Original Obliveyon Zip Up. Heavyweight zip hoodie. Hand-embroidered Obliveyon logo. Custom zipper. Four colorways. The piece that started it all.
             </p>
 
             {/* Color & Size labels */}
             <div className="flex items-center justify-center gap-6 mb-6">
-              <p className="text-[11px] tracking-[0.5em] uppercase text-white/30"
-                style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}>
+              <p className="text-[11px] tracking-[0.5em] uppercase"
+                style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, color: "rgba(255,255,255,0.6)" }}>
                 Color — {COLORS[selectedColor].label}
               </p>
-              <div className="w-px h-3" style={{ background: "rgba(255,255,255,0.1)" }} />
-              <p className="text-[11px] tracking-[0.5em] uppercase text-white/30"
-                style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}>
+              <div className="w-px h-3" style={{ background: "rgba(255,255,255,0.2)" }} />
+              <p className="text-[11px] tracking-[0.5em] uppercase"
+                style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, color: "rgba(255,255,255,0.6)" }}>
                 Size {selectedSize ? `— ${selectedSize}` : ""}
               </p>
             </div>
@@ -422,6 +451,56 @@ export default function OriginalObliveyon() {
               </div>
             </div>
 
+            {/* Quantity selector */}
+            <div className="mb-8">
+              <p className="text-[11px] tracking-[0.5em] uppercase text-center mb-4"
+                style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, color: "rgba(255,255,255,0.6)" }}>
+                Quantity
+              </p>
+              <div className="flex items-center justify-center gap-4">
+                <button
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="w-10 h-10 flex items-center justify-center text-sm cursor-pointer transition-all duration-300"
+                  style={{
+                    fontFamily: "var(--font-medieval)",
+                    fontWeight: 300,
+                    background: "transparent",
+                    color: "rgba(255,255,255,0.5)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+                >
+                  −
+                </button>
+                <span
+                  className="text-lg w-8 text-center tabular-nums"
+                  style={{
+                    fontFamily: "var(--font-medieval)",
+                    fontWeight: 300,
+                    color: "rgba(255,255,255,0.8)",
+                  }}
+                >
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity((q) => q + 1)}
+                  className="w-10 h-10 flex items-center justify-center text-sm cursor-pointer transition-all duration-300"
+                  style={{
+                    fontFamily: "var(--font-medieval)",
+                    fontWeight: 300,
+                    background: "transparent",
+                    color: "rgba(255,255,255,0.5)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
             {/* Divider before cart */}
             <div className="flex items-center gap-3 mb-6">
               <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.04)" }} />
@@ -432,7 +511,7 @@ export default function OriginalObliveyon() {
             {/* Add to cart */}
             <button
               onClick={handleAddToCart}
-              disabled={!selectedSize}
+              disabled={!selectedSize || !isOrderable}
               className="relative w-full max-w-sm mx-auto py-4 text-sm tracking-[0.5em] uppercase transition-all duration-300 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed overflow-hidden"
               style={{
                 fontFamily: "var(--font-medieval)",
@@ -443,7 +522,7 @@ export default function OriginalObliveyon() {
                 boxShadow: added ? "none" : "0 0 20px rgba(255,255,255,0.06)",
               }}
             >
-              {added ? "Added" : !selectedSize ? "Select a Size" : "Add to Cart"}
+              {added ? "Added" : !isOrderable ? "View Only" : !selectedSize ? "Select a Size" : "Add to Cart"}
             </button>
           </div>
         </div>

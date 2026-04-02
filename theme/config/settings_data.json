@@ -10,6 +10,10 @@
     "color_border_hover": "#333333",
     "color_accent": "#cccccc",
     "cart_type": "drawer",
+    "brand_tagline": "Be the light in the darkness.",
+    "enable_film_grain": true,
+    "enable_ember_particles": true,
+    "ember_count": 20,
     "sections": {
       "header": {
         "type": "header",

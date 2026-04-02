@@ -127,6 +127,17 @@ export default function SettingsPage() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden select-none">
+      {/* Back button — top left */}
+      <button
+        onClick={() => router.push("/")}
+        className="fixed top-6 left-6 z-20 text-[11px] tracking-[0.4em] uppercase transition-colors duration-300 cursor-pointer"
+        style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.85)", textShadow: "0 0 12px rgba(0,0,0,0.9)" }}
+        onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.85)"; }}
+      >
+        ← Return
+      </button>
+
       {/* Video background */}
       <video
         autoPlay
@@ -149,15 +160,6 @@ export default function SettingsPage() {
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-lg px-6">
-
-        {/* Back button */}
-        <button
-          onClick={() => router.push("/")}
-          className="mb-8 text-[10px] tracking-[0.4em] uppercase text-white/30 hover:text-white/60 transition-colors duration-300 cursor-pointer"
-          style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
-        >
-          ← Return
-        </button>
 
         {/* Title with ornate frame */}
         <div className="relative mb-10">

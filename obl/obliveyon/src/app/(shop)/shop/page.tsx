@@ -91,11 +91,12 @@ export default function ShopPage(props: ShopPageProps) {
       <div className="px-6 sm:px-10 lg:px-16 pt-12 pb-8">
         <Link
           href="/"
-          className="text-[10px] tracking-[0.4em] uppercase text-white/25 hover:text-white/50 transition-colors duration-300"
-          style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+          className="return-btn text-[11px] tracking-[0.4em] uppercase transition-colors duration-300"
+          style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.85)" }}
         >
           ← Return
         </Link>
+        <style>{`.return-btn:hover { color: rgba(255,255,255,1) !important; }`}</style>
         <div className="text-center mt-6">
           <p
             className="text-[9px] tracking-[0.5em] uppercase text-white/20 mb-3"

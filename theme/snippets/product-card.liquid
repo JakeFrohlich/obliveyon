@@ -1,0 +1,29 @@
+{% comment %}
+  Renders a product card.
+  Usage: {% render 'product-card', product: product, index: forloop.index0 %}
+{% endcomment %}
+
+<a href="{{ product.url }}" class="product-card" style="animation: fadeIn 0.5s ease both {{ index | times: 0.06 }}s">
+  <div class="product-card__media">
+    {%- if product.featured_image -%}
+      <img
+        class="product-card__img"
+        src="{{ product.featured_image | image_url: width: 600 }}"
+        alt="{{ product.featured_image.alt | escape }}"
+        loading="lazy"
+        width="600"
+        height="600"
+      >
+    {%- else -%}
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.02)">
+        <span style="font-family:var(--font-medieval);font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(255,255,255,0.15)">{{ product.title }}</span>
+      </div>
+    {%- endif -%}
+    <div class="product-card__overlay"></div>
+    {% render 'ornate-border', variant: 'card' %}
+  </div>
+  <div class="product-card__info">
+    <p class="product-card__name">{{ product.title }}</p>
+    <p class="product-card__price">{{ product.price | money }}</p>
+  </div>
+</a>
