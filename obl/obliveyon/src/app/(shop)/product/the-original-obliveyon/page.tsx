@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Footer from "@/components/shop/Footer";
 import { useCart } from "@/hooks/use-cart";
@@ -61,7 +61,7 @@ const COLOR_SLIDES: Record<string, { type: string; src: string }[]> = {
   ],
 };
 
-export default function OriginalObliveyon() {
+function OriginalObliveyonInner() {
   const searchParams = useSearchParams();
   const initialColor = parseInt(searchParams.get("color") || "0", 10);
   const [selectedColor, setSelectedColor] = useState(initialColor);
@@ -546,5 +546,13 @@ export default function OriginalObliveyon() {
 
     <Footer />
     </div>
+  );
+}
+
+export default function OriginalObliveyon() {
+  return (
+    <Suspense>
+      <OriginalObliveyonInner />
+    </Suspense>
   );
 }

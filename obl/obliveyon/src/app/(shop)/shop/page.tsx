@@ -1,18 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import ProductCard from "@/components/shop/ProductCard";
-import { Suspense } from "react";
 import Link from "next/link";
 import Footer from "@/components/shop/Footer";
-
-interface ShopPageProps {
-  searchParams: Promise<{
-    category?: string;
-    size?: string;
-    minPrice?: string;
-    maxPrice?: string;
-    search?: string;
-  }>;
-}
 
 const STATIC_PRODUCTS = [
   {
@@ -45,43 +32,7 @@ const STATIC_PRODUCTS = [
   },
 ];
 
-async function ProductGrid({ searchParams }: ShopPageProps) {
-  const params = await searchParams;
-
-  const where: Record<string, unknown> = {};
-  if (params.category && params.category !== "all") where.category = params.category;
-  if (params.size) where.sizes = { has: params.size };
-  if (params.minPrice || params.maxPrice) {
-    where.price = {};
-    if (params.minPrice) (where.price as Record<string, number>).gte = parseFloat(params.minPrice);
-    if (params.maxPrice) (where.price as Record<string, number>).lte = parseFloat(params.maxPrice);
-  }
-  if (params.search) {
-    where.OR = [
-      { name: { contains: params.search, mode: "insensitive" } },
-      { description: { contains: params.search, mode: "insensitive" } },
-    ];
-  }
-
-  let products;
-  try {
-    products = await prisma.product.findMany({ where, orderBy: { createdAt: "desc" } });
-  } catch {
-    return null;
-  }
-
-  if (products.length === 0) return null;
-
-  return (
-    <>
-      {products.map((product, index) => (
-        <ProductCard key={product.id} product={product} index={index} />
-      ))}
-    </>
-  );
-}
-
-export default function ShopPage(props: ShopPageProps) {
+export default function ShopPage() {
   return (
     <div
       className="min-h-screen"
@@ -231,12 +182,6 @@ export default function ShopPage(props: ShopPageProps) {
           ))}
         </div>
 
-        {/* DB products below */}
-        <Suspense
-          fallback={null}
-        >
-          <ProductGrid searchParams={props.searchParams} />
-        </Suspense>
       </div>
 
       <Footer />
