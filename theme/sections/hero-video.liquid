@@ -1,34 +1,264 @@
+<style>
+  .hero-video {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+  }
+  .hero-video__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-video__vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0,0,0,0.65) 80%, rgba(0,0,0,0.85) 100%);
+  }
+  .hero-video__menu {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  /* === PRIMARY BUTTON (Press Play) === */
+  .hero-btn--primary {
+    position: relative;
+    cursor: pointer;
+    animation: breathe 4s ease-in-out infinite;
+    transition: filter 0.4s ease;
+    display: block;
+  }
+  .hero-btn--primary:hover {
+    filter: brightness(1.4) drop-shadow(0 0 24px rgba(255,255,255,0.18));
+    animation-play-state: paused;
+  }
+  .hero-btn--primary__text {
+    display: block;
+    padding: 1.5rem 4.5rem;
+    font-family: var(--font-gothic, 'Cormorant', serif);
+    font-size: clamp(1.25rem, 3vw, 1.875rem);
+    font-weight: 500;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: #fff;
+    animation: textGlow 4s ease-in-out infinite;
+    -webkit-text-stroke: 0.3px rgba(255,255,255,0.9);
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+  }
+  .hero-btn--primary__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  /* === SECONDARY BUTTONS (Settings / Credits) === */
+  .hero-btn--secondary {
+    position: relative;
+    cursor: pointer;
+    transition: filter 0.4s ease;
+    display: block;
+  }
+  .hero-btn--secondary:hover {
+    filter: brightness(1.5);
+  }
+  .hero-btn--secondary__text {
+    display: block;
+    padding: 0.75rem 3rem;
+    font-family: var(--font-medieval, 'Cormorant Garamond', serif);
+    font-size: clamp(0.875rem, 2vw, 1.125rem);
+    font-weight: 400;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    text-shadow: 0 0 8px rgba(255,255,255,0.5), 0 4px 15px rgba(0,0,0,1);
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+  }
+  .hero-btn--secondary__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .hero-btn--primary__text {
+      padding: 1.25rem 2.75rem;
+      font-size: 1.25rem;
+      letter-spacing: 0.35em;
+    }
+    .hero-btn--secondary__text {
+      padding: 0.625rem 2rem;
+      font-size: 0.875rem;
+      letter-spacing: 0.35em;
+    }
+  }
+</style>
+
 <div class="hero-video">
   {%- if section.settings.video_url != blank -%}
     <video class="hero-video__bg" autoplay loop muted playsinline>
       <source src="{{ section.settings.video_url }}" type="video/mp4">
     </video>
   {%- elsif section.settings.bg_image != blank -%}
-    <img class="hero-video__bg" src="{{ section.settings.bg_image | image_url: width: 1920 }}" alt="" loading="eager">
+    <img
+      class="hero-video__bg"
+      src="{{ section.settings.bg_image | image_url: width: 1920 }}"
+      alt=""
+      loading="eager"
+    >
   {%- else -%}
-    <div class="hero-video__bg" style="background:#060504"></div>
+    <div class="hero-video__bg" style="background:#000000"></div>
   {%- endif -%}
 
   <div class="hero-video__vignette"></div>
 
   <div class="hero-video__menu">
-    <!-- Press Play -->
-    <a href="{{ section.settings.btn1_link | default: routes.collections_url }}" class="hero-btn--primary">
-      {% render 'ornate-border', variant: 'large' %}
+
+    <!-- Press Play — large ornate frame -->
+    <a href="{{ section.settings.btn1_link | default: '/collections/all' }}" class="hero-btn--primary">
+      <svg class="hero-btn--primary__svg" viewBox="0 0 380 80" preserveAspectRatio="none" style="overflow:visible" aria-hidden="true">
+        <defs>
+          <filter id="hero-glow">
+            <feGaussianBlur stdDeviation="2.5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g filter="url(#hero-glow)">
+          <!-- Outer rectangle -->
+          <rect x="1" y="1" width="378" height="78" rx="0" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+
+          <!-- Corner accents — top left -->
+          <line x1="-6" y1="0" x2="40" y2="0" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+          <line x1="0" y1="-6" x2="0" y2="32" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+          <!-- Corner dot TL -->
+          <circle cx="0" cy="0" r="2.5" fill="rgba(255,255,255,0.3)"/>
+
+          <!-- Corner accents — top right -->
+          <line x1="386" y1="0" x2="340" y2="0" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+          <line x1="380" y1="-6" x2="380" y2="32" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+          <!-- Corner dot TR -->
+          <circle cx="380" cy="0" r="2.5" fill="rgba(255,255,255,0.3)"/>
+
+          <!-- Corner accents — bottom left -->
+          <line x1="-6" y1="80" x2="40" y2="80" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+          <line x1="0" y1="86" x2="0" y2="48" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+          <!-- Corner dot BL -->
+          <circle cx="0" cy="80" r="2.5" fill="rgba(255,255,255,0.3)"/>
+
+          <!-- Corner accents — bottom right -->
+          <line x1="386" y1="80" x2="340" y2="80" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+          <line x1="380" y1="86" x2="380" y2="48" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+          <!-- Corner dot BR -->
+          <circle cx="380" cy="80" r="2.5" fill="rgba(255,255,255,0.3)"/>
+
+          <!-- Sword / cross ornament TOP CENTER -->
+          <!-- Vertical blade -->
+          <line x1="190" y1="-16" x2="190" y2="10" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+          <!-- Crossguard -->
+          <line x1="183" y1="-6" x2="197" y2="-6" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+          <!-- Pommel diamond -->
+          <polygon points="190,-14 192,-10 190,-6 188,-10" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.7"/>
+          <!-- Blade tip diamond -->
+          <polygon points="190,6 192,2 190,-2 188,2" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.6"/>
+          <!-- Horizontal filigree lines -->
+          <line x1="158" y1="0" x2="177" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="0.6"/>
+          <line x1="203" y1="0" x2="222" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="0.6"/>
+
+          <!-- Sword / cross ornament BOTTOM CENTER -->
+          <line x1="190" y1="70" x2="190" y2="96" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+          <line x1="183" y1="86" x2="197" y2="86" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+          <polygon points="190,94 192,90 190,86 188,90" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.7"/>
+          <polygon points="190,74 192,70 190,66 188,70" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.6"/>
+          <line x1="158" y1="80" x2="177" y2="80" stroke="rgba(255,255,255,0.25)" stroke-width="0.6"/>
+          <line x1="203" y1="80" x2="222" y2="80" stroke="rgba(255,255,255,0.25)" stroke-width="0.6"/>
+
+          <!-- Side diamonds LEFT -->
+          <polygon points="-8,40 -4,36 0,40 -4,44" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+          <!-- Side diamonds RIGHT -->
+          <polygon points="388,40 384,36 380,40 384,44" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="0.8"/>
+        </g>
+      </svg>
       <span class="hero-btn--primary__text">{{ section.settings.btn1_text | default: 'Press Play' }}</span>
     </a>
 
-    <!-- Settings -->
+    <!-- Settings — small ornate frame -->
     <a href="{{ section.settings.btn2_link | default: '/pages/settings' }}" class="hero-btn--secondary">
-      {% render 'ornate-border', variant: 'small' %}
+      <svg class="hero-btn--secondary__svg" viewBox="0 0 240 50" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <filter id="sm-glow">
+            <feGaussianBlur stdDeviation="1.2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g filter="url(#sm-glow)">
+          <!-- TL corner -->
+          <line x1="0" y1="1" x2="26" y2="1" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <line x1="1" y1="0" x2="1" y2="16" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <circle cx="1" cy="1" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+          <!-- TR corner -->
+          <line x1="240" y1="1" x2="214" y2="1" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <line x1="239" y1="0" x2="239" y2="16" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <circle cx="239" cy="1" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+          <!-- BL corner -->
+          <line x1="0" y1="49" x2="26" y2="49" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <line x1="1" y1="50" x2="1" y2="34" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <circle cx="1" cy="49" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+          <!-- BR corner -->
+          <line x1="240" y1="49" x2="214" y2="49" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <line x1="239" y1="50" x2="239" y2="34" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <circle cx="239" cy="49" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+        </g>
+      </svg>
       <span class="hero-btn--secondary__text">{{ section.settings.btn2_text | default: 'Settings' }}</span>
     </a>
 
-    <!-- Credits -->
+    <!-- Credits — small ornate frame -->
     <a href="{{ section.settings.btn3_link | default: '/pages/credits' }}" class="hero-btn--secondary">
-      {% render 'ornate-border', variant: 'small' %}
+      <svg class="hero-btn--secondary__svg" viewBox="0 0 240 50" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <filter id="sm-glow2">
+            <feGaussianBlur stdDeviation="1.2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g filter="url(#sm-glow2)">
+          <line x1="0" y1="1" x2="26" y2="1" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <line x1="1" y1="0" x2="1" y2="16" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <circle cx="1" cy="1" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+          <line x1="240" y1="1" x2="214" y2="1" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <line x1="239" y1="0" x2="239" y2="16" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <circle cx="239" cy="1" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+          <line x1="0" y1="49" x2="26" y2="49" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <line x1="1" y1="50" x2="1" y2="34" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <circle cx="1" cy="49" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+          <line x1="240" y1="49" x2="214" y2="49" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <line x1="239" y1="50" x2="239" y2="34" stroke="rgba(255,255,255,0.45)" stroke-width="0.9"/>
+          <circle cx="239" cy="49" r="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+        </g>
+      </svg>
       <span class="hero-btn--secondary__text">{{ section.settings.btn3_text | default: 'Credits' }}</span>
     </a>
+
   </div>
 </div>
 
@@ -40,12 +270,12 @@
       "type": "text",
       "id": "video_url",
       "label": "Video URL (MP4)",
-      "info": "Upload your video to Files in Shopify Admin, then paste the URL here."
+      "info": "Upload your video to Shopify Admin > Content > Files, then paste the URL here."
     },
     {
       "type": "image_picker",
       "id": "bg_image",
-      "label": "Fallback background image"
+      "label": "Fallback background image (if no video)"
     },
     {
       "type": "text",

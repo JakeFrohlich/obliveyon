@@ -1,0 +1,72 @@
+{% comment %}
+  Renders the floating cart icon button (fixed top-right).
+
+  Usage:
+    {% render 'cart-icon' %}
+
+  Features:
+  - White cart bag SVG icon
+  - Ornate L-corner accents (rgba 0.55 → 0.9 on hover)
+  - Diamond ornaments top/bottom
+  - White square item count badge
+  - Opens cart drawer on click
+{% endcomment %}
+
+<button
+  class="cart-icon-fixed"
+  data-open-cart
+  aria-label="Open cart{% if cart.item_count > 0 %}, {{ cart.item_count }} item{% if cart.item_count > 1 %}s{% endif %}{% endif %}"
+>
+  <div class="cart-icon-fixed__wrap">
+
+    <!-- Ornate L-corner accents SVG -->
+    <svg class="cart-icon-fixed__corner-svg" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+      <!-- TL corner -->
+      <line x1="0" y1="0" x2="10" y2="0" stroke="rgba(255,255,255,0.6)" stroke-width="0.8"/>
+      <line x1="0" y1="0" x2="0" y2="10" stroke="rgba(255,255,255,0.6)" stroke-width="0.8"/>
+      <!-- TR corner -->
+      <line x1="44" y1="0" x2="34" y2="0" stroke="rgba(255,255,255,0.6)" stroke-width="0.8"/>
+      <line x1="44" y1="0" x2="44" y2="10" stroke="rgba(255,255,255,0.6)" stroke-width="0.8"/>
+      <!-- BL corner -->
+      <line x1="0" y1="44" x2="10" y2="44" stroke="rgba(255,255,255,0.6)" stroke-width="0.8"/>
+      <line x1="0" y1="44" x2="0" y2="34" stroke="rgba(255,255,255,0.6)" stroke-width="0.8"/>
+      <!-- BR corner -->
+      <line x1="44" y1="44" x2="34" y2="44" stroke="rgba(255,255,255,0.6)" stroke-width="0.8"/>
+      <line x1="44" y1="44" x2="44" y2="34" stroke="rgba(255,255,255,0.6)" stroke-width="0.8"/>
+    </svg>
+
+    <!-- Diamond ornament top -->
+    <div class="cart-icon-fixed__diamond-top"></div>
+
+    <!-- Cart bag SVG icon -->
+    <svg
+      class="cart-icon-fixed__bag"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <!-- Bag outline -->
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <!-- Horizontal line -->
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <!-- Handle arc -->
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+
+    <!-- Diamond ornament bottom -->
+    <div class="cart-icon-fixed__diamond-bottom"></div>
+
+    <!-- Item count badge -->
+    <span
+      class="cart-icon-fixed__count"
+      data-cart-count
+      {% if cart.item_count == 0 %}style="display:none"{% endif %}
+      aria-hidden="true"
+    >{{ cart.item_count }}</span>
+
+  </div>
+</button>

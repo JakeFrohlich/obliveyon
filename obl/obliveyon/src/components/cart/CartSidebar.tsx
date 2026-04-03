@@ -136,9 +136,9 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
               ) : (
                 <div className="flex flex-col">
                   {items.map((item) => (
-                    <div key={item.id} className="flex gap-5 py-8" style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+                    <div key={item.id} className="flex gap-5 py-7" style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
                       {/* Image */}
-                      <div className="flex-shrink-0 w-32 h-40 overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.1)" }}>
+                      <div className="flex-shrink-0 w-28 h-36 overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.1)" }}>
                         <img
                           src={getCartImage(item.productId, item.color)}
                           alt={item.name}
@@ -153,23 +153,24 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
                           <p className="text-[11px] tracking-[0.25em] uppercase mb-1" style={{ fontFamily: "var(--font-medieval)", color: "rgba(255,255,255,0.45)" }}>
                             Obliveyon
                           </p>
-                          {/* Name — always show full name including color */}
-                          <p className="text-lg font-semibold leading-snug" style={{ fontFamily: "var(--font-gothic)", color: "#fff" }}>
+                          {/* Name */}
+                          <p className="text-base font-semibold leading-snug" style={{ fontFamily: "var(--font-gothic)", color: "#fff" }}>
                             {item.name.split("—")[0].trim()}
                           </p>
-                          {item.color && (
-                            <p className="text-base font-semibold leading-snug" style={{ fontFamily: "var(--font-gothic)", color: "#fff" }}>
-                              {item.color}
-                            </p>
-                          )}
                           {/* Price */}
-                          <p className="text-base mt-1" style={{ fontFamily: "var(--font-medieval)", color: "#fff" }}>
+                          <p className="text-sm mt-1" style={{ fontFamily: "var(--font-medieval)", color: "#fff" }}>
                             {formatPrice(item.price)}
                           </p>
                           {/* Size */}
                           <p className="text-sm mt-0.5" style={{ fontFamily: "var(--font-medieval)", color: "rgba(255,255,255,0.7)" }}>
                             Size: {item.size}
                           </p>
+                          {/* Color */}
+                          {item.color && (
+                            <p className="text-sm" style={{ fontFamily: "var(--font-medieval)", color: "rgba(255,255,255,0.7)" }}>
+                              Color: {item.color}
+                            </p>
+                          )}
                         </div>
 
                         {/* Quantity + trash */}

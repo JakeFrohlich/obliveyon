@@ -4,8 +4,11 @@
       "type": "hero-video",
       "settings": {
         "btn1_text": "Press Play",
+        "btn1_link": "/collections/all",
         "btn2_text": "Settings",
-        "btn3_text": "Credits"
+        "btn2_link": "/pages/settings",
+        "btn3_text": "Credits",
+        "btn3_link": "/pages/credits"
       }
     }
   },
