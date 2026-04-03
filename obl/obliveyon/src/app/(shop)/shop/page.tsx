@@ -88,22 +88,8 @@ export default function ShopPage(props: ShopPageProps) {
       style={{ background: "#000000" }}
     >
       {/* Header */}
-      <div className="px-6 sm:px-10 lg:px-16 pt-12 pb-8">
-        <Link
-          href="/"
-          className="return-btn text-[11px] tracking-[0.4em] uppercase transition-colors duration-300"
-          style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.85)" }}
-        >
-          ← Return
-        </Link>
-        <style>{`.return-btn:hover { color: rgba(255,255,255,1) !important; }`}</style>
+      <div className="px-6 sm:px-10 lg:px-16 pb-8" style={{ paddingTop: "110px" }}>
         <div className="text-center mt-6">
-          <p
-            className="text-[9px] tracking-[0.5em] uppercase text-white/20 mb-3"
-            style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
-          >
-            Obliveyon
-          </p>
           <h1
             className="text-2xl sm:text-3xl tracking-[0.25em] uppercase text-white"
             style={{

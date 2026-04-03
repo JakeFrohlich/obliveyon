@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import MedievalBackground from "@/components/ui/MedievalBackground";
 
 const DROP_DATE = new Date("2026-05-21T00:00:00");
@@ -32,7 +31,6 @@ function useCountdown(target: Date) {
 }
 
 export default function SignupPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
@@ -65,26 +63,16 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
-      {/* Back button — top left */}
-      <button
-        onClick={() => router.push("/")}
-        className="fixed top-6 left-6 z-20 text-[11px] tracking-[0.4em] uppercase transition-colors duration-300 cursor-pointer"
-        style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.85)", textShadow: "0 0 12px rgba(0,0,0,0.9)" }}
-        onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.85)"; }}
-      >
-        ← Return
-      </button>
+    <div className="min-h-screen flex items-center justify-center px-5 sm:px-6 relative overflow-hidden">
 
       <MedievalBackground />
 
       {/* Full bleed content — no box, just layered over the video */}
-      <div className="w-full max-w-lg relative z-20 text-center">
+      <div className="w-full max-w-lg relative z-20 text-center py-8">
 
         {/* Brand label */}
         <p
-          className="text-[10px] tracking-[0.6em] uppercase text-white mb-10"
+          className="text-[9px] sm:text-[10px] tracking-[0.6em] uppercase text-white mb-6 sm:mb-10"
           style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
         >
           Obliveyon
@@ -92,7 +80,7 @@ export default function SignupPage() {
 
         {/* Main title */}
         <h1
-          className="text-5xl sm:text-7xl text-white leading-none mb-3"
+          className="text-4xl sm:text-7xl text-white leading-none mb-3"
           style={{
             fontFamily: "var(--font-gothic)",
             fontWeight: 300,
@@ -103,7 +91,7 @@ export default function SignupPage() {
           Be the Light
         </h1>
         <p
-          className="text-xl sm:text-2xl text-white/80 italic mb-12"
+          className="text-lg sm:text-2xl text-white/80 italic mb-8 sm:mb-12"
           style={{
             fontFamily: "var(--font-gothic)",
             fontWeight: 300,
@@ -114,7 +102,7 @@ export default function SignupPage() {
         </p>
 
         {/* Thin divider */}
-        <div className="flex items-center gap-5 mb-10 px-8">
+        <div className="flex items-center gap-4 mb-7 sm:mb-10 px-4 sm:px-8">
           <div className="h-px flex-1 bg-white/15" />
           <span
             className="text-[9px] tracking-[0.5em] uppercase text-white"
@@ -126,7 +114,7 @@ export default function SignupPage() {
         </div>
 
         {/* Countdown — large, airy */}
-        <div className="flex justify-center gap-8 sm:gap-12 mb-12">
+        <div className="flex justify-center gap-5 sm:gap-12 mb-10 sm:mb-12">
           {[
             { label: "Days", value: countdown.days },
             { label: "Hrs", value: countdown.hours },
@@ -135,7 +123,7 @@ export default function SignupPage() {
           ].map(({ label, value }) => (
             <div key={label} className="flex flex-col items-center">
               <span
-                className="text-4xl sm:text-5xl text-white tabular-nums leading-none"
+                className="text-3xl sm:text-5xl text-white tabular-nums leading-none"
                 style={{
                   fontFamily: "var(--font-gothic)",
                   fontWeight: 300,

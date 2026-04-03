@@ -79,19 +79,6 @@ export default function LoginPage() {
         <EmberParticles count={20} />
       </motion.div>
 
-      <motion.div
-        className="fixed bottom-0 z-10"
-        style={{ left: "4%", x: leftLanternX, y: leftLanternY, rotate: swayLeft, transformOrigin: "50% 0%" }}
-      >
-        <CandleFlame side="left" />
-      </motion.div>
-
-      <motion.div
-        className="fixed bottom-0 z-10"
-        style={{ right: "4%", x: rightLanternX, y: rightLanternY, rotate: swayRight, transformOrigin: "50% 0%" }}
-      >
-        <CandleFlame side="right" />
-      </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -264,7 +251,7 @@ export default function LoginPage() {
               style={{ fontFamily: "var(--font-medieval)", color: "rgba(255,255,255,0.35)" }}
             >
               New to the realm?{" "}
-              <Link href="/signup" className="text-white/60 hover:text-white/90 transition-colors duration-300">
+              <Link href="/create-account" className="text-white/60 hover:text-white/90 transition-colors duration-300">
                 Create an account
               </Link>
             </p>
