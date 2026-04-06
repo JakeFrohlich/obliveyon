@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import MedievalBackground from "@/components/ui/MedievalBackground";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import flags from "react-phone-number-input/flags";
+import "react-phone-number-input/style.css";
 
 const DROP_DATE = new Date("2026-05-21T00:00:00");
 
@@ -31,28 +34,11 @@ function useCountdown(target: Date) {
 }
 
 const STORAGE_KEY = "obliveyon_signed_up";
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-function formatPhone(raw: string): string {
-  // Strip everything except digits
-  const digits = raw.replace(/\D/g, "");
-  if (digits.length === 0) return "";
-  if (digits.length <= 3) return `(${digits}`;
-  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
-}
-
-function toE164(formatted: string): string {
-  const digits = formatted.replace(/\D/g, "");
-  if (digits.length === 10) return `+1${digits}`;
-  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
-  return `+${digits}`;
-}
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState<string | undefined>(undefined);
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -61,18 +47,9 @@ export default function SignupPage() {
 
   const countdown = useCountdown(DROP_DATE);
 
-  // On mount, check if this browser already signed up
   useEffect(() => {
-    if (localStorage.getItem(STORAGE_KEY)) {
-      setSubmitted(true);
-    }
+    if (localStorage.getItem(STORAGE_KEY)) setSubmitted(true);
   }, []);
-
-  function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const formatted = formatPhone(e.target.value);
-    setPhone(formatted);
-    if (phoneError) setPhoneError("");
-  }
 
   function validateEmail() {
     if (!EMAIL_RE.test(email)) {
@@ -84,9 +61,12 @@ export default function SignupPage() {
   }
 
   function validatePhone() {
-    const digits = phone.replace(/\D/g, "");
-    if (digits.length !== 10) {
-      setPhoneError("Enter a 10-digit US phone number");
+    if (!phone) {
+      setPhoneError("Phone number is required");
+      return false;
+    }
+    if (!isValidPhoneNumber(phone)) {
+      setPhoneError("Enter a valid phone number");
       return false;
     }
     setPhoneError("");
@@ -105,7 +85,7 @@ export default function SignupPage() {
       const res = await fetch("/api/klaviyo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone: toE164(phone) }),
+        body: JSON.stringify({ email, phone }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -123,13 +103,71 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-5 sm:px-6 relative overflow-hidden">
-
       <MedievalBackground />
 
-      {/* Full bleed content — no box, just layered over the video */}
+      {/* Phone input styles — underline-only to match the page aesthetic */}
+      <style>{`
+        .signup-phone .PhoneInput {
+          display: flex;
+          align-items: center;
+          background: transparent;
+          border-bottom: 1px solid rgba(255,255,255,0.2);
+          transition: border-color 0.4s;
+          gap: 0;
+        }
+        .signup-phone.has-error .PhoneInput {
+          border-bottom-color: rgba(255,100,100,0.7);
+        }
+        .signup-phone .PhoneInput:focus-within {
+          border-bottom-color: rgba(255,255,255,0.6);
+        }
+        .signup-phone.has-error .PhoneInput:focus-within {
+          border-bottom-color: rgba(255,100,100,0.9);
+        }
+        .signup-phone .PhoneInputCountry {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding-right: 10px;
+        }
+        .signup-phone .PhoneInputCountrySelect {
+          background: transparent;
+          border: none;
+          color: rgba(255,255,255,0.5);
+          font-size: 13px;
+          cursor: pointer;
+          outline: none;
+          appearance: none;
+          letter-spacing: 0.05em;
+        }
+        .signup-phone .PhoneInputCountrySelect option {
+          background: #111;
+          color: #fff;
+        }
+        .signup-phone .PhoneInputCountryIconImg {
+          width: 18px;
+          height: 13px;
+          object-fit: cover;
+          opacity: 0.75;
+        }
+        .signup-phone .PhoneInputInput {
+          flex: 1;
+          background: transparent;
+          border: none;
+          color: rgba(255,255,255,0.9);
+          font-size: 14px;
+          padding: 12px 0;
+          outline: none;
+          letter-spacing: 0.05em;
+          font-weight: 300;
+        }
+        .signup-phone .PhoneInputInput::placeholder {
+          color: rgba(255,255,255,0.5);
+        }
+      `}</style>
+
       <div className="w-full max-w-lg relative z-20 text-center py-8">
 
-        {/* Brand label */}
         <p
           className="text-[9px] sm:text-[10px] tracking-[0.6em] uppercase text-white mb-6 sm:mb-10"
           style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
@@ -137,7 +175,6 @@ export default function SignupPage() {
           Obliveyon
         </p>
 
-        {/* Main title */}
         <h1
           className="text-4xl sm:text-7xl text-white leading-none mb-3"
           style={{
@@ -160,7 +197,6 @@ export default function SignupPage() {
           in the Darkness
         </p>
 
-        {/* Thin divider */}
         <div className="flex items-center gap-4 mb-7 sm:mb-10 px-4 sm:px-8">
           <div className="h-px flex-1 bg-white/15" />
           <span
@@ -172,7 +208,6 @@ export default function SignupPage() {
           <div className="h-px flex-1 bg-white/15" />
         </div>
 
-        {/* Countdown — large, airy */}
         <div className="flex justify-center gap-5 sm:gap-12 mb-10 sm:mb-12">
           {[
             { label: "Days", value: countdown.days },
@@ -218,10 +253,9 @@ export default function SignupPage() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            {/* Underline-only inputs — fashion forward */}
+            {/* Email */}
             <div className="text-left">
               <input
-                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError(""); }}
@@ -235,6 +269,7 @@ export default function SignupPage() {
                   letterSpacing: "0.05em",
                 }}
                 onFocus={(e) => { e.target.style.borderBottomColor = emailError ? "rgba(255,100,100,0.9)" : "rgba(255,255,255,0.6)"; }}
+                onBlurCapture={(e) => { e.target.style.borderBottomColor = emailError ? "rgba(255,100,100,0.7)" : "rgba(255,255,255,0.2)"; }}
                 maxLength={254}
                 placeholder="Email address"
                 autoComplete="email"
@@ -246,26 +281,24 @@ export default function SignupPage() {
               )}
             </div>
 
+            {/* Phone — international with country selector */}
             <div className="text-left">
-              <input
-                id="phone"
-                type="tel"
-                value={phone}
-                onChange={handlePhoneChange}
-                onBlur={validatePhone}
-                required
-                className="w-full py-3 text-sm text-white/90 placeholder:text-white/50 focus:outline-none transition-all duration-400 bg-transparent"
-                style={{
-                  fontFamily: "var(--font-medieval)",
-                  fontWeight: 300,
-                  borderBottom: phoneError ? "1px solid rgba(255,100,100,0.7)" : "1px solid rgba(255,255,255,0.2)",
-                  letterSpacing: "0.05em",
-                }}
-                onFocus={(e) => { e.target.style.borderBottomColor = phoneError ? "rgba(255,100,100,0.9)" : "rgba(255,255,255,0.6)"; }}
-                maxLength={14}
-                placeholder="(555) 000-0000"
-                autoComplete="tel"
-              />
+              <div className={`signup-phone${phoneError ? " has-error" : ""}`}>
+                <PhoneInput
+                  placeholder="Phone number"
+                  value={phone}
+                  onChange={(val) => {
+                    setPhone(val);
+                    if (phoneError) setPhoneError("");
+                  }}
+                  onBlur={validatePhone}
+                  flags={flags}
+                  defaultCountry="US"
+                  international
+                  countryCallingCodeEditable={false}
+                  autoComplete="tel"
+                />
+              </div>
               {phoneError && (
                 <p className="text-[10px] mt-1 tracking-wider" style={{ color: "rgba(255,130,130,0.9)", fontFamily: "var(--font-medieval)" }}>
                   {phoneError}

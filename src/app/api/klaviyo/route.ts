@@ -5,11 +5,20 @@ import { z } from "zod";
 const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY;
 const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
 
+// E.164 format: + followed by 7–15 digits
+const E164_REGEX = /^\+[1-9]\d{6,14}$/;
+
 const bodySchema = z.object({
   email: z.string().max(254).refine((v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), {
     message: "Valid email is required",
   }),
-  phone: z.string().max(20).optional(),
+  phone: z
+    .string()
+    .max(20)
+    .refine((v) => E164_REGEX.test(v), {
+      message: "Phone must be in E.164 format (e.g. +14155550100)",
+    })
+    .optional(),
 });
 
 function sanitize(str: unknown, maxLength: number): string {
@@ -57,16 +66,8 @@ export async function POST(req: NextRequest) {
   }
 
   const email = sanitize(parsed.data.email, 254);
-  const phone = parsed.data.phone ? sanitize(parsed.data.phone, 20) : undefined;
-
-  // Normalize phone to E.164 if provided (Klaviyo requires +1XXXXXXXXXX format for US)
-  let normalizedPhone: string | undefined;
-  if (phone) {
-    const digits = phone.replace(/\D/g, "");
-    if (digits.length === 10) normalizedPhone = `+1${digits}`;
-    else if (digits.length === 11 && digits.startsWith("1")) normalizedPhone = `+${digits}`;
-    else normalizedPhone = `+${digits}`;
-  }
+  // Phone is already validated E.164 by the schema
+  const normalizedPhone = parsed.data.phone ? sanitize(parsed.data.phone, 20) : undefined;
 
   // Build profile attributes
   const profileAttributes: Record<string, unknown> = {

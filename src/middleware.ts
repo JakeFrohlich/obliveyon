@@ -5,6 +5,8 @@ const DROP_DATE = new Date("2026-05-21T00:00:00Z");
 
 const ALLOWED_PATHS = [
   "/signup",
+  "/login",
+  "/api/auth",
   "/api/klaviyo",
   "/_next",
   "/favicon",
