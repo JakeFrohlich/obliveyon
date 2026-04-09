@@ -28,8 +28,8 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for preview cookie (already unlocked)
-  if (req.cookies.get(PREVIEW_COOKIE)?.value === PREVIEW_KEY) {
+  // Check for preview cookie (already unlocked) — only if key is configured
+  if (PREVIEW_KEY && req.cookies.get(PREVIEW_COOKIE)?.value === PREVIEW_KEY) {
     return NextResponse.next();
   }
 
