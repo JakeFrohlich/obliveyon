@@ -19,6 +19,11 @@ const bodySchema = z.object({
       message: "Phone must be in E.164 format (e.g. +14155550100)",
     })
     .optional(),
+  ref: z
+    .string()
+    .max(64)
+    .regex(/^[a-zA-Z0-9_-]+$/)
+    .optional(),
 });
 
 function sanitize(str: unknown, maxLength: number): string {
@@ -68,11 +73,15 @@ export async function POST(req: NextRequest) {
   const email = sanitize(parsed.data.email, 254);
   // Phone is already validated E.164 by the schema
   const normalizedPhone = parsed.data.phone ? sanitize(parsed.data.phone, 20) : undefined;
+  const ref = parsed.data.ref ? sanitize(parsed.data.ref, 64) : undefined;
 
   // Build profile attributes
   const profileAttributes: Record<string, unknown> = {
     email,
-    properties: { source: "drop_waitlist" },
+    properties: {
+      source: "drop_waitlist",
+      ...(ref ? { ad_ref: ref } : {}),
+    },
   };
   if (normalizedPhone) {
     profileAttributes.phone_number = normalizedPhone;
@@ -103,6 +112,10 @@ export async function POST(req: NextRequest) {
                 attributes: {
                   email,
                   ...(normalizedPhone ? { phone_number: normalizedPhone } : {}),
+                  properties: {
+                    source: "drop_waitlist",
+                    ...(ref ? { ad_ref: ref } : {}),
+                  },
                   subscriptions: {
                     email: { marketing: { consent: "SUBSCRIBED" } },
                   },
@@ -125,6 +138,30 @@ export async function POST(req: NextRequest) {
     console.error("Klaviyo error:", subscribeRes.status, errBody);
     return NextResponse.json({ error: `Klaviyo error ${subscribeRes.status}` }, { status: 502 });
   }
+
+  // Upsert the profile to store custom properties (bulk-subscribe ignores them)
+  const profileProperties: Record<string, string> = { source: "drop_waitlist" };
+  if (ref) profileProperties.ad_ref = ref;
+
+  await fetch("https://a.klaviyo.com/api/profile-import/", {
+    method: "POST",
+    headers: {
+      accept: "application/vnd.api+json",
+      revision: "2025-01-15",
+      "content-type": "application/vnd.api+json",
+      Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+    },
+    body: JSON.stringify({
+      data: {
+        type: "profile",
+        attributes: {
+          email,
+          ...(normalizedPhone ? { phone_number: normalizedPhone } : {}),
+          properties: profileProperties,
+        },
+      },
+    }),
+  }).catch((err) => console.error("Klaviyo profile upsert failed:", err));
 
   return NextResponse.json({ success: true });
 }

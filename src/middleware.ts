@@ -15,22 +15,64 @@ const ALLOWED_PATHS = [
 const PREVIEW_COOKIE = "obliveyon_preview";
 const PREVIEW_KEY = process.env.PREVIEW_KEY;
 
+// Attribution cookie: stores the video/ad ref for up to 30 days
+const REF_COOKIE = "obliveyon_ref";
+// Ref values: alphanumeric + hyphens/underscores, max 64 chars
+const REF_RE = /^[a-zA-Z0-9_-]{1,64}$/;
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // Capture ?ref=VIDEO_ID on any request and store it as a cookie
+  const refParam = req.nextUrl.searchParams.get("ref");
+  let refToSet: string | null = null;
+  if (refParam && REF_RE.test(refParam)) {
+    refToSet = refParam;
+  }
+
   // Allow static assets and always-on paths
   if (ALLOWED_PATHS.some((p) => pathname.startsWith(p))) {
-    return NextResponse.next();
+    const res = NextResponse.next();
+    if (refToSet) {
+      res.cookies.set(REF_COOKIE, refToSet, {
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      });
+    }
+    return res;
   }
 
   // If drop date has passed, allow everything
   if (Date.now() >= DROP_DATE.getTime()) {
-    return NextResponse.next();
+    const res = NextResponse.next();
+    if (refToSet) {
+      res.cookies.set(REF_COOKIE, refToSet, {
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      });
+    }
+    return res;
   }
 
   // Check for preview cookie (already unlocked) — only if key is configured
   if (PREVIEW_KEY && req.cookies.get(PREVIEW_COOKIE)?.value === PREVIEW_KEY) {
-    return NextResponse.next();
+    const res = NextResponse.next();
+    if (refToSet) {
+      res.cookies.set(REF_COOKIE, refToSet, {
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      });
+    }
+    return res;
   }
 
   // Check for ?preview=KEY in the URL — set cookie and redirect to clean URL
@@ -47,13 +89,35 @@ export function middleware(req: NextRequest) {
       path: "/",
       secure: process.env.NODE_ENV === "production",
     });
+    if (refToSet) {
+      res.cookies.set(REF_COOKIE, refToSet, {
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      });
+    }
     return res;
   }
 
-  // Otherwise redirect to signup
+  // Redirect to /signup — forward the ref so Klaviyo can record it on signup
   const url = req.nextUrl.clone();
   url.pathname = "/signup";
-  return NextResponse.redirect(url);
+  if (refToSet || req.cookies.get(REF_COOKIE)?.value) {
+    url.searchParams.set("ref", refToSet ?? req.cookies.get(REF_COOKIE)!.value);
+  }
+  const res = NextResponse.redirect(url);
+  if (refToSet) {
+    res.cookies.set(REF_COOKIE, refToSet, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 30,
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+    });
+  }
+  return res;
 }
 
 export const config = {

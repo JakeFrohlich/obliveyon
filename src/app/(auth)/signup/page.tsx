@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import MedievalBackground from "@/components/ui/MedievalBackground";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
@@ -35,8 +36,17 @@ function useCountdown(target: Date) {
 
 const STORAGE_KEY = "obliveyon_signed_up";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const REF_RE = /^[a-zA-Z0-9_-]{1,64}$/;
 
 export default function SignupPage() {
+  return (
+    <Suspense>
+      <SignupForm />
+    </Suspense>
+  );
+}
+
+function SignupForm() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState<string | undefined>(undefined);
   const [emailError, setEmailError] = useState("");
@@ -46,6 +56,11 @@ export default function SignupPage() {
   const [error, setError] = useState("");
 
   const countdown = useCountdown(DROP_DATE);
+  const searchParams = useSearchParams();
+
+  // Read the ad ref from the URL (middleware forwards it here when redirecting)
+  const refParam = searchParams.get("ref");
+  const adRef = refParam && REF_RE.test(refParam) ? refParam : null;
 
   useEffect(() => {
     if (localStorage.getItem(STORAGE_KEY)) setSubmitted(true);
@@ -85,7 +100,7 @@ export default function SignupPage() {
       const res = await fetch("/api/klaviyo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone }),
+        body: JSON.stringify({ email, phone, ...(adRef ? { ref: adRef } : {}) }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
