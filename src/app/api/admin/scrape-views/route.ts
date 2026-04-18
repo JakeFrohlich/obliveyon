@@ -20,14 +20,10 @@ const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
 async function extractTikTokViews(url: string): Promise<number> {
   try {
-    const videoIdMatch = url.match(/(?:tiktok\.com|vm\.tiktok\.com)\/(?:v\/)?(\d+)/);
-    if (!videoIdMatch) return 0;
-    const videoId = videoIdMatch[1];
-
-    // TikTok API requires OAuth — simplified for now
-    // In production, you'd need proper OAuth flow or use a proxy service
-    // For MVP, return 0 or prompt user to enter manually
-    console.warn("TikTok API requires OAuth setup — skipping auto-fetch");
+    // TikTok requires JavaScript execution to render view counts
+    // They actively block simple HTTP requests
+    // Without a headless browser or official API, we cannot reliably scrape view counts
+    console.warn("TikTok view counts require JavaScript execution — use official API or manual entry");
     return 0;
   } catch (err) {
     console.error("TikTok scrape failed:", err);
@@ -59,9 +55,14 @@ async function extractYouTubeViews(url: string): Promise<number> {
 
 async function extractInstagramViews(url: string): Promise<number> {
   try {
-    // Instagram Graph API requires post access token and business account setup
-    // Simplified: return 0 for now, user can enter manually
-    console.warn("Instagram Graph API requires business account setup — skipping auto-fetch");
+    const postMatch = url.match(/\/(?:p|reel)\/([A-Za-z0-9_-]+)\//);
+    if (!postMatch) return 0;
+
+    // Instagram also blocks simple HTTP requests and requires JS execution
+    // View counts are only visible to the post owner via business account insights
+    console.warn(
+      "Instagram view counts require business account & Graph API or manual entry — public scraping blocked"
+    );
     return 0;
   } catch (err) {
     console.error("Instagram scrape failed:", err);

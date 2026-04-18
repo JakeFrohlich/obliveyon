@@ -39,6 +39,8 @@ export default function AnalyticsPage() {
   const [views, setViews] = useState<Record<string, number>>({});
   const [commission, setCommission] = useState<Record<string, number>>({});
   const [editingRef, setEditingRef] = useState<string | null>(null);
+  const [editingViews, setEditingViews] = useState<string | null>(null);
+  const [viewsInput, setViewsInput] = useState("");
   const [newLink, setNewLink] = useState<{ platform: "tiktok" | "youtube" | "instagram"; url: string }>({
     platform: "youtube",
     url: "",
@@ -295,8 +297,51 @@ export default function AnalyticsPage() {
                       <p className="text-2xl text-white font-light mt-1">{row.count}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] text-white/50 tracking-wider uppercase">Views</p>
-                      <p className="text-2xl text-white font-light mt-1">{rowViews.toLocaleString()}</p>
+                      <p className="text-[10px] text-white/50 tracking-wider uppercase flex items-center gap-1">
+                        Views
+                        <button
+                          onClick={() => {
+                            setEditingViews(row.ref);
+                            setViewsInput(String(rowViews));
+                          }}
+                          className="text-emerald-400 hover:text-emerald-300 transition-all"
+                          title="Click to edit views"
+                        >
+                          ✏️
+                        </button>
+                      </p>
+                      {editingViews === row.ref ? (
+                        <div className="flex gap-1 mt-1">
+                          <input
+                            type="number"
+                            value={viewsInput}
+                            onChange={(e) => setViewsInput(e.target.value)}
+                            className="text-sm bg-white/10 border border-white/20 rounded px-2 py-1 text-white w-24 focus:outline-none"
+                            autoFocus
+                          />
+                          <button
+                            onClick={() => {
+                              const num = parseInt(viewsInput) || 0;
+                              setViews({ ...views, [row.ref]: num });
+                              setEditingViews(null);
+                              showToast("Views updated!");
+                            }}
+                            className="text-[10px] text-emerald-400 hover:text-emerald-300 font-medium px-2"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setEditingViews(null)}
+                            className="text-[10px] text-white/50 hover:text-white px-2"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <p className="text-2xl text-white font-light mt-1 cursor-pointer hover:text-emerald-400/80 transition-all">
+                          {rowViews.toLocaleString()}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <p className="text-[10px] text-white/50 tracking-wider uppercase">Conv.</p>
