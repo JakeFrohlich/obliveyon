@@ -8,6 +8,8 @@ const ALLOWED_PATHS = [
   "/login",
   "/api/auth",
   "/api/klaviyo",
+  "/admin",
+  "/api/admin",
   "/_next",
   "/favicon",
 ];
