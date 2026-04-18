@@ -26,12 +26,12 @@ const REF_RE = /^[a-zA-Z0-9_-]{1,64}$/;
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Admin pages never exist in production — return 404 for any match
-  if (
-    process.env.NODE_ENV === "production" &&
-    ADMIN_PATHS.some((p) => pathname.startsWith(p))
-  ) {
-    return new NextResponse(null, { status: 404 });
+  // Admin pages: 404 in production, allow through in dev
+  if (ADMIN_PATHS.some((p) => pathname.startsWith(p))) {
+    if (process.env.NODE_ENV === "production") {
+      return new NextResponse(null, { status: 404 });
+    }
+    return NextResponse.next();
   }
 
   // Capture ?ref=VIDEO_ID on any request and store it as a cookie
