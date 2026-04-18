@@ -117,10 +117,9 @@ export async function POST(req: NextRequest) {
     }),
   });
 
-  let importErr: string | null = null;
   if (!importRes.ok) {
-    importErr = await importRes.text();
-    console.error("Klaviyo profile-import failed:", importRes.status, importErr);
+    const errBody = await importRes.text();
+    console.error("Klaviyo profile-import failed:", importRes.status, errBody);
     // Continue — we still want to subscribe them even if property upsert failed
   }
 
@@ -167,10 +166,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `Klaviyo error ${subscribeRes.status}` }, { status: 502 });
   }
 
-  // Temporary: return import status so we can debug attribution in prod
-  return NextResponse.json({
-    success: true,
-    importStatus: importRes.status,
-    importErr,
-  });
+  return NextResponse.json({ success: true });
 }
