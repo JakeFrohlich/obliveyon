@@ -255,7 +255,7 @@ export default function AnalyticsPage() {
   }));
 
   const barChartData = sortedAds.map((row) => ({
-    ref: row.ref.slice(0, 15),
+    channel: row.ref.slice(0, 15),
     signups: row.count,
   }));
 
@@ -414,7 +414,7 @@ export default function AnalyticsPage() {
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
                   <XAxis type="number" stroke="#ffffff60" />
-                  <YAxis dataKey="ref" type="category" stroke="#ffffff60" width={90} />
+                  <YAxis dataKey="channel" type="category" stroke="#ffffff60" width={90} />
                   <Tooltip contentStyle={{ background: "#1f2937", border: "1px solid #4b5563" }} />
                   <Bar dataKey="signups" fill="#ffffff" />
                 </BarChart>
