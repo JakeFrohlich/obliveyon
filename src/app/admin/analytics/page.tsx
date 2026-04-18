@@ -218,6 +218,13 @@ export default function AnalyticsPage() {
             </div>
           </div>
 
+          {/* Info Banner */}
+          <div className="mb-8 p-3 bg-white/5 border border-white/10 rounded-lg text-[10px] text-white/60 space-y-1">
+            <p>✓ YouTube: Auto-scraping available (requires API key)</p>
+            <p>○ TikTok & Instagram: Use manual override (click pencil icon next to Views)</p>
+            <p className="text-white/40 text-[9px] pt-1">Tip: Check your TikTok/Instagram insights, paste the view count into the editor.</p>
+          </div>
+
           {/* Tabs */}
           <div className="flex gap-2 mb-8">
             {(["ads", "affiliates"] as const).map((t) => (
