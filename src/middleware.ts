@@ -8,11 +8,12 @@ const ALLOWED_PATHS = [
   "/login",
   "/api/auth",
   "/api/klaviyo",
-  "/admin",
-  "/api/admin",
   "/_next",
   "/favicon",
 ];
+
+// Admin pages are local-dev only. Always return 404 in production.
+const ADMIN_PATHS = ["/admin", "/api/admin"];
 
 const PREVIEW_COOKIE = "obliveyon_preview";
 const PREVIEW_KEY = process.env.PREVIEW_KEY;
@@ -24,6 +25,14 @@ const REF_RE = /^[a-zA-Z0-9_-]{1,64}$/;
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // Admin pages never exist in production — return 404 for any match
+  if (
+    process.env.NODE_ENV === "production" &&
+    ADMIN_PATHS.some((p) => pathname.startsWith(p))
+  ) {
+    return new NextResponse(null, { status: 404 });
+  }
 
   // Capture ?ref=VIDEO_ID on any request and store it as a cookie
   const refParam = req.nextUrl.searchParams.get("ref");

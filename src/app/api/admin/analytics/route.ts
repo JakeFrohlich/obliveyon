@@ -98,6 +98,11 @@ function aggregate(profiles: KlaviyoProfile[]): AggregatedRef[] {
 }
 
 export async function GET(req: NextRequest) {
+  // Admin endpoints are local-dev only
+  if (process.env.NODE_ENV === "production") {
+    return new NextResponse(null, { status: 404 });
+  }
+
   // Password check via Authorization header
   const auth = req.headers.get("authorization");
   if (!ADMIN_PASSWORD || auth !== `Bearer ${ADMIN_PASSWORD}`) {
