@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import puppeteer from "puppeteer";
 
 const TIKTOK_KEY = process.env.TIKTOK_API_KEY;
 const YOUTUBE_KEY = process.env.YOUTUBE_API_KEY;
 const INSTAGRAM_KEY = process.env.INSTAGRAM_GRAPH_API_KEY;
+const ENABLE_PUPPETEER = process.env.ENABLE_PUPPETEER === "true";
 
 type PlatformLink = {
   platform: "tiktok" | "youtube" | "instagram";
@@ -20,11 +22,87 @@ const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
 async function extractTikTokViews(url: string): Promise<number> {
   try {
-    // TikTok requires JavaScript execution to render view counts
-    // They actively block simple HTTP requests
-    // Without a headless browser or official API, we cannot reliably scrape view counts
-    console.warn("TikTok view counts require JavaScript execution — use official API or manual entry");
-    return 0;
+    // Try TikTok oEmbed API first (public, no auth needed)
+    const oEmbedUrl = `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`;
+    const res = await fetch(oEmbedUrl, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      },
+    });
+
+    if (res.ok) {
+      const data = (await res.json()) as { html?: string };
+      // oEmbed returns HTML embed code; view count may be in the HTML
+      if (data.html) {
+        // TikTok's oEmbed doesn't include view count, so fall back to Puppeteer
+        // if enabled
+      }
+    }
+
+    // Fall back to Puppeteer if enabled
+    if (!ENABLE_PUPPETEER) {
+      console.warn("TikTok scraping disabled (ENABLE_PUPPETEER=false) — use manual entry");
+      return 0;
+    }
+
+    let browser;
+    try {
+      const videoIdMatch = url.match(/(?:tiktok\.com|vm\.tiktok\.com)\/(?:v\/)?(\d+)|\/video\/(\d+)/);
+      if (!videoIdMatch) return 0;
+
+      browser = await puppeteer.launch({
+        headless: true,
+        args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-blink-features=AutomationControlled"],
+      });
+      const page = await browser.newPage();
+      await page.setUserAgent(
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      );
+      await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+      await page.waitForTimeout(2000);
+
+      // Try multiple selectors for view count
+      const viewCount = await page.evaluate(() => {
+        // Method 1: Look for data-e2e attribute
+        let elem = document.querySelector('span[data-e2e="video-views"]');
+        if (elem?.textContent) return parseInt(elem.textContent.replace(/[^\d]/g, "")) || 0;
+
+        // Method 2: Look in all span elements for view patterns
+        const spanElems = document.querySelectorAll("span");
+        for (const el of spanElems) {
+          const text = el.textContent || "";
+          // Match patterns like "1.2M" or "123.4K"
+          const match = text.match(/^([\d.]+[KM])\s*$/);
+          if (match && !text.includes("Like") && !text.includes("Comment")) {
+            let num = parseFloat(match[1]);
+            if (text.includes("K")) num *= 1000;
+            if (text.includes("M")) num *= 1000000;
+            return Math.round(num);
+          }
+        }
+
+        // Method 3: Search all text nodes
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        let currentNode;
+        while ((currentNode = walker.nextNode())) {
+          const text = (currentNode.textContent || "").trim();
+          const match = text.match(/^([\d.]+[KM])$/);
+          if (match) {
+            let num = parseFloat(match[1]);
+            if (text.includes("K")) num *= 1000;
+            if (text.includes("M")) num *= 1000000;
+            return Math.round(num);
+          }
+        }
+
+        return 0;
+      });
+
+      return viewCount;
+    } finally {
+      if (browser) await browser.close();
+    }
   } catch (err) {
     console.error("TikTok scrape failed:", err);
     return 0;
@@ -54,19 +132,72 @@ async function extractYouTubeViews(url: string): Promise<number> {
 }
 
 async function extractInstagramViews(url: string): Promise<number> {
+  if (!ENABLE_PUPPETEER) {
+    console.warn("Instagram scraping disabled (ENABLE_PUPPETEER=false) — use manual entry");
+    return 0;
+  }
+
+  let browser;
   try {
     const postMatch = url.match(/\/(?:p|reel)\/([A-Za-z0-9_-]+)\//);
     if (!postMatch) return 0;
 
-    // Instagram also blocks simple HTTP requests and requires JS execution
-    // View counts are only visible to the post owner via business account insights
-    console.warn(
-      "Instagram view counts require business account & Graph API or manual entry — public scraping blocked"
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-blink-features=AutomationControlled"],
+    });
+    const page = await browser.newPage();
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     );
-    return 0;
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+
+    // Wait for view count element to load
+    await page.waitForTimeout(2000);
+
+    // Extract view count from page
+    const viewCount = await page.evaluate(() => {
+      // Method 1: Look for aria-label with view count
+      const allElements = document.querySelectorAll("*");
+      for (const el of allElements) {
+        const ariaLabel = el.getAttribute("aria-label") || "";
+        // Match patterns like "123,456 views" or "1.2M views"
+        const match = ariaLabel.match(/([\d,]+|[\d.]+[KM])\s*views?/i);
+        if (match) {
+          let num = match[1];
+          num = num.replace(/,/g, "");
+          let parsed = parseFloat(num);
+          if (num.includes("K")) parsed *= 1000;
+          if (num.includes("M")) parsed *= 1000000;
+          return Math.round(parsed);
+        }
+      }
+
+      // Method 2: Look in all text content
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+      let currentNode;
+      while ((currentNode = walker.nextNode())) {
+        const text = currentNode.textContent || "";
+        const match = text.match(/([\d,]+|[\d.]+[KM])\s*views?/i);
+        if (match) {
+          let num = match[1];
+          num = num.replace(/,/g, "");
+          let parsed = parseFloat(num);
+          if (num.includes("K")) parsed *= 1000;
+          if (num.includes("M")) parsed *= 1000000;
+          return Math.round(parsed);
+        }
+      }
+
+      return 0;
+    });
+
+    return viewCount;
   } catch (err) {
     console.error("Instagram scrape failed:", err);
     return 0;
+  } finally {
+    if (browser) await browser.close();
   }
 }
 
