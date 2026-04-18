@@ -92,7 +92,38 @@ export async function POST(req: NextRequest) {
     };
   }
 
-  // Subscribe profile to the list using current Klaviyo API format
+  // Step 1: Upsert profile with custom properties (source + ad_ref)
+  // This runs FIRST so the profile exists with attribution data before any subscription job
+  const profileProperties: Record<string, string> = { source: "drop_waitlist" };
+  if (ref) profileProperties.ad_ref = ref;
+
+  const importRes = await fetch("https://a.klaviyo.com/api/profile-import/", {
+    method: "POST",
+    headers: {
+      accept: "application/vnd.api+json",
+      revision: "2025-01-15",
+      "content-type": "application/vnd.api+json",
+      Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+    },
+    body: JSON.stringify({
+      data: {
+        type: "profile",
+        attributes: {
+          email,
+          ...(normalizedPhone ? { phone_number: normalizedPhone } : {}),
+          properties: profileProperties,
+        },
+      },
+    }),
+  });
+
+  if (!importRes.ok) {
+    const errBody = await importRes.text();
+    console.error("Klaviyo profile-import failed:", importRes.status, errBody);
+    // Continue — we still want to subscribe them even if property upsert failed
+  }
+
+  // Step 2: Subscribe profile to the list
   const subscribeRes = await fetch("https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/", {
     method: "POST",
     headers: {
@@ -112,10 +143,6 @@ export async function POST(req: NextRequest) {
                 attributes: {
                   email,
                   ...(normalizedPhone ? { phone_number: normalizedPhone } : {}),
-                  properties: {
-                    source: "drop_waitlist",
-                    ...(ref ? { ad_ref: ref } : {}),
-                  },
                   subscriptions: {
                     email: { marketing: { consent: "SUBSCRIBED" } },
                   },
@@ -135,33 +162,9 @@ export async function POST(req: NextRequest) {
 
   if (!subscribeRes.ok) {
     const errBody = await subscribeRes.text();
-    console.error("Klaviyo error:", subscribeRes.status, errBody);
+    console.error("Klaviyo subscribe failed:", subscribeRes.status, errBody);
     return NextResponse.json({ error: `Klaviyo error ${subscribeRes.status}` }, { status: 502 });
   }
-
-  // Upsert the profile to store custom properties (bulk-subscribe ignores them)
-  const profileProperties: Record<string, string> = { source: "drop_waitlist" };
-  if (ref) profileProperties.ad_ref = ref;
-
-  await fetch("https://a.klaviyo.com/api/profile-import/", {
-    method: "POST",
-    headers: {
-      accept: "application/vnd.api+json",
-      revision: "2025-01-15",
-      "content-type": "application/vnd.api+json",
-      Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-    },
-    body: JSON.stringify({
-      data: {
-        type: "profile",
-        attributes: {
-          email,
-          ...(normalizedPhone ? { phone_number: normalizedPhone } : {}),
-          properties: profileProperties,
-        },
-      },
-    }),
-  }).catch((err) => console.error("Klaviyo profile upsert failed:", err));
 
   return NextResponse.json({ success: true });
 }
