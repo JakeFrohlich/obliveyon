@@ -18,6 +18,7 @@ type AggregatedRef = {
   firstSeen: string;
   lastSeen: string;
   emails: string[];
+  signupsByDay: Record<string, number>;
 };
 
 // In-memory cache — shared across all requests in this Vercel function instance
@@ -69,6 +70,7 @@ async function fetchAllProfiles(): Promise<KlaviyoProfile[]> {
 
 function aggregate(profiles: KlaviyoProfile[]): AggregatedRef[] {
   const byRef = new Map<string, AggregatedRef>();
+  const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
 
   for (const p of profiles) {
     const ref = p.attributes.properties?.ad_ref;
@@ -76,6 +78,7 @@ function aggregate(profiles: KlaviyoProfile[]): AggregatedRef[] {
 
     const email = p.attributes.email ?? "(no email)";
     const created = p.attributes.created;
+    const createdDate = new Date(created);
 
     const existing = byRef.get(ref);
     if (!existing) {
@@ -85,12 +88,20 @@ function aggregate(profiles: KlaviyoProfile[]): AggregatedRef[] {
         firstSeen: created,
         lastSeen: created,
         emails: [email],
+        signupsByDay: {},
       });
     } else {
       existing.count += 1;
       existing.emails.push(email);
       if (created < existing.firstSeen) existing.firstSeen = created;
       if (created > existing.lastSeen) existing.lastSeen = created;
+    }
+
+    // Track signups by day (last 7 days only)
+    if (createdDate.getTime() >= sevenDaysAgo) {
+      const dayKey = createdDate.toISOString().split("T")[0];
+      const row = byRef.get(ref)!;
+      row.signupsByDay[dayKey] = (row.signupsByDay[dayKey] ?? 0) + 1;
     }
   }
 
