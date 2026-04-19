@@ -12,15 +12,8 @@ export default function NewsletterSignup() {
   const [phoneError, setPhoneError] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
-  // Signups paused during abuse-incident investigation. Flip to false to re-enable.
-  const SIGNUPS_PAUSED = true;
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (SIGNUPS_PAUSED) {
-      setStatus("error");
-      return;
-    }
     if (!email) return;
 
     if (phone && !isValidPhoneNumber(phone)) {
@@ -161,11 +154,7 @@ export default function NewsletterSignup() {
           </motion.p>
         )}
         {status === "error" && (
-          <p className="text-xs text-red-400 mt-4">
-            {SIGNUPS_PAUSED
-              ? "Signups are temporarily paused. Check back soon."
-              : "Something went wrong. Try again."}
-          </p>
+          <p className="text-xs text-red-400 mt-4">Something went wrong. Try again.</p>
         )}
       </motion.div>
     </section>

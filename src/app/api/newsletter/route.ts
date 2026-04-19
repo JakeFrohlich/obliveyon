@@ -9,15 +9,6 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  // KILL SWITCH — signups disabled due to abuse incident. Re-enable by
-  // removing SIGNUPS_DISABLED from env (or setting it to "false").
-  if (process.env.SIGNUPS_DISABLED !== "false") {
-    return NextResponse.json(
-      { error: "Signups are temporarily paused. Please check back soon." },
-      { status: 503, headers: { "Retry-After": "3600" } }
-    );
-  }
-
   const ip = getClientIp(req);
 
   // 5 signups per hour per IP
