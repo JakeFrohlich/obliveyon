@@ -32,6 +32,16 @@ function sanitize(str: unknown, maxLength: number): string {
 }
 
 export async function POST(req: NextRequest) {
+  // KILL SWITCH — signups disabled due to abuse incident (compromised ref=Aoiiii
+  // used to flood SMS signups with malicious numbers). Re-enable by removing
+  // SIGNUPS_DISABLED from env.
+  if (process.env.SIGNUPS_DISABLED !== "false") {
+    return NextResponse.json(
+      { error: "Signups are temporarily paused. Please check back soon." },
+      { status: 503, headers: { "Retry-After": "3600" } }
+    );
+  }
+
   const ip = getClientIp(req);
 
   // 5 requests per 15 minutes per IP
