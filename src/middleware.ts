@@ -22,6 +22,13 @@ const PREVIEW_KEY = process.env.PREVIEW_KEY;
 const REF_COOKIE = "obliveyon_ref";
 // Ref values: alphanumeric + hyphens/underscores, max 64 chars
 const REF_RE = /^[a-zA-Z0-9_-]{1,64}$/;
+// Refs that have been compromised / abused. Drop them before cookie set.
+const BANNED_REFS = new Set(
+  (process.env.BANNED_REFS ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+);
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -37,7 +44,7 @@ export function middleware(req: NextRequest) {
   // Capture ?ref=VIDEO_ID on any request and store it as a cookie
   const refParam = req.nextUrl.searchParams.get("ref");
   let refToSet: string | null = null;
-  if (refParam && REF_RE.test(refParam)) {
+  if (refParam && REF_RE.test(refParam) && !BANNED_REFS.has(refParam)) {
     refToSet = refParam;
   }
 
