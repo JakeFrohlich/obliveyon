@@ -37,9 +37,6 @@ function useCountdown(target: Date) {
 const STORAGE_KEY = "obliveyon_signed_up";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const REF_RE = /^[a-zA-Z0-9_-]{1,64}$/;
-// Signups are paused while we investigate an abuse incident. Flip to false
-// to re-open the form.
-const SIGNUPS_PAUSED = true;
 
 export default function SignupPage() {
   return (
@@ -254,22 +251,7 @@ function SignupForm() {
           ))}
         </div>
 
-        {SIGNUPS_PAUSED ? (
-          <div className="py-4">
-            <p
-              className="text-white/80 text-xl italic"
-              style={{ fontFamily: "var(--font-gothic)", fontWeight: 300 }}
-            >
-              The gates are sealed for now.
-            </p>
-            <p
-              className="text-white/70 text-xs mt-3 tracking-[0.4em] uppercase"
-              style={{ fontFamily: "var(--font-medieval)" }}
-            >
-              Signups are temporarily paused. Return soon.
-            </p>
-          </div>
-        ) : submitted ? (
+        {submitted ? (
           <div className="py-4">
             <p
               className="text-white/80 text-xl italic"
