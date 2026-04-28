@@ -347,7 +347,7 @@ function SignupForm() {
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              {loading ? "—" : "Sign Up for the Drop"}
+              {loading ? "—" : "Sign Up for early access"}
             </button>
           </form>
         )}

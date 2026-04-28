@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Cormorant } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Providers from "@/components/layout/Providers";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
         <Providers>
           <main className="flex-1">{children}</main>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
