@@ -77,8 +77,8 @@ function SignupForm() {
 
   function validatePhone() {
     if (!phone) {
-      setPhoneError("Phone number is required");
-      return false;
+      setPhoneError("");
+      return true;
     }
     if (!isValidPhoneNumber(phone)) {
       setPhoneError("Enter a valid phone number");
@@ -100,7 +100,7 @@ function SignupForm() {
       const res = await fetch("/api/klaviyo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone, ...(adRef ? { ref: adRef } : {}) }),
+        body: JSON.stringify({ email, ...(phone ? { phone } : {}), ...(adRef ? { ref: adRef } : {}) }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -298,7 +298,7 @@ function SignupForm() {
 
             {/* Phone — international with country selector */}
             <div className="text-left">
-              <div className={`signup-phone${phoneError ? " has-error" : ""}`}>
+              <div className={`signup-phone${phoneError ? " has-error" : ""} relative`}>
                 <PhoneInput
                   placeholder="Phone number"
                   value={phone}
@@ -313,6 +313,16 @@ function SignupForm() {
                   countryCallingCodeEditable={false}
                   autoComplete="tel"
                 />
+                <span
+                  className="absolute right-0 top-1/2 -translate-y-1/2 text-[9px] tracking-[0.3em] uppercase pointer-events-none"
+                  style={{
+                    fontFamily: "var(--font-medieval)",
+                    fontWeight: 300,
+                    color: "rgba(255,255,255,0.35)",
+                  }}
+                >
+                  Optional
+                </span>
               </div>
               {phoneError && (
                 <p className="text-[10px] mt-1 tracking-wider" style={{ color: "rgba(255,130,130,0.9)", fontFamily: "var(--font-medieval)" }}>
