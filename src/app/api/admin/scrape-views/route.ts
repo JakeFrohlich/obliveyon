@@ -83,7 +83,7 @@ async function extractTikTokViews(url: string): Promise<number> {
         }
 
         // Method 3: Search all text nodes
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
         let currentNode;
         while ((currentNode = walker.nextNode())) {
           const text = (currentNode.textContent || "").trim();
@@ -174,7 +174,7 @@ async function extractInstagramViews(url: string): Promise<number> {
       }
 
       // Method 2: Look in all text content
-      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
       let currentNode;
       while ((currentNode = walker.nextNode())) {
         const text = currentNode.textContent || "";
