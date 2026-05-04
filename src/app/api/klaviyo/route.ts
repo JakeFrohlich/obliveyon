@@ -75,23 +75,6 @@ export async function POST(req: NextRequest) {
   const normalizedPhone = parsed.data.phone ? sanitize(parsed.data.phone, 20) : undefined;
   const ref = parsed.data.ref ? sanitize(parsed.data.ref, 64) : undefined;
 
-  // Build profile attributes
-  const profileAttributes: Record<string, unknown> = {
-    email,
-    properties: {
-      source: "drop_waitlist",
-      ...(ref ? { ad_ref: ref } : {}),
-    },
-  };
-  if (normalizedPhone) {
-    profileAttributes.phone_number = normalizedPhone;
-    // Consent for SMS marketing
-    profileAttributes.sms_marketing = {
-      consent: "SUBSCRIBED",
-      consented_at: new Date().toISOString(),
-    };
-  }
-
   // Step 1: Upsert profile with custom properties (source + ad_ref)
   // This runs FIRST so the profile exists with attribution data before any subscription job
   const profileProperties: Record<string, string> = { source: "drop_waitlist" };
@@ -145,6 +128,14 @@ export async function POST(req: NextRequest) {
                   ...(normalizedPhone ? { phone_number: normalizedPhone } : {}),
                   subscriptions: {
                     email: { marketing: { consent: "SUBSCRIBED" } },
+                    ...(normalizedPhone
+                      ? {
+                          sms: {
+                            marketing: { consent: "SUBSCRIBED" },
+                            transactional: { consent: "SUBSCRIBED" },
+                          },
+                        }
+                      : {}),
                   },
                 },
               },
