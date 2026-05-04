@@ -19,6 +19,7 @@ const cormorantDisplay = Cormorant({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://obliveyon.com"),
   title: "Obliveyon — Dark Luxury Streetwear",
   description:
     "Premium streetwear for those who move through the world on their own terms. Built for the bold. Designed for the future.",
@@ -27,6 +28,13 @@ export const metadata: Metadata = {
     title: "Obliveyon — Dark Luxury Streetwear",
     description: "Premium streetwear for the bold.",
     type: "website",
+    url: "https://obliveyon.com",
+    siteName: "Obliveyon",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Obliveyon — Dark Luxury Streetwear",
+    description: "Premium streetwear for the bold.",
   },
 };
 
