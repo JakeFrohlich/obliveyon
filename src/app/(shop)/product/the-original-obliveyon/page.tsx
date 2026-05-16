@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import Footer from "@/components/shop/Footer";
 import { useCart } from "@/hooks/use-cart";
 
@@ -63,7 +64,16 @@ const COLOR_SLIDES: Record<string, { type: string; src: string }[]> = {
 
 function OriginalObliveyonInner() {
   const searchParams = useSearchParams();
-  const initialColor = parseInt(searchParams.get("color") || "0", 10);
+  const colorParam = searchParams.get("color");
+
+  if (colorParam === null) {
+    return <DropLorePage />;
+  }
+
+  return <PurchaseInner initialColor={parseInt(colorParam, 10)} />;
+}
+
+function PurchaseInner({ initialColor }: { initialColor: number }) {
   const [selectedColor, setSelectedColor] = useState(initialColor);
   const [selectedSize, setSelectedSize] = useState("");
   const [added, setAdded] = useState(false);
@@ -545,6 +555,145 @@ function OriginalObliveyonInner() {
     </div>
 
     <Footer />
+    </div>
+  );
+}
+
+function DropLorePage() {
+  const router = useRouter();
+
+  return (
+    <div className="min-h-screen" style={{ background: "#000000" }}>
+      <div
+        className="relative z-50 flex flex-col lg:flex-row lg:min-h-screen"
+        style={{ background: "#000000" }}
+      >
+        {/* ── LEFT: Original Obliveyon image ── */}
+        <div className="relative flex flex-col w-full lg:w-[50%] px-6 lg:px-10 pt-8 lg:pt-16 pb-8">
+          <button
+            onClick={() => router.push("/shop")}
+            className="self-start text-[11px] tracking-[0.4em] uppercase transition-colors duration-300 cursor-pointer mb-10"
+            style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.85)" }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.85)"; }}
+          >
+            ← Collection
+          </button>
+
+          <div className="flex-1 flex items-center justify-center">
+            <img
+              src="/The orginal Obliveyon.png"
+              alt="The Original Obliveyon"
+              className="w-full max-w-md object-contain"
+              style={{ filter: "brightness(0.9)" }}
+            />
+          </div>
+        </div>
+
+        {/* ── RIGHT: Lore description ── */}
+        <div
+          className="relative w-full lg:w-[50%] flex items-start lg:items-center justify-center px-6 lg:px-12 xl:px-20 py-12 lg:py-16"
+          style={{ background: "#000000" }}
+        >
+          <div className="max-w-xl w-full text-center">
+            {/* Eyebrow */}
+            <p
+              className="text-[10px] tracking-[0.55em] uppercase text-white/50 mb-5"
+              style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+            >
+              Drop I
+            </p>
+
+            {/* Title */}
+            <h1
+              className="text-3xl sm:text-4xl lg:text-5xl tracking-[0.18em] uppercase text-white mb-3 leading-tight"
+              style={{
+                fontFamily: "var(--font-gothic)",
+                fontWeight: 300,
+                textShadow: "0 0 30px rgba(255,255,255,0.08)",
+              }}
+            >
+              The Original Obliveyon
+            </h1>
+
+            {/* Subtitle */}
+            <p
+              className="text-[11px] tracking-[0.45em] uppercase text-white/40 mb-8"
+              style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+            >
+              The Beginning.
+            </p>
+
+            <p
+              className="text-base italic text-white/80 mb-10"
+              style={{ fontFamily: "var(--font-gothic)", fontWeight: 300 }}
+            >
+              Where the silence first became sound.
+            </p>
+
+            {/* Body — placeholder copy */}
+            <div
+              className="space-y-6 text-sm leading-loose text-white/65 mb-10"
+              style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, letterSpacing: "0.03em" }}
+            >
+              <p>
+                The Original Obliveyon is the first drop. The piece that took the
+                feeling and gave it form — the moment the inner became outer, the
+                idea became something you could wear.
+              </p>
+              <p>
+                Four colorways. One silhouette. Heavyweight construction, hand
+                embroidery, and a custom zipper. Built to be the foundation, not
+                the finish.
+              </p>
+              <p>
+                Every drop after this one will trace back to this. This is
+                where it begins.
+              </p>
+            </div>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.08)" }} />
+              <div className="w-1 h-1 rotate-45" style={{ background: "rgba(255,255,255,0.2)" }} />
+              <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.08)" }} />
+            </div>
+
+            {/* Tagline */}
+            <p
+              className="text-lg italic text-white/85 mb-2"
+              style={{ fontFamily: "var(--font-gothic)", fontWeight: 300 }}
+            >
+              Be the light in the darkness.
+            </p>
+            <p
+              className="text-[11px] italic text-white/40 mb-12"
+              style={{ fontFamily: "var(--font-gothic)", fontWeight: 300 }}
+            >
+              Not despite who you are. Because of it.
+            </p>
+
+            {/* Shop the Drop CTA */}
+            <Link
+              href="/shop"
+              className="inline-block px-10 py-4 text-xs tracking-[0.5em] uppercase transition-all duration-300"
+              style={{
+                fontFamily: "var(--font-medieval)",
+                fontWeight: 400,
+                background: "rgba(255,255,255,0.92)",
+                color: "#060504",
+                border: "1px solid rgba(255,255,255,0.9)",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,1)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.92)"; }}
+            >
+              Shop the Drop
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <Footer />
     </div>
   );
 }

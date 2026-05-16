@@ -41,9 +41,10 @@ export default function CreditsPage() {
 
       {/* Content */}
       <div
-        className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center max-w-xl px-8 text-center mx-auto py-24"
+        className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center px-8 py-24"
         style={{ animation: "fadeUp 1.6s ease both" }}
       >
+       <div className="w-full max-w-xl text-center">
         {/* Title ornament */}
         <div className="flex items-center gap-4 mb-10">
           <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.08)" }} />
@@ -161,6 +162,7 @@ export default function CreditsPage() {
             </p>
           </div>
         </div>
+       </div>
       </div>
 
       <style jsx>{`
