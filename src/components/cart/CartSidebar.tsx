@@ -84,10 +84,11 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "tween", duration: 0.28 }}
-            className="fixed right-0 top-0 bottom-0 z-50 flex flex-col"
+            className="fixed right-0 top-0 z-50 flex flex-col"
             style={{
               width: "100%",
               maxWidth: "480px",
+              height: "100vh",
               background: "#000",
               borderLeft: "1px solid rgba(255,255,255,0.12)",
             }}

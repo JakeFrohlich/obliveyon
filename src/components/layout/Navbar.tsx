@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useCart } from "@/hooks/use-cart";
+import CartSidebar from "@/components/cart/CartSidebar";
 
 const borderStyle = {
   border: "1px solid rgba(255,255,255,0.2)",
@@ -9,7 +11,14 @@ const borderStyle = {
 };
 
 export default function Navbar() {
-  const [cartCount] = useState(0);
+  const { totalItems } = useCart();
+  const [cartOpen, setCartOpen] = useState(false);
+  const [prevTotal, setPrevTotal] = useState(totalItems);
+
+  useEffect(() => {
+    if (totalItems > prevTotal) setCartOpen(true);
+    setPrevTotal(totalItems);
+  }, [totalItems, prevTotal]);
 
   return (
     <nav
@@ -78,6 +87,8 @@ export default function Navbar() {
         </Link>
 
         <button
+          onClick={() => setCartOpen(true)}
+          aria-label="Open cart"
           className="relative flex items-center gap-2 text-[11px] tracking-[0.5em] uppercase text-white/70 hover:text-white transition-colors duration-300 cursor-pointer"
           style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, ...borderStyle }}
         >
@@ -93,7 +104,7 @@ export default function Navbar() {
             <circle cx="11" cy="13.5" r="0.8" fill="currentColor" />
           </svg>
           Cart
-          {cartCount > 0 && (
+          {totalItems > 0 && (
             <span
               className="absolute -top-1 -right-2 w-4 h-4 flex items-center justify-center text-[9px]"
               style={{
@@ -102,11 +113,25 @@ export default function Navbar() {
                 color: "#000",
               }}
             >
-              {cartCount}
+              {totalItems}
             </span>
           )}
         </button>
+
+        <Link
+          href="/settings"
+          aria-label="Settings"
+          className="flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
+          style={{ ...borderStyle, padding: "6px 10px" }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </Link>
       </div>
+
+      <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} />
     </nav>
   );
 }

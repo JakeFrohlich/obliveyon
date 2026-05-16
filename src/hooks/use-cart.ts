@@ -37,15 +37,22 @@ function getServerSnapshot(): CartItem[] {
   return EMPTY_CART;
 }
 
-let initialized = false;
+if (typeof window !== "undefined") {
+  cart = loadCart();
+
+  // Re-sync from localStorage when the page is restored from bfcache
+  // (e.g. user clicks back from Shopify checkout). Without this, the cart
+  // store can desync from reality and the navbar Cart button stops responding.
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) {
+      cart = loadCart();
+      listeners.forEach((l) => l());
+    }
+  });
+}
 
 export function useCart() {
   const items = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-
-  if (typeof window !== "undefined" && !initialized) {
-    cart = loadCart();
-    initialized = true;
-  }
 
   const addItem = useCallback((item: Omit<CartItem, "id">) => {
     const existing = cart.find(
