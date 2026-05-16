@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Cormorant } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Providers from "@/components/layout/Providers";
+import BackgroundMusic from "@/components/audio/BackgroundMusic";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -49,6 +50,7 @@ export default function RootLayout({
         <Providers>
           <main className="flex-1">{children}</main>
         </Providers>
+        <BackgroundMusic />
         <Analytics />
       </body>
     </html>
