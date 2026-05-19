@@ -6,4 +6,5 @@ node_modules/
 next-env.d.ts
 *.tar.gz
 **/.claude/settings.json
+.claude/
 .mcp.json
