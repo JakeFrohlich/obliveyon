@@ -46,24 +46,32 @@ export default function ShopPage() {
       style={{ background: "#000000" }}
     >
       {/* Header */}
-      <div className="px-6 sm:px-10 lg:px-16 pb-8" style={{ paddingTop: "110px" }}>
-        <div className="text-center mt-6">
+      <div className="px-5 sm:px-10 lg:px-16 pb-10" style={{ paddingTop: "96px" }}>
+        <div className="text-center mt-8 sm:mt-10">
+          {/* Ornamental flourish above */}
+          <div className="flex items-center gap-3 justify-center mb-5 opacity-60">
+            <div className="h-px w-10 sm:w-16" style={{ background: "rgba(255,255,255,0.18)" }} />
+            <svg width="8" height="8" viewBox="0 0 8 8">
+              <polygon points="4,0 8,4 4,8 0,4" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="0.6" />
+            </svg>
+            <div className="h-px w-10 sm:w-16" style={{ background: "rgba(255,255,255,0.18)" }} />
+          </div>
+
           <h1
-            className="text-2xl sm:text-3xl tracking-[0.25em] uppercase text-white"
+            className="text-3xl sm:text-4xl tracking-[0.3em] uppercase text-white"
             style={{
               fontFamily: "var(--font-gothic)",
               fontWeight: 300,
-              textShadow: "0 0 40px rgba(255,255,255,0.06)",
+              textShadow: "0 0 40px rgba(255,255,255,0.08)",
             }}
           >
             Collection
           </h1>
         </div>
-        <div className="h-px mt-6" style={{ background: "rgba(255,255,255,0.06)" }} />
 
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-7">
           <p
-            className="text-[10px] tracking-[0.35em] uppercase pb-2"
+            className="text-[10px] tracking-[0.4em] uppercase pb-2"
             style={{
               fontFamily: "var(--font-medieval)",
               fontWeight: 300,
@@ -77,9 +85,8 @@ export default function ShopPage() {
       </div>
 
       {/* Product grid — small squares with borders */}
-      <div className="px-6 sm:px-10 lg:px-16 pb-16">
-        {/* Row 1 */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="px-5 sm:px-10 lg:px-16 pb-20">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
           {STATIC_PRODUCTS.map((product) => (
             <Link
               key={product.name}
@@ -114,15 +121,15 @@ export default function ShopPage() {
                   <polygon points="50,94 52,96 50,98 48,96" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.3" />
                 </svg>
               </div>
-              <div className="mt-3">
+              <div className="mt-4 px-1">
                 <p
-                  className="text-[13px] sm:text-sm tracking-[0.12em] uppercase text-white/80 group-hover:text-white transition-colors duration-300 leading-snug"
+                  className="text-[12px] sm:text-[13px] tracking-[0.18em] uppercase text-white/80 group-hover:text-white transition-colors duration-300 leading-snug"
                   style={{ fontFamily: "var(--font-medieval)", fontWeight: 400 }}
                 >
                   {product.name}
                 </p>
                 <p
-                  className="text-[11px] sm:text-xs tracking-wider text-white/50 mt-1"
+                  className="text-[10px] sm:text-[11px] tracking-[0.25em] text-white/50 mt-2"
                   style={{ fontFamily: "var(--font-medieval)", fontWeight: 400 }}
                 >
                   {product.price}

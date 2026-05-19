@@ -91,7 +91,7 @@ export default function Home() {
             </g>
           </svg>
           <span
-            className="block px-16 py-6 text-2xl sm:text-3xl tracking-[0.5em] uppercase text-white relative z-10"
+            className="block px-8 sm:px-16 py-5 sm:py-6 text-xl sm:text-3xl tracking-[0.35em] sm:tracking-[0.5em] uppercase text-white relative z-10"
             style={{
               fontFamily: "var(--font-gothic)",
               fontWeight: 500,
@@ -144,7 +144,7 @@ export default function Home() {
             </g>
           </svg>
           <span
-            className="block px-12 py-3 text-base sm:text-lg tracking-[0.5em] uppercase text-white/90 relative z-10"
+            className="block px-8 sm:px-12 py-3 text-sm sm:text-lg tracking-[0.35em] sm:tracking-[0.5em] uppercase text-white/90 relative z-10"
             style={{
               fontFamily: "var(--font-medieval)",
               fontWeight: 400,
@@ -195,7 +195,7 @@ export default function Home() {
             </g>
           </svg>
           <span
-            className="block px-12 py-3 text-base sm:text-lg tracking-[0.5em] uppercase text-white/90 relative z-10"
+            className="block px-8 sm:px-12 py-3 text-sm sm:text-lg tracking-[0.35em] sm:tracking-[0.5em] uppercase text-white/90 relative z-10"
             style={{
               fontFamily: "var(--font-medieval)",
               fontWeight: 400,
