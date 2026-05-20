@@ -1,16 +1,20 @@
 import type { Metadata } from "next";
-import { Jost, Cormorant } from "next/font/google";
+import { EB_Garamond, Cormorant } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/layout/Providers";
 
-const cormorant = Jost({
+// Body / "medieval" — EB Garamond is a Garamond revival: old-world serif character,
+// readable at small sizes, pairs with Cormorant. Replaces Jost (geometric sans).
+const bodyFont = EB_Garamond({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
   variable: "--font-medieval",
   display: "swap",
 });
 
-const cormorantDisplay = Cormorant({
+// Display / headings — Cormorant. Unchanged.
+const displayFont = Cormorant({
   subsets: ["latin"],
   weight: ["300", "400", "500"],
   variable: "--font-gothic",
@@ -36,7 +40,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`min-h-screen flex flex-col ${cormorant.variable} ${cormorantDisplay.variable}`}>
+      <body className={`min-h-screen flex flex-col ${bodyFont.variable} ${displayFont.variable}`}>
         <Providers>
           <main className="flex-1">{children}</main>
         </Providers>

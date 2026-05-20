@@ -6,35 +6,35 @@ const STATIC_PRODUCTS = [
     name: "The Original Obliveyon Zip Up",
     href: "/product/the-original-obliveyon",
     image: "/The orginal Obliveyon.png",
-    price: "$65+",
+    price: "$70",
     category: "Zip Up",
   },
   {
     name: "Acid Wash Zip Up",
-    href: "/product/the-original-obliveyon?color=1",
+    href: "/product/the-original-obliveyon?color=0",
     image: "/try 2.png",
-    price: "$65+",
+    price: "$70",
     category: "Zip Up",
   },
   {
     name: "White Zip Up",
-    href: "/product/the-original-obliveyon?color=2",
+    href: "/product/the-original-obliveyon?color=1",
     image: "/White 1.png",
-    price: "$65+",
+    price: "$70",
     category: "Zip Up",
   },
   {
     name: "Black Zip Up",
-    href: "/product/the-original-obliveyon?color=3",
+    href: "/product/the-original-obliveyon?color=2",
     image: "/black 1st.png",
-    price: "$65+",
+    price: "$70",
     category: "Zip Up",
   },
   {
     name: "The Obliveyon Hoodie",
     href: "/product/the-obliveyon-hoodie",
     image: "/hoodie-front.jpg",
-    price: "$65+",
+    price: "$70",
     category: "Hoodie",
   },
 ];
@@ -129,8 +129,8 @@ export default function ShopPage() {
                   {product.name}
                 </p>
                 <p
-                  className="text-[10px] sm:text-[11px] tracking-[0.25em] text-white/50 mt-2"
-                  style={{ fontFamily: "var(--font-medieval)", fontWeight: 400 }}
+                  className="text-[13px] sm:text-sm tracking-[0.08em] text-white/85 mt-2 tabular-nums"
+                  style={{ fontFamily: "var(--font-medieval)", fontWeight: 500 }}
                 >
                   {product.price}
                 </p>

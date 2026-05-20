@@ -30,10 +30,10 @@ const SHOPIFY_VARIANTS: Record<string, number> = {
   "the-original-obliveyon|Original|L":  50142433116461,
   "the-original-obliveyon|Original|XL": 50142433214765,
   // Hoodie
-  "obliveyon-hoodie||S":  48602088440109,
-  "obliveyon-hoodie||M":  48602088472877,
-  "obliveyon-hoodie||L":  48602088505645,
-  "obliveyon-hoodie||XL": 48602088538413,
+  "the-obliveyon-hoodie||S":  48602088440109,
+  "the-obliveyon-hoodie||M":  48602088472877,
+  "the-obliveyon-hoodie||L":  48602088505645,
+  "the-obliveyon-hoodie||XL": 48602088538413,
 };
 
 function buildShopifyCartUrl(items: { productId: string; color?: string; size: string; quantity: number }[]): string {

@@ -22,10 +22,10 @@ const SHOPIFY_VARIANTS: Record<string, number> = {
   "the-original-obliveyon|Original|M":   50142433018157,
   "the-original-obliveyon|Original|L":   50142433116461,
   "the-original-obliveyon|Original|XL":  50142433214765,
-  "obliveyon-hoodie||S":  48602088440109,
-  "obliveyon-hoodie||M":  48602088472877,
-  "obliveyon-hoodie||L":  48602088505645,
-  "obliveyon-hoodie||XL": 48602088538413,
+  "the-obliveyon-hoodie||S":  48602088440109,
+  "the-obliveyon-hoodie||M":  48602088472877,
+  "the-obliveyon-hoodie||L":  48602088505645,
+  "the-obliveyon-hoodie||XL": 48602088538413,
 };
 
 
@@ -35,7 +35,7 @@ const CART_IMAGES: Record<string, string> = {
   "the-original-obliveyon|Acid Wash": "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/24FA5624-E3A8-4833-B6CE-2938ED68ED28-removebg-preview.png?v=1730065055",
   "the-original-obliveyon|Black":     "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
   "the-original-obliveyon|Original":  "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
-  "obliveyon-hoodie|":                "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
+  "the-obliveyon-hoodie|":                "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
 };
 
 function getCartImage(productId: string, color?: string): string {
@@ -244,8 +244,8 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
                     {formatPrice(totalPrice)} USD
                   </span>
                 </div>
-                <p className="text-[11px] mb-5" style={{ fontFamily: "var(--font-medieval)", color: "rgba(255,255,255,0.45)" }}>
-                  Tax included and shipping calculated at checkout
+                <p className="text-[11px] tracking-[0.1em] mb-5" style={{ fontFamily: "var(--font-medieval)", color: "rgba(255,255,255,0.55)" }}>
+                  Free US shipping · International calculated at checkout
                 </p>
 
                 {/* Checkout button */}

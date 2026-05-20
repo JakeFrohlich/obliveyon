@@ -39,11 +39,13 @@ export default function CreditsPage() {
         }}
       />
 
-      {/* Content */}
-      <div
-        className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center max-w-xl px-8 text-center mx-auto py-24"
-        style={{ animation: "fadeUp 1.6s ease both" }}
-      >
+      {/* Content — centered both horizontally (mx-auto + text-center) and vertically
+          when it fits (grid place-items-center min-h-screen). Long copy scrolls naturally. */}
+      <div className="relative z-10 min-h-screen grid place-items-center">
+        <div
+          className="w-full max-w-xl mx-auto px-6 sm:px-8 text-center py-24"
+          style={{ animation: "fadeUp 1.6s ease both" }}
+        >
         {/* Title ornament */}
         <div className="flex items-center gap-4 mb-10">
           <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.08)" }} />
@@ -160,6 +162,7 @@ export default function CreditsPage() {
               Creator &nbsp;·&nbsp; Visionary &nbsp;·&nbsp; Still becoming.
             </p>
           </div>
+        </div>
         </div>
       </div>
 
