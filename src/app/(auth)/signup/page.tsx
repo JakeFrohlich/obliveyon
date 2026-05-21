@@ -7,7 +7,7 @@ import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 
-const DROP_DATE = new Date("2026-05-21T00:00:00");
+const DROP_DATE = new Date("2026-05-22T02:00:00Z"); // 10pm EST May 21
 
 function useCountdown(target: Date) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
