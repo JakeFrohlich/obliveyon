@@ -355,7 +355,7 @@ function OriginalObliveyonInner() {
             onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
             onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.5)"; }}
           >
-            ← Collection
+            Collection
           </button>
 
           {/* Top flourish */}
@@ -481,17 +481,6 @@ function OriginalObliveyonInner() {
       >
         {/* ── LEFT PANEL — image + carousel ── */}
         <div className="relative flex flex-col w-full lg:w-[55%] px-6 lg:px-10 pt-6 lg:pt-10 pb-10 lg:pb-10">
-          {/* Back */}
-          <button
-            onClick={() => router.push("/shop")}
-            className="self-start text-[11px] tracking-[0.4em] uppercase transition-colors duration-300 cursor-pointer mb-8"
-            style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.6)" }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}
-          >
-            ← Collection
-          </button>
-
           {/* Image with carousel arrows + dots */}
           <div className="flex-1 flex items-center justify-center">
             <div

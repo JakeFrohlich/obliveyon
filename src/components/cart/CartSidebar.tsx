@@ -22,6 +22,11 @@ const SHOPIFY_VARIANTS: Record<string, number> = {
   "obliveyon-hoodie||M":  48602088472877,
   "obliveyon-hoodie||L":  48602088505645,
   "obliveyon-hoodie||XL": 48602088538413,
+  // The Obliveyon Hoodie (separate product page) — same SKUs as the original hoodie
+  "the-obliveyon-hoodie|Black|S":  48602088440109,
+  "the-obliveyon-hoodie|Black|M":  48602088472877,
+  "the-obliveyon-hoodie|Black|L":  48602088505645,
+  "the-obliveyon-hoodie|Black|XL": 48602088538413,
 };
 
 
@@ -31,6 +36,7 @@ const CART_IMAGES: Record<string, string> = {
   "the-original-obliveyon|Acid Wash": "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/24FA5624-E3A8-4833-B6CE-2938ED68ED28-removebg-preview.png?v=1730065055",
   "the-original-obliveyon|Black":     "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
   "obliveyon-hoodie|":                "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
+  "the-obliveyon-hoodie|Black":       "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
 };
 
 function getCartImage(productId: string, color?: string): string {

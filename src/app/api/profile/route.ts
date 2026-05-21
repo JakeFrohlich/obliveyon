@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 const PatchSchema = z.object({
   name: z.string().min(1).max(80).nullable().optional(),
+  avatarEmoji: z.string().min(1).max(8).nullable().optional(),
 });
 
 export async function GET() {
@@ -15,7 +16,14 @@ export async function GET() {
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
-    select: { id: true, email: true, name: true, createdAt: true, role: true },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      avatarEmoji: true,
+      createdAt: true,
+      role: true,
+    },
   });
 
   if (!user) {
@@ -43,15 +51,25 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
   }
 
-  const data: { name?: string | null } = {};
+  const data: { name?: string | null; avatarEmoji?: string | null } = {};
   if ("name" in parsed.data) {
     data.name = parsed.data.name?.trim() || null;
+  }
+  if ("avatarEmoji" in parsed.data) {
+    data.avatarEmoji = parsed.data.avatarEmoji?.trim() || null;
   }
 
   const user = await prisma.user.update({
     where: { email: session.user.email },
     data,
-    select: { id: true, email: true, name: true, createdAt: true, role: true },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      avatarEmoji: true,
+      createdAt: true,
+      role: true,
+    },
   });
 
   return NextResponse.json(user);

@@ -82,17 +82,6 @@ export default function ObliveyonHoodiePage() {
       >
         {/* ── LEFT PANEL ── */}
         <div className="relative flex flex-col w-full lg:w-[58%] lg:h-full px-6 lg:px-10 pt-8 lg:pt-10 pb-10 lg:pb-8">
-          {/* Back */}
-          <button
-            onClick={() => router.push("/shop")}
-            className="self-start text-[11px] tracking-[0.4em] uppercase transition-colors duration-300 cursor-pointer mb-6"
-            style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.85)" }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.85)"; }}
-          >
-            ← Collection
-          </button>
-
           {/* Chandelier hook */}
           <div className="flex justify-center mb-0">
             <svg width="120" height="60" viewBox="0 0 120 60" style={{ overflow: "visible" }}>
