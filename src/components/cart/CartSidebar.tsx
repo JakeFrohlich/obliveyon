@@ -18,10 +18,6 @@ const SHOPIFY_VARIANTS: Record<string, number> = {
   "the-original-obliveyon|Black|M":      50142433018157,
   "the-original-obliveyon|Black|L":      50142433116461,
   "the-original-obliveyon|Black|XL":     50142433214765,
-  "the-original-obliveyon|Original|S":   50142432919853,
-  "the-original-obliveyon|Original|M":   50142433018157,
-  "the-original-obliveyon|Original|L":   50142433116461,
-  "the-original-obliveyon|Original|XL":  50142433214765,
   "obliveyon-hoodie||S":  48602088440109,
   "obliveyon-hoodie||M":  48602088472877,
   "obliveyon-hoodie||L":  48602088505645,
@@ -34,7 +30,6 @@ const CART_IMAGES: Record<string, string> = {
   "the-original-obliveyon|White":     "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/FF20555C-61F1-4BDA-BD15-4144F45F1623-removebg-preview.png?v=1730065095",
   "the-original-obliveyon|Acid Wash": "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/24FA5624-E3A8-4833-B6CE-2938ED68ED28-removebg-preview.png?v=1730065055",
   "the-original-obliveyon|Black":     "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
-  "the-original-obliveyon|Original":  "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
   "obliveyon-hoodie|":                "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
 };
 
@@ -62,7 +57,7 @@ interface CartSidebarProps {
 }
 
 export default function CartSidebar({ open, onClose }: CartSidebarProps) {
-  const { items, removeItem, updateQuantity, totalPrice } = useCart();
+  const { items, removeItem, updateQuantity, totalPrice, clearCart } = useCart();
 
   return (
     <AnimatePresence>
@@ -256,6 +251,7 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
                     const parsed = new URL(url);
                     if (parsed.hostname !== "obliveyon.myshopify.com") return;
                     onClose();
+                    clearCart();
                     window.location.href = url;
                   }}
                   className="w-full py-4 text-sm tracking-[0.4em] uppercase font-semibold cursor-pointer transition-opacity hover:opacity-90"

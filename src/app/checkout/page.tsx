@@ -51,7 +51,7 @@ function buildShopifyCartUrl(items: { productId: string; color?: string; size: s
 }
 
 export default function CheckoutPage() {
-  const { items, totalPrice } = useCart();
+  const { items, totalPrice, clearCart } = useCart();
   const router = useRouter();
 
   // Auto-redirect if cart has items
@@ -60,9 +60,10 @@ export default function CheckoutPage() {
       const url = buildShopifyCartUrl(items);
       const parsed = new URL(url);
       if (parsed.hostname !== "obliveyon.myshopify.com") return;
+      clearCart();
       window.location.href = url;
     }
-  }, [items]);
+  }, [items, clearCart]);
 
   if (items.length === 0) {
     return (
@@ -175,6 +176,7 @@ export default function CheckoutPage() {
               const url = buildShopifyCartUrl(items);
               const parsed = new URL(url);
               if (parsed.hostname !== "obliveyon.myshopify.com") return;
+              clearCart();
               window.location.href = url;
             }}
             className="w-full py-4 text-sm tracking-[0.5em] uppercase transition-all duration-300 cursor-pointer"

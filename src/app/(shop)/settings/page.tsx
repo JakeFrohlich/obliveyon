@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useVolume, setVolume } from "@/lib/volume-store";
 
 interface SliderProps {
@@ -77,20 +77,19 @@ function Slider({ label, description, value, onChange }: SliderProps) {
 }
 
 export default function SettingsPage() {
-  const router = useRouter();
-  const volume = useVolume();
-  const [returnPath, setReturnPath] = useState("/shop");
+  return (
+    <Suspense>
+      <SettingsInner />
+    </Suspense>
+  );
+}
 
-  useEffect(() => {
-    try {
-      const ref = new URL(document.referrer);
-      if (ref.origin === window.location.origin && (ref.pathname === "/" || ref.pathname === "")) {
-        setReturnPath("/");
-      }
-    } catch {
-      // No referrer or cross-origin — keep default /shop
-    }
-  }, []);
+function SettingsInner() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const volume = useVolume();
+
+  const returnPath = searchParams.get("from") === "/" ? "/" : "/shop";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden select-none">

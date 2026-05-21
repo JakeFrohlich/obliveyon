@@ -20,17 +20,12 @@ const SHOPIFY_VARIANTS: Record<string, number> = {
   "Black|M":      50142433018157,
   "Black|L":      50142433116461,
   "Black|XL":     50142433214765,
-  "Original|S":   50142432919853,
-  "Original|M":   50142433018157,
-  "Original|L":   50142433116461,
-  "Original|XL":  50142433214765,
 };
 
 const COLORS = [
-  { label: "Original", short: "O", swatch: "#2a2420" },
   { label: "Acid Wash", short: "A", swatch: "#5a5a5a" },
-  { label: "White",    short: "W", swatch: "#f0ede8" },
-  { label: "Black",   short: "B", swatch: "#0a0908" },
+  { label: "White",     short: "W", swatch: "#f0ede8" },
+  { label: "Black",     short: "B", swatch: "#0a0908" },
 ];
 
 const SIZES = ["S", "M", "L", "XL"];
@@ -38,10 +33,6 @@ const SIZES = ["S", "M", "L", "XL"];
 // Slides per colorway — add images/videos as you get them
 // type: "video" | "image"
 const COLOR_SLIDES: Record<string, { type: string; src: string }[]> = {
-  Original: [
-    { type: "image", src: "/The orginal Obliveyon.png" },
-    // Add more slides: { type: "image", src: "/acid-wash-front.png" },
-  ],
   White: [
     { type: "video", src: "/white hoodie.mp4" },
     { type: "image", src: "/White 1.png" },
@@ -70,7 +61,9 @@ function OriginalObliveyonInner() {
     return <DropLorePage />;
   }
 
-  return <PurchaseInner initialColor={parseInt(colorParam, 10)} />;
+  const parsed = parseInt(colorParam, 10);
+  const safeIndex = Number.isFinite(parsed) && parsed >= 0 && parsed < COLORS.length ? parsed : 0;
+  return <PurchaseInner initialColor={safeIndex} />;
 }
 
 function PurchaseInner({ initialColor }: { initialColor: number }) {
@@ -422,7 +415,7 @@ function PurchaseInner({ initialColor }: { initialColor: number }) {
             {/* Description */}
             <p className="text-sm leading-loose mb-10 px-4"
               style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, letterSpacing: "0.04em", textAlign: "center", color: "rgba(255,255,255,0.65)" }}>
-              The Original Obliveyon Zip Up. Heavyweight zip hoodie. Hand-embroidered Obliveyon logo. Custom zipper. Four colorways. The piece that started it all.
+              The Original Obliveyon Zip Up. Heavyweight zip hoodie. Hand-embroidered Obliveyon logo. Custom zipper. Three colorways. The piece that started it all.
             </p>
 
             {/* Color & Size labels */}
@@ -580,12 +573,12 @@ function DropLorePage() {
             ← Collection
           </button>
 
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center min-h-[400px] lg:min-h-[600px]">
             <img
               src="/The orginal Obliveyon.png"
               alt="The Original Obliveyon"
-              className="w-full max-w-md object-contain"
-              style={{ filter: "brightness(0.9)" }}
+              className="w-full max-w-md h-full object-contain"
+              style={{ filter: "brightness(0.9)", maxHeight: "600px" }}
             />
           </div>
         </div>
@@ -642,7 +635,7 @@ function DropLorePage() {
                 idea became something you could wear.
               </p>
               <p>
-                Four colorways. One silhouette. Heavyweight construction, hand
+                Three colorways. One silhouette. Heavyweight construction, hand
                 embroidery, and a custom zipper. Built to be the foundation, not
                 the finish.
               </p>

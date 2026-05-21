@@ -106,7 +106,7 @@ export default function Home() {
 
         {/* SETTINGS */}
         <button
-          onClick={() => router.push("/settings")}
+          onClick={() => router.push("/settings?from=/")}
           className="group cursor-pointer relative"
           style={{ transition: "filter 0.4s ease" }}
           onMouseEnter={(e) => {

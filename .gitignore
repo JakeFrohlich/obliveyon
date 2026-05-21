@@ -6,3 +6,5 @@ node_modules
 next-env.d.ts
 .claude/settings.json
 .mcp.json
+.vercel
+.env*.local

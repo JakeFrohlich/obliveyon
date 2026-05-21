@@ -38,7 +38,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "How do I contact the team?",
-    a: "Email hello@obliveyon.com — a real person will get back to you.",
+    a: "Email Obliveyon@gmail.com — a real person will get back to you.",
   },
 ];
 
@@ -46,10 +46,13 @@ export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#000000" }}>
-      <div className="flex-1 px-6 sm:px-10 lg:px-16 pb-16" style={{ paddingTop: "110px" }}>
+    <div className="min-h-screen flex flex-col items-center" style={{ background: "#000000" }}>
+      <div
+        className="w-full flex flex-col items-center px-6 pb-16"
+        style={{ paddingTop: "140px", maxWidth: "960px", marginLeft: "auto", marginRight: "auto" }}
+      >
         {/* Header */}
-        <div className="text-center mt-6 mb-12">
+        <div className="w-full text-center mb-12">
           <p
             className="text-[10px] tracking-[0.55em] uppercase text-white/40 mb-4"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
@@ -57,7 +60,7 @@ export default function FAQPage() {
             Questions
           </p>
           <h1
-            className="text-3xl sm:text-4xl tracking-[0.2em] uppercase text-white"
+            className="text-4xl sm:text-5xl lg:text-6xl tracking-[0.2em] uppercase text-white"
             style={{
               fontFamily: "var(--font-gothic)",
               fontWeight: 300,
@@ -66,11 +69,11 @@ export default function FAQPage() {
           >
             Frequently Asked
           </h1>
-          <div className="h-px mt-8 max-w-md mx-auto" style={{ background: "rgba(255,255,255,0.08)" }} />
+          <div className="h-px mt-8 mx-auto" style={{ background: "rgba(255,255,255,0.08)", maxWidth: "360px" }} />
         </div>
 
         {/* Q&A list */}
-        <div className="max-w-2xl mx-auto">
+        <div className="w-full">
           {FAQS.map((faq, i) => {
             const isOpen = openIndex === i;
             return (
@@ -80,10 +83,10 @@ export default function FAQPage() {
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : i)}
-                  className="w-full py-6 flex items-center justify-center gap-4 cursor-pointer transition-colors duration-300 group"
+                  className="w-full py-8 flex items-center justify-center gap-5 cursor-pointer transition-colors duration-300 group"
                 >
                   <span
-                    className="text-sm sm:text-base tracking-[0.08em] text-white/80 group-hover:text-white transition-colors duration-300 text-center"
+                    className="text-lg sm:text-xl tracking-[0.08em] text-white/80 group-hover:text-white transition-colors duration-300 text-center"
                     style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
                   >
                     {faq.q}
@@ -92,7 +95,7 @@ export default function FAQPage() {
                     className="flex-shrink-0 text-white/40 group-hover:text-white/70 transition-all duration-300"
                     style={{
                       fontFamily: "var(--font-medieval)",
-                      fontSize: "20px",
+                      fontSize: "24px",
                       transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
                       lineHeight: 1,
                     }}
@@ -101,9 +104,9 @@ export default function FAQPage() {
                   </span>
                 </button>
                 {isOpen && (
-                  <div className="pb-7 px-4">
+                  <div className="pb-9 px-6">
                     <p
-                      className="text-sm leading-loose text-white/55 text-center"
+                      className="text-base sm:text-lg leading-loose text-white/65 text-center"
                       style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, letterSpacing: "0.03em" }}
                     >
                       {faq.a}
@@ -116,7 +119,7 @@ export default function FAQPage() {
         </div>
 
         {/* Contact prompt */}
-        <div className="text-center mt-16 max-w-md mx-auto">
+        <div className="w-full text-center mt-16" style={{ maxWidth: "440px" }}>
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.06)" }} />
             <div className="w-1 h-1 rotate-45" style={{ background: "rgba(255,255,255,0.15)" }} />
@@ -129,11 +132,11 @@ export default function FAQPage() {
             Still have questions?
           </p>
           <a
-            href="mailto:hello@obliveyon.com"
+            href="mailto:Obliveyon@gmail.com"
             className="inline-block text-sm tracking-[0.3em] uppercase text-white/85 hover:text-white border-b border-white/20 hover:border-white/60 pb-1 transition-colors duration-300"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
           >
-            hello@obliveyon.com
+            Obliveyon@gmail.com
           </a>
         </div>
       </div>
