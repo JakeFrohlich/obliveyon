@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useVolume } from "@/lib/volume-store";
 
-const SRC = "/The_Pale_Archway.mp3";
+const SRC = "/Maruex.mp3";
 
 export default function BackgroundMusic() {
   const pathname = usePathname();
