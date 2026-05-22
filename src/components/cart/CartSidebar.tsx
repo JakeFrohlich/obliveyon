@@ -89,7 +89,7 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
             style={{
               width: "100%",
               maxWidth: "480px",
-              height: "100vh",
+              height: "100dvh",
               background: "#000",
               borderLeft: "1px solid rgba(255,255,255,0.12)",
             }}
@@ -238,7 +238,13 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="px-5 pb-6 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+              <div
+                className="px-5 pt-4 flex-shrink-0"
+                style={{
+                  borderTop: "1px solid rgba(255,255,255,0.15)",
+                  paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))",
+                }}
+              >
                 {/* Subtotal */}
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-gothic)", color: "#fff" }}>
