@@ -146,6 +146,12 @@ export default function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.id} className="flex items-center justify-between">
                   <div>
+                    {item.collection && (
+                      <p className="text-[10px] tracking-[0.15em] uppercase mb-0.5"
+                        style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, color: "rgba(255,255,255,0.3)" }}>
+                        {item.collection}
+                      </p>
+                    )}
                     <p className="text-sm" style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.8)" }}>
                       {item.name}
                     </p>

@@ -145,6 +145,7 @@ function OriginalObliveyonInner() {
       quantity,
       image: COLORS[selectedColor].image,
       color: COLORS[selectedColor].label,
+      collection: "The Original Obliveyon Zip Ups",
     });
     setAdded(true);
     setQuantity(1);

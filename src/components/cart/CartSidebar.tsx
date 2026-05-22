@@ -35,13 +35,13 @@ const CART_IMAGES: Record<string, string> = {
   "the-original-obliveyon|White":     "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/FF20555C-61F1-4BDA-BD15-4144F45F1623-removebg-preview.png?v=1730065095",
   "the-original-obliveyon|Acid Wash": "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/24FA5624-E3A8-4833-B6CE-2938ED68ED28-removebg-preview.png?v=1730065055",
   "the-original-obliveyon|Black":     "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
-  "obliveyon-hoodie|":                "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
-  "the-obliveyon-hoodie|Black":       "https://cdn.shopify.com/s/files/1/0862/8905/6045/files/45687B38-77D4-4FEE-AEDE-C87031346143-removebg-preview.png?v=1730065018",
+  "obliveyon-hoodie|":          "/hoodie-front.jpg",
+  "the-obliveyon-hoodie|Black": "/hoodie-front.jpg",
 };
 
-function getCartImage(productId: string, color?: string): string {
+function getCartImage(productId: string, color?: string, fallback?: string): string {
   const key = `${productId}|${color ?? ""}`;
-  return CART_IMAGES[key] || "";
+  return CART_IMAGES[key] || fallback || "";
 }
 
 function buildShopifyCartUrl(items: { productId: string; color?: string; size: string; quantity: number }[]): string {
@@ -142,7 +142,7 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
                       {/* Image */}
                       <div className="flex-shrink-0 w-28 h-36 overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.1)" }}>
                         <img
-                          src={getCartImage(item.productId, item.color)}
+                          src={getCartImage(item.productId, item.color, item.image)}
                           alt={item.name}
                           className="w-full h-full object-cover object-top"
                         />
@@ -151,10 +151,12 @@ export default function CartSidebar({ open, onClose }: CartSidebarProps) {
                       {/* Details + controls */}
                       <div className="flex-1 min-w-0 flex flex-col justify-between">
                         <div>
-                          {/* Vendor */}
-                          <p className="text-[11px] tracking-[0.25em] uppercase mb-1" style={{ fontFamily: "var(--font-medieval)", color: "rgba(255,255,255,0.45)" }}>
-                            Obliveyon
-                          </p>
+                          {/* Collection */}
+                          {item.collection && (
+                            <p className="text-[10px] tracking-[0.2em] uppercase mb-1" style={{ fontFamily: "var(--font-medieval)", color: "rgba(255,255,255,0.35)" }}>
+                              {item.collection}
+                            </p>
+                          )}
                           {/* Name */}
                           <p className="text-base font-semibold leading-snug" style={{ fontFamily: "var(--font-gothic)", color: "#fff" }}>
                             {item.name.split("—")[0].trim()}
