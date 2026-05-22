@@ -4,7 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { type Rank } from "@/lib/ranks";
+import { type Rank, EMOJI_UNLOCKS } from "@/lib/ranks";
 
 type RankResponse = {
   pieces: number;
@@ -52,10 +52,6 @@ const DANGER_GHOST_BTN: React.CSSProperties = {
   fontWeight: 400,
 };
 
-const AVATAR_EMOJIS = [
-  "🕯️", "⚔️", "🗡️", "🛡️", "🏹", "👁️", "🌙", "⚜️",
-  "🩸", "🖤", "🥀", "🪦", "⛓️", "🔮", "✝️", "☠️",
-];
 
 /* ──────────────── building blocks ──────────────── */
 
@@ -404,49 +400,81 @@ export default function ProfilePage() {
                   email={user.email!}
                   onClick={() => setPickerOpen((v) => !v)}
                 />
-                {pickerOpen && (
-                  <div
-                    className="absolute z-30 left-1/2 -translate-x-1/2 mt-4 p-4 grid grid-cols-4 gap-2"
-                    style={{
-                      width: "260px",
-                      background: "rgba(10,10,10,0.98)",
-                      border: "1px solid rgba(255,255,255,0.18)",
-                      boxShadow: "0 8px 40px rgba(0,0,0,0.6), 0 0 20px rgba(255,255,255,0.04)",
-                      backdropFilter: "blur(12px)",
-                    }}
-                  >
-                    {AVATAR_EMOJIS.map((e) => (
-                      <button
-                        key={e}
-                        type="button"
-                        onClick={() => handlePickAvatar(e)}
-                        className="w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-200"
-                        style={{
-                          fontSize: "26px",
-                          background: avatarEmoji === e ? "rgba(255,255,255,0.1)" : "transparent",
-                          border: avatarEmoji === e ? "1px solid rgba(255,255,255,0.4)" : "1px solid rgba(255,255,255,0.06)",
-                        }}
-                        onMouseEnter={(ev) => { ev.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
-                        onMouseLeave={(ev) => { ev.currentTarget.style.background = avatarEmoji === e ? "rgba(255,255,255,0.1)" : "transparent"; }}
+                {pickerOpen && (() => {
+                  const userTier = rankData?.current.tier ?? 1;
+                  return (
+                    <div
+                      className="absolute z-30 left-1/2 -translate-x-1/2 mt-4 p-4"
+                      style={{
+                        width: "272px",
+                        background: "rgba(10,10,10,0.98)",
+                        border: "1px solid rgba(255,255,255,0.18)",
+                        boxShadow: "0 8px 40px rgba(0,0,0,0.6), 0 0 20px rgba(255,255,255,0.04)",
+                        backdropFilter: "blur(12px)",
+                      }}
+                    >
+                      <p
+                        className="text-[9px] tracking-[0.45em] uppercase text-white/35 mb-3 text-center"
+                        style={{ fontFamily: "var(--font-medieval)" }}
                       >
-                        {e}
-                      </button>
-                    ))}
-                    {avatarEmoji && (
-                      <button
-                        type="button"
-                        onClick={() => handlePickAvatar(null)}
-                        className="col-span-4 mt-1 py-2 text-[10px] tracking-[0.35em] uppercase text-white/55 hover:text-white cursor-pointer transition-colors"
-                        style={{
-                          fontFamily: "var(--font-medieval)",
-                          border: "1px solid rgba(255,255,255,0.08)",
-                        }}
-                      >
-                        Reset to initial
-                      </button>
-                    )}
-                  </div>
-                )}
+                        Choose Sigil
+                      </p>
+                      <div className="grid grid-cols-4 gap-2">
+                        {EMOJI_UNLOCKS.map(({ emoji: e, minTier, label }) => {
+                          const locked = userTier < minTier;
+                          const active = avatarEmoji === e;
+                          return (
+                            <button
+                              key={e}
+                              type="button"
+                              onClick={() => !locked && handlePickAvatar(e)}
+                              title={locked ? `Unlocks at Rank ${minTier}` : label}
+                              className="relative w-12 h-12 flex items-center justify-center transition-all duration-200"
+                              style={{
+                                fontSize: "24px",
+                                cursor: locked ? "not-allowed" : "pointer",
+                                opacity: locked ? 0.28 : 1,
+                                background: active ? "rgba(255,255,255,0.1)" : "transparent",
+                                border: active
+                                  ? "1px solid rgba(255,255,255,0.4)"
+                                  : "1px solid rgba(255,255,255,0.06)",
+                              }}
+                              onMouseEnter={(ev) => {
+                                if (!locked) ev.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                              }}
+                              onMouseLeave={(ev) => {
+                                ev.currentTarget.style.background = active ? "rgba(255,255,255,0.1)" : "transparent";
+                              }}
+                            >
+                              {e}
+                              {locked && (
+                                <span
+                                  className="absolute bottom-0.5 right-0.5 text-[8px] leading-none"
+                                  style={{ color: "rgba(255,255,255,0.45)" }}
+                                >
+                                  🔒
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {avatarEmoji && (
+                        <button
+                          type="button"
+                          onClick={() => handlePickAvatar(null)}
+                          className="w-full mt-3 py-2 text-[10px] tracking-[0.35em] uppercase text-white/55 hover:text-white cursor-pointer transition-colors"
+                          style={{
+                            fontFamily: "var(--font-medieval)",
+                            border: "1px solid rgba(255,255,255,0.08)",
+                          }}
+                        >
+                          Reset to initial
+                        </button>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
 
               <h1
