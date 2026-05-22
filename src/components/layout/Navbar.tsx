@@ -7,6 +7,142 @@ import { useSession } from "next-auth/react";
 import { useCart } from "@/hooks/use-cart";
 import CartSidebar from "@/components/cart/CartSidebar";
 
+function FreeShippingBadge() {
+  return (
+    <>
+      <style>{`
+        @keyframes wumpus-shift {
+          0%   { background-position: 0% 50%; }
+          50%  { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes wumpus-sheen {
+          0%   { transform: translateX(-120%); }
+          60%  { transform: translateX(220%); }
+          100% { transform: translateX(220%); }
+        }
+        @keyframes wumpus-truck {
+          0%   { transform: translateX(0); }
+          50%  { transform: translateX(2px); }
+          100% { transform: translateX(0); }
+        }
+        .wumpus-text {
+          background: linear-gradient(
+            90deg,
+            #5865F2 0%,
+            #EB459E 25%,
+            #FEE75C 50%,
+            #57F287 75%,
+            #5865F2 100%
+          );
+          background-size: 300% 100%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          color: transparent;
+          animation: wumpus-shift 6s ease-in-out infinite;
+        }
+        .wumpus-badge {
+          position: relative;
+          overflow: hidden;
+          border: 1px solid rgba(88,101,242,0.45);
+          background:
+            linear-gradient(90deg, rgba(88,101,242,0.08), rgba(235,69,158,0.08), rgba(87,242,135,0.08)),
+            rgba(0,0,0,0.4);
+          background-size: 300% 100%, auto;
+          animation: wumpus-shift 6s ease-in-out infinite;
+          box-shadow:
+            0 0 12px rgba(88,101,242,0.18),
+            inset 0 0 8px rgba(235,69,158,0.06);
+        }
+        .wumpus-sheen {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 40%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255,255,255,0.18) 50%,
+            transparent 100%
+          );
+          animation: wumpus-sheen 4.5s ease-in-out infinite;
+          pointer-events: none;
+        }
+        .wumpus-truck {
+          animation: wumpus-truck 2s ease-in-out infinite;
+        }
+      `}</style>
+      <div
+        className="wumpus-badge hidden md:flex items-center gap-2"
+        style={{
+          padding: "4px 12px",
+          fontFamily: "var(--font-medieval)",
+          fontWeight: 500,
+          fontSize: "10px",
+          letterSpacing: "0.32em",
+          textTransform: "uppercase",
+          cursor: "default",
+          userSelect: "none",
+        }}
+        aria-label="Free US Shipping"
+        title="Free US Shipping on every order"
+      >
+        {/* Little truck icon */}
+        <svg
+          className="wumpus-truck"
+          width="16"
+          height="14"
+          viewBox="0 0 24 20"
+          fill="none"
+          stroke="url(#wumpus-truck-gradient)"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="wumpus-truck-gradient" x1="0" y1="0" x2="24" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#5865F2" />
+              <stop offset="33%" stopColor="#EB459E" />
+              <stop offset="66%" stopColor="#FEE75C" />
+              <stop offset="100%" stopColor="#57F287" />
+            </linearGradient>
+          </defs>
+          {/* truck body */}
+          <rect x="1" y="5" width="13" height="9" rx="0.5" />
+          {/* cab */}
+          <path d="M14 8h4l3 3v3h-7z" />
+          {/* wheels */}
+          <circle cx="6" cy="16" r="2" />
+          <circle cx="17" cy="16" r="2" />
+          {/* speed lines */}
+          <path d="M0 8h2M0 11h3" opacity="0.6" />
+        </svg>
+        {/* Tiny sparkle/star icon */}
+        <svg
+          width="9"
+          height="9"
+          viewBox="0 0 12 12"
+          fill="url(#wumpus-spark-gradient)"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="wumpus-spark-gradient" x1="0" y1="0" x2="12" y2="12" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#FEE75C" />
+              <stop offset="100%" stopColor="#EB459E" />
+            </linearGradient>
+          </defs>
+          <path d="M6 0 L7 5 L12 6 L7 7 L6 12 L5 7 L0 6 L5 5 Z" />
+        </svg>
+        <span className="wumpus-text">Free US Shipping</span>
+        <span className="wumpus-sheen" />
+      </div>
+    </>
+  );
+}
+
 function SocialCrossfade() {
   const [showDiscord, setShowDiscord] = useState(true);
 
@@ -133,8 +269,9 @@ export default function Navbar() {
         Obliveyon
       </Link>
 
-      {/* Right — Social + Cart */}
+      {/* Right — Free Shipping badge + Social + Cart */}
       <div className="flex items-center gap-4">
+        <FreeShippingBadge />
         <div className="flex items-center justify-center" style={borderStyle}>
           <SocialCrossfade />
         </div>
