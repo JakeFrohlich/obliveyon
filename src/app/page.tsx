@@ -1,18 +1,42 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 export default function Home() {
   const router = useRouter();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Force-play the splash video. iOS Safari sometimes refuses the initial
+  // autoplay even with the right attributes; retry on user gesture.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    v.playsInline = true;
+    const tryPlay = () => v.play().catch(() => {});
+    tryPlay();
+    const onInteract = () => tryPlay();
+    window.addEventListener("pointerdown", onInteract, { passive: true });
+    window.addEventListener("touchstart", onInteract, { passive: true });
+    return () => {
+      window.removeEventListener("pointerdown", onInteract);
+      window.removeEventListener("touchstart", onInteract);
+    };
+  }, []);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden select-none">
       {/* Video background */}
       <video
+        ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
+        controls={false}
+        disablePictureInPicture
+        preload="auto"
         className="absolute inset-0 w-full h-full object-cover"
       >
         <source src="/The real sword press play.mp4" type="video/mp4" />

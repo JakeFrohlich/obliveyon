@@ -205,10 +205,10 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* Center — Logo */}
+      {/* Center — Logo (hidden on small screens to avoid overlapping side groups) */}
       <Link
         href="/"
-        className="absolute left-1/2 -translate-x-1/2 text-white hover:text-white/70 transition-colors duration-300"
+        className="hidden lg:block absolute left-1/2 -translate-x-1/2 text-white hover:text-white/70 transition-colors duration-300 pointer-events-auto"
         style={{
           fontFamily: "var(--font-gothic)",
           fontWeight: 400,
