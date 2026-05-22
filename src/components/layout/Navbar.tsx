@@ -164,7 +164,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between pl-3 pr-5 sm:pl-10 sm:pr-14"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between pl-3 pr-8 sm:pl-10 sm:pr-14"
       style={{
         height: "56px",
         background: "#000000",
@@ -176,7 +176,7 @@ export default function Navbar() {
       <div className="flex items-center gap-2 sm:gap-4">
         <Link
           href={returnHref}
-          className="text-[11px] tracking-[0.5em] uppercase text-white/40 hover:text-white transition-colors duration-300"
+          className="text-[9px] sm:text-[11px] tracking-[0.3em] sm:tracking-[0.5em] uppercase text-white/40 hover:text-white transition-colors duration-300 whitespace-nowrap"
           style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
         >
           {returnLabel}
