@@ -24,18 +24,18 @@ function FreeShippingBadge() {
         .wumpus-text {
           background: linear-gradient(
             90deg,
-            #5865F2 0%,
-            #EB459E 28%,
-            #FEE75C 56%,
-            #57F287 84%,
-            #5865F2 100%
+            rgba(255,255,255,0.45) 0%,
+            rgba(255,255,255,1)    25%,
+            rgba(255,255,255,0.55) 50%,
+            rgba(255,255,255,1)    75%,
+            rgba(255,255,255,0.45) 100%
           );
           background-size: 300% 100%;
           -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
           color: transparent;
-          animation: wumpus-shift 5s ease-in-out infinite;
+          animation: wumpus-shift 4s ease-in-out infinite;
         }
         .wumpus-truck {
           animation: wumpus-truck 2s ease-in-out infinite;
@@ -67,9 +67,9 @@ function FreeShippingBadge() {
         >
           <defs>
             <linearGradient id="ship-grad" x1="0" y1="0" x2="24" y2="0" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#5865F2" />
-              <stop offset="50%" stopColor="#EB459E" />
-              <stop offset="100%" stopColor="#57F287" />
+              <stop offset="0%"   stopColor="rgba(255,255,255,0.45)" />
+              <stop offset="50%"  stopColor="rgba(255,255,255,1)" />
+              <stop offset="100%" stopColor="rgba(255,255,255,0.45)" />
             </linearGradient>
           </defs>
           <rect x="1" y="5" width="13" height="9" rx="0.5" />
