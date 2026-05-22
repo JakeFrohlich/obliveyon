@@ -53,31 +53,6 @@ export default function LoginPage() {
       </p>
 
       <div className="w-full max-w-sm flex flex-col gap-3">
-        {/* Sign in with Shop — placeholder, styled like Ditch */}
-        <button
-          type="button"
-          disabled
-          className="w-full py-3.5 text-sm tracking-[0.2em] uppercase text-white/40 cursor-not-allowed"
-          style={{
-            fontFamily: "var(--font-medieval)",
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          Sign in with Shop
-        </button>
-
-        <div className="flex items-center gap-4 my-1">
-          <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.08)" }} />
-          <span
-            className="text-[10px] tracking-[0.4em] uppercase text-white/25"
-            style={{ fontFamily: "var(--font-medieval)" }}
-          >
-            or
-          </span>
-          <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.08)" }} />
-        </div>
-
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
             type="email"

@@ -117,13 +117,42 @@ export default function LevelBar() {
                 ))}
               </div>
 
-              <div className="flex items-center justify-center">
-                <span
-                  className="text-sm sm:text-base text-white"
-                  style={{ fontFamily: "var(--font-medieval)", letterSpacing: "0.08em" }}
-                >
-                  {next ? `${next.threshold - pieces} ${next.threshold - pieces === 1 ? "piece" : "pieces"} until next rank` : "Max Rank Achieved"}
-                </span>
+              <div className="flex items-center justify-center" style={{ position: "relative", height: "1.5em" }}>
+                {status === "unauthenticated" ? (
+                  <>
+                    <style>{`
+                      @keyframes lb-fade-a {
+                        0%,40%   { opacity: 1; }
+                        55%,95%  { opacity: 0; }
+                        100%     { opacity: 1; }
+                      }
+                      @keyframes lb-fade-b {
+                        0%,40%   { opacity: 0; }
+                        55%,95%  { opacity: 1; }
+                        100%     { opacity: 0; }
+                      }
+                    `}</style>
+                    <span
+                      className="absolute text-sm sm:text-base text-white"
+                      style={{ fontFamily: "var(--font-medieval)", letterSpacing: "0.08em", animation: "lb-fade-a 5s ease-in-out infinite" }}
+                    >
+                      {next ? `${next.threshold - pieces} ${next.threshold - pieces === 1 ? "piece" : "pieces"} until next rank` : "Max Rank Achieved"}
+                    </span>
+                    <span
+                      className="absolute text-sm sm:text-base text-white/70"
+                      style={{ fontFamily: "var(--font-medieval)", letterSpacing: "0.08em", animation: "lb-fade-b 5s ease-in-out infinite" }}
+                    >
+                      Sign in to track your rank
+                    </span>
+                  </>
+                ) : (
+                  <span
+                    className="text-sm sm:text-base text-white"
+                    style={{ fontFamily: "var(--font-medieval)", letterSpacing: "0.08em" }}
+                  >
+                    {next ? `${next.threshold - pieces} ${next.threshold - pieces === 1 ? "piece" : "pieces"} until next rank` : "Max Rank Achieved"}
+                  </span>
+                )}
               </div>
             </div>
 
