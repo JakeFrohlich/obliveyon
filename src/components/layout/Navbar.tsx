@@ -164,7 +164,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 sm:px-10"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 sm:px-10"
       style={{
         height: "56px",
         background: "rgba(0,0,0,0.6)",
@@ -173,7 +173,7 @@ export default function Navbar() {
       }}
     >
       {/* Left — Return + Profile + Settings */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         <Link
           href={returnHref}
           className="text-[11px] tracking-[0.5em] uppercase text-white/40 hover:text-white transition-colors duration-300"
@@ -222,7 +222,7 @@ export default function Navbar() {
       </Link>
 
       {/* Right — Free Shipping badge + Social + Cart */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         <FreeShippingBadge />
         <div className="flex items-center justify-center" style={borderStyle}>
           <SocialCrossfade />
@@ -231,7 +231,7 @@ export default function Navbar() {
         <button
           onClick={() => setCartOpen(true)}
           aria-label="Open cart"
-          className="relative flex items-center gap-2 text-[11px] tracking-[0.5em] uppercase text-white/70 hover:text-white transition-colors duration-300 cursor-pointer"
+          className="relative flex items-center gap-2 text-[11px] tracking-[0.3em] sm:tracking-[0.5em] uppercase text-white/70 hover:text-white transition-colors duration-300 cursor-pointer"
           style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, ...borderStyle }}
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -245,7 +245,7 @@ export default function Navbar() {
             <circle cx="7" cy="13.5" r="0.8" fill="currentColor" />
             <circle cx="11" cy="13.5" r="0.8" fill="currentColor" />
           </svg>
-          Cart
+          <span className="hidden sm:inline">Cart</span>
           {totalItems > 0 && (
             <span
               className="absolute -top-1 -right-2 w-4 h-4 flex items-center justify-center text-[9px]"
