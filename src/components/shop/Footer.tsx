@@ -66,7 +66,7 @@ export default function Footer() {
       {/* Social icons */}
       <div className="flex items-center justify-center gap-6 mb-10">
         <a
-          href="https://discord.gg/obliveyon"
+          href="https://discord.gg/M4kgbn9Z"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Discord"

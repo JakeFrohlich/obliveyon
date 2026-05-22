@@ -107,7 +107,7 @@ function SocialCrossfade() {
     <div className="relative w-5 h-5" style={{ flexShrink: 0 }}>
       {/* Discord icon */}
       <a
-        href="https://discord.gg/obliveyon"
+        href="https://discord.gg/M4kgbn9Z"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Discord"
