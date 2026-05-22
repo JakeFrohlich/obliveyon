@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Footer from "@/components/shop/Footer";
+import MobileRankCard from "@/components/shop/MobileRankCard";
 
 const STATIC_PRODUCTS = [
   {
@@ -136,6 +137,9 @@ export default function ShopPage() {
 
         </div>
       </main>
+
+      {/* Mobile-only: rank info just above the footer (matches LevelBar content) */}
+      <MobileRankCard />
 
       <Footer />
     </div>
