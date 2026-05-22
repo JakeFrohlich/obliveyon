@@ -167,7 +167,7 @@ export default function Navbar() {
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 sm:px-10"
       style={{
         height: "56px",
-        background: "rgba(0,0,0,0.6)",
+        background: "#000000",
         backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(255,255,255,0.04)",
       }}
