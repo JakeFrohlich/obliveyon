@@ -316,22 +316,22 @@ function OriginalObliveyonInner() {
   const descriptionBlock = (
     <>
       <p
-        className="text-[13px] leading-relaxed text-white/65 max-w-md mb-3"
+        className="text-sm sm:text-base leading-relaxed text-white/65 max-w-md mb-3"
         style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
       >
         Heavyweight zip-up hoodie. Hand-finished embroidered logo. Custom zipper. Baggy oversized fit.
       </p>
       <p
-        className="max-w-md mb-8"
+        className="max-w-md mb-9"
         style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
       >
         <span
-          className="text-[11px] tracking-[0.35em] uppercase text-white/85"
+          className="text-[12px] sm:text-[13px] tracking-[0.35em] uppercase text-white/85"
           style={{ fontWeight: 500 }}
         >
           <span className="opacity-50">— </span>Baggy.
         </span>
-        <span className="text-[12px] tracking-[0.05em] text-white/55 ml-2">
+        <span className="text-[13px] sm:text-sm tracking-[0.05em] text-white/55 ml-2">
           Make sure to read the size chart.
         </span>
       </p>
@@ -593,10 +593,10 @@ function OriginalObliveyonInner() {
         </div>
 
         {/* ── RIGHT PANEL — all product info, centered ── */}
-        <div className="relative flex flex-col items-center text-center w-full lg:w-[45%] px-8 lg:px-14 pt-4 lg:pt-12 pb-12 lg:pb-12 justify-start lg:justify-center">
+        <div className="relative flex flex-col items-center text-center w-full lg:w-[45%] px-8 lg:px-16 pt-4 lg:pt-16 pb-12 lg:pb-16 justify-start lg:justify-center">
           {/* Category */}
           <p
-            className="text-[10px] sm:text-[11px] tracking-[0.6em] uppercase text-white/35 mb-4"
+            className="text-[11px] sm:text-[13px] tracking-[0.6em] uppercase text-white/35 mb-5"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
           >
             Zip Up
@@ -604,7 +604,7 @@ function OriginalObliveyonInner() {
 
           {/* Title */}
           <h1
-            className="text-3xl sm:text-4xl lg:text-5xl tracking-[0.04em] uppercase text-white leading-tight mb-4"
+            className="text-4xl sm:text-5xl lg:text-6xl tracking-[0.04em] uppercase text-white leading-tight mb-5"
             style={{
               fontFamily: "var(--font-gothic)",
               fontWeight: 300,
@@ -618,7 +618,7 @@ function OriginalObliveyonInner() {
 
           {/* Price */}
           <p
-            className="text-xl sm:text-2xl tracking-[0.1em] text-white/90 tabular-nums mb-8"
+            className="text-2xl sm:text-3xl tracking-[0.1em] text-white/90 tabular-nums mb-9"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 500 }}
           >
             $70
@@ -629,22 +629,22 @@ function OriginalObliveyonInner() {
 
           {/* ── Colorway swatches ── */}
           <p
-            className="text-[10px] sm:text-[11px] tracking-[0.5em] uppercase text-white/55 mb-4"
+            className="text-[11px] sm:text-[13px] tracking-[0.5em] uppercase text-white/55 mb-5"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
           >
             Colorway — {COLORS[selectedColor].label}
           </p>
-          <div className="flex flex-wrap gap-4 sm:gap-5 mb-10">
+          <div className="flex flex-wrap gap-5 sm:gap-6 mb-11">
             {COLORS.map((color, i) => {
               const selected = selectedColor === i;
               return (
                 <button
                   key={color.label}
                   onClick={() => changeColor(i)}
-                  className="flex flex-col items-center gap-2 cursor-pointer group"
+                  className="flex flex-col items-center gap-2.5 cursor-pointer group"
                 >
                   <div
-                    className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center transition-all duration-300"
+                    className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center transition-all duration-300"
                     style={{
                       background: color.swatch,
                       border: selected
@@ -654,7 +654,7 @@ function OriginalObliveyonInner() {
                     }}
                   >
                     <span
-                      className="text-[10px] tracking-[0.25em] uppercase"
+                      className="text-[11px] tracking-[0.25em] uppercase"
                       style={{
                         fontFamily: "var(--font-medieval)",
                         color: color.swatch === "#f0ede8" ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.55)",
@@ -664,7 +664,7 @@ function OriginalObliveyonInner() {
                     </span>
                   </div>
                   <span
-                    className="text-[9px] sm:text-[10px] tracking-[0.3em] uppercase transition-colors duration-300"
+                    className="text-[10px] sm:text-[11px] tracking-[0.3em] uppercase transition-colors duration-300"
                     style={{
                       fontFamily: "var(--font-medieval)",
                       color: selected ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.3)",
@@ -679,19 +679,19 @@ function OriginalObliveyonInner() {
 
           {/* ── Size ── */}
           <p
-            className="text-[10px] sm:text-[11px] tracking-[0.5em] uppercase text-white/55 mb-3"
+            className="text-[11px] sm:text-[13px] tracking-[0.5em] uppercase text-white/55 mb-4"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
           >
             Size {selectedSize && `— ${selectedSize}`}
           </p>
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-3 mb-9">
             {SIZES.map((size) => {
               const selected = selectedSize === size;
               return (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className="px-5 sm:px-6 py-2.5 text-xs sm:text-sm tracking-[0.3em] uppercase cursor-pointer transition-all duration-300"
+                  className="px-6 sm:px-8 py-3 sm:py-3.5 text-sm sm:text-base tracking-[0.3em] uppercase cursor-pointer transition-all duration-300"
                   style={{
                     fontFamily: "var(--font-medieval)",
                     fontWeight: 300,
@@ -713,17 +713,18 @@ function OriginalObliveyonInner() {
 
           {/* ── Quantity ── */}
           <p
-            className="text-[10px] sm:text-[11px] tracking-[0.5em] uppercase text-white/55 mb-3"
+            className="text-[11px] sm:text-[13px] tracking-[0.5em] uppercase text-white/55 mb-4"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
           >
             Quantity
           </p>
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-4 mb-9">
             <button
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              className="w-10 h-10 flex items-center justify-center text-sm cursor-pointer transition-all duration-300"
+              className="w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300"
               style={{
                 fontFamily: "var(--font-medieval)",
+                fontSize: "18px",
                 color: "rgba(255,255,255,0.55)",
                 border: "1px solid rgba(255,255,255,0.12)",
               }}
@@ -733,16 +734,17 @@ function OriginalObliveyonInner() {
               −
             </button>
             <span
-              className="text-lg w-10 text-center tabular-nums"
+              className="text-xl w-12 text-center tabular-nums"
               style={{ fontFamily: "var(--font-medieval)", color: "rgba(255,255,255,0.85)" }}
             >
               {quantity}
             </span>
             <button
               onClick={() => setQuantity((q) => q + 1)}
-              className="w-10 h-10 flex items-center justify-center text-sm cursor-pointer transition-all duration-300"
+              className="w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300"
               style={{
                 fontFamily: "var(--font-medieval)",
+                fontSize: "18px",
                 color: "rgba(255,255,255,0.55)",
                 border: "1px solid rgba(255,255,255,0.12)",
               }}
@@ -757,7 +759,7 @@ function OriginalObliveyonInner() {
           <button
             onClick={handleAddToCart}
             disabled={!selectedSize}
-            className="w-full max-w-sm py-4 text-xs sm:text-sm tracking-[0.5em] uppercase transition-all duration-300 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full max-w-sm py-5 text-sm sm:text-base tracking-[0.5em] uppercase transition-all duration-300 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
             style={{
               fontFamily: "var(--font-medieval)",
               fontWeight: 400,
