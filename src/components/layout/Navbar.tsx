@@ -1,7 +1,53 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useCart } from "@/hooks/use-cart";
+import CartSidebar from "@/components/cart/CartSidebar";
+
+function SocialCrossfade() {
+  const [showDiscord, setShowDiscord] = useState(true);
+
+  useEffect(() => {
+    const id = setInterval(() => setShowDiscord((v) => !v), 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="relative w-5 h-5" style={{ flexShrink: 0 }}>
+      {/* Discord icon */}
+      <a
+        href="https://discord.gg/obliveyon"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Discord"
+        className="absolute inset-0 flex items-center justify-center text-white/70 hover:text-white transition-opacity duration-700"
+        style={{ opacity: showDiscord ? 1 : 0, pointerEvents: showDiscord ? "auto" : "none" }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.055a19.928 19.928 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+        </svg>
+      </a>
+      {/* Instagram icon */}
+      <a
+        href="https://www.instagram.com/obliveyon/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram"
+        className="absolute inset-0 flex items-center justify-center text-white/70 hover:text-white transition-opacity duration-700"
+        style={{ opacity: showDiscord ? 0 : 1, pointerEvents: showDiscord ? "none" : "auto" }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+        </svg>
+      </a>
+    </div>
+  );
+}
 
 const borderStyle = {
   border: "1px solid rgba(255,255,255,0.2)",
@@ -9,7 +55,24 @@ const borderStyle = {
 };
 
 export default function Navbar() {
-  const [cartCount] = useState(0);
+  const { totalItems } = useCart();
+  const { status } = useSession();
+  const pathname = usePathname();
+  const [cartOpen, setCartOpen] = useState(false);
+  const [prevTotal, setPrevTotal] = useState(totalItems);
+
+  useEffect(() => {
+    if (totalItems > prevTotal) setCartOpen(true);
+    setPrevTotal(totalItems);
+  }, [totalItems, prevTotal]);
+
+  const isAuthed = status === "authenticated";
+  // Pages where "← Return" should go to /shop instead of /
+  const SHOP_SUBPAGES = ["/faq", "/privacy", "/profile", "/settings", "/account"];
+  const goesToShop =
+    !!pathname && (SHOP_SUBPAGES.some((p) => pathname.startsWith(p)) || pathname.startsWith("/product"));
+  const returnHref = goesToShop ? "/shop" : "/";
+  const returnLabel = goesToShop ? "← Collection" : "← Return";
 
   return (
     <nav
@@ -21,33 +84,36 @@ export default function Navbar() {
         borderBottom: "1px solid rgba(255,255,255,0.04)",
       }}
     >
-      {/* Left — Return + Sign In + Join */}
+      {/* Left — Return + Profile + Settings */}
       <div className="flex items-center gap-4">
         <Link
-          href="/"
+          href={returnHref}
           className="text-[11px] tracking-[0.5em] uppercase text-white/40 hover:text-white transition-colors duration-300"
           style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
         >
-          ← Return
+          {returnLabel}
         </Link>
         <Link
-          href="/login"
-          className="text-[11px] tracking-[0.5em] uppercase text-white/70 hover:text-white transition-colors duration-300"
-          style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, ...borderStyle }}
+          href={isAuthed ? "/profile" : "/account"}
+          aria-label={isAuthed ? "Profile" : "Sign in or sign up"}
+          className="flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
+          style={{ ...borderStyle, padding: "6px 10px" }}
         >
-          Sign In
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
+          </svg>
         </Link>
         <Link
-          href="/create-account"
-          className="text-[11px] tracking-[0.5em] uppercase text-white hover:text-white/60 transition-colors duration-300"
-          style={{
-            fontFamily: "var(--font-medieval)",
-            fontWeight: 400,
-            ...borderStyle,
-            border: "1px solid rgba(255,255,255,0.5)",
-          }}
+          href="/settings"
+          aria-label="Settings"
+          className="flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
+          style={{ ...borderStyle, padding: "6px 10px" }}
         >
-          Sign Up
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
         </Link>
       </div>
 
@@ -67,17 +133,15 @@ export default function Navbar() {
         Obliveyon
       </Link>
 
-      {/* Right — Shop + Cart */}
+      {/* Right — Social + Cart */}
       <div className="flex items-center gap-4">
-        <Link
-          href="/shop"
-          className="text-[11px] tracking-[0.5em] uppercase text-white/70 hover:text-white transition-colors duration-300"
-          style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, ...borderStyle }}
-        >
-          Shop
-        </Link>
+        <div className="flex items-center justify-center" style={borderStyle}>
+          <SocialCrossfade />
+        </div>
 
         <button
+          onClick={() => setCartOpen(true)}
+          aria-label="Open cart"
           className="relative flex items-center gap-2 text-[11px] tracking-[0.5em] uppercase text-white/70 hover:text-white transition-colors duration-300 cursor-pointer"
           style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, ...borderStyle }}
         >
@@ -93,7 +157,7 @@ export default function Navbar() {
             <circle cx="11" cy="13.5" r="0.8" fill="currentColor" />
           </svg>
           Cart
-          {cartCount > 0 && (
+          {totalItems > 0 && (
             <span
               className="absolute -top-1 -right-2 w-4 h-4 flex items-center justify-center text-[9px]"
               style={{
@@ -102,11 +166,14 @@ export default function Navbar() {
                 color: "#000",
               }}
             >
-              {cartCount}
+              {totalItems}
             </span>
           )}
         </button>
+
       </div>
+
+      <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} />
     </nav>
   );
 }

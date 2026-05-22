@@ -13,6 +13,7 @@ model User {
   name         String?
   passwordHash String   @map("password_hash")
   role         Role     @default(CUSTOMER)
+  avatarEmoji  String?  @map("avatar_emoji")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
   orders       Order[]

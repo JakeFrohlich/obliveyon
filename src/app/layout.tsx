@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Cormorant } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Providers from "@/components/layout/Providers";
+import BackgroundMusic from "@/components/audio/BackgroundMusic";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -19,6 +20,7 @@ const cormorantDisplay = Cormorant({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://obliveyon.com"),
   title: "Obliveyon — Dark Luxury Streetwear",
   description:
     "Premium streetwear for those who move through the world on their own terms. Built for the bold. Designed for the future.",
@@ -27,6 +29,13 @@ export const metadata: Metadata = {
     title: "Obliveyon — Dark Luxury Streetwear",
     description: "Premium streetwear for the bold.",
     type: "website",
+    url: "https://obliveyon.com",
+    siteName: "Obliveyon",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Obliveyon — Dark Luxury Streetwear",
+    description: "Premium streetwear for the bold.",
   },
 };
 
@@ -41,6 +50,7 @@ export default function RootLayout({
         <Providers>
           <main className="flex-1">{children}</main>
         </Providers>
+        <BackgroundMusic />
         <Analytics />
       </body>
     </html>

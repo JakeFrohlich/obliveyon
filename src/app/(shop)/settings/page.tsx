@@ -1,52 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-
-interface ToggleProps {
-  label: string;
-  description: string;
-  enabled: boolean;
-  onToggle: () => void;
-}
-
-function Toggle({ label, description, enabled, onToggle }: ToggleProps) {
-  return (
-    <div className="flex items-center justify-between py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-      <div>
-        <p
-          className="text-sm tracking-[0.3em] uppercase text-white/90"
-          style={{ fontFamily: "var(--font-medieval)", fontWeight: 400 }}
-        >
-          {label}
-        </p>
-        <p
-          className="text-[10px] tracking-wider text-white/30 mt-1"
-          style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
-        >
-          {description}
-        </p>
-      </div>
-      <button
-        onClick={onToggle}
-        className="relative w-12 h-6 cursor-pointer transition-all duration-300"
-        style={{
-          background: enabled ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.06)",
-          border: `1px solid ${enabled ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.1)"}`,
-        }}
-      >
-        <div
-          className="absolute top-[2px] w-4 h-4 transition-all duration-300"
-          style={{
-            left: enabled ? "calc(100% - 18px)" : "2px",
-            background: enabled ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.3)",
-            boxShadow: enabled ? "0 0 10px rgba(255,255,255,0.3)" : "none",
-          }}
-        />
-      </button>
-    </div>
-  );
-}
+import { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useVolume, setVolume } from "@/lib/volume-store";
 
 interface SliderProps {
   label: string;
@@ -121,15 +77,25 @@ function Slider({ label, description, value, onChange }: SliderProps) {
 }
 
 export default function SettingsPage() {
+  return (
+    <Suspense>
+      <SettingsInner />
+    </Suspense>
+  );
+}
+
+function SettingsInner() {
   const router = useRouter();
-  const [volume, setVolume] = useState(75);
-  const [notifications, setNotifications] = useState(true);
+  const searchParams = useSearchParams();
+  const volume = useVolume();
+
+  const returnPath = searchParams.get("from") === "/" ? "/" : "/shop";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden select-none">
       {/* Back button — top left */}
       <button
-        onClick={() => router.push("/")}
+        onClick={() => router.push(returnPath)}
         className="fixed top-6 left-6 z-20 text-[11px] tracking-[0.4em] uppercase transition-colors duration-300 cursor-pointer"
         style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.85)", textShadow: "0 0 12px rgba(0,0,0,0.9)" }}
         onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
@@ -209,12 +175,6 @@ export default function SettingsPage() {
             description="Background music and ambient effects"
             value={volume}
             onChange={setVolume}
-          />
-          <Toggle
-            label="Notifications"
-            description="Alerts for new drops and restocks"
-            enabled={notifications}
-            onToggle={() => setNotifications(!notifications)}
           />
         </div>
 

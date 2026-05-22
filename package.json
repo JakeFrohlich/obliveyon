@@ -14,11 +14,13 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@prisma/client": "^6.19.2",
     "@stripe/stripe-js": "^8.11.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
+    "@types/react-window": "^1.8.8",
     "@vercel/analytics": "^2.0.1",
     "bcryptjs": "^3.0.3",
     "framer-motion": "^12.38.0",
@@ -27,9 +29,11 @@
     "next": "^16.2.0",
     "next-auth": "^5.0.0-beta.30",
     "postcss": "^8.5.8",
+    "puppeteer": "^24.41.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-phone-number-input": "^3.4.16",
+    "react-window": "^2.2.7",
     "recharts": "^3.8.1",
     "stripe": "^20.4.1",
     "tailwindcss": "^4.2.2",
@@ -39,6 +43,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "dotenv-cli": "^11.0.0",
     "prisma": "^6.19.2",
     "tsx": "^4.21.0"
   }
