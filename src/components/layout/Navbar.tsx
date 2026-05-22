@@ -164,7 +164,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 sm:pl-10 sm:pr-14"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between pl-3 pr-5 sm:pl-10 sm:pr-14"
       style={{
         height: "56px",
         background: "#000000",
