@@ -48,8 +48,9 @@ export default function ShopPage() {
     >
       {/* Main content — grows to push footer down */}
       <main className="flex-1">
-        {/* Header — mobile 68px clears navbar only (56px); desktop 120px clears navbar+LevelBar */}
-        <div className="px-6 sm:px-10 lg:px-16 pb-10 pt-[80px] sm:pt-[120px]">
+        {/* Header — mobile 80px clears navbar (56px); desktop 120px clears navbar+LevelBar */}
+        <div className="px-6 sm:px-10 lg:px-16 pb-10" style={{ paddingTop: "80px" }}>
+          <div className="hidden sm:block" style={{ height: "40px" }} />
           <div className="text-center mt-6">
             <h1
               className="text-3xl sm:text-4xl lg:text-5xl tracking-[0.25em] uppercase text-white"
