@@ -378,10 +378,18 @@ export default function ProfilePage() {
   const avatarEmoji = profile?.avatarEmoji || null;
 
   return (
-    <div className="min-h-screen w-full" style={{ background: "#000000" }}>
+    <div
+      className="min-h-screen w-full flex flex-col items-center"
+      style={{ background: "#000000" }}
+    >
       <div
-        className="w-full mx-auto px-6 sm:px-10 pb-24"
-        style={{ paddingTop: "140px", maxWidth: "1100px" }}
+        className="w-full px-6 sm:px-10 lg:px-14 pb-24"
+        style={{
+          paddingTop: "140px",
+          maxWidth: "1280px",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
       >
         {/* ────────────── HERO ROW ────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,_1fr)_minmax(0,_1.1fr)] gap-6 mb-12">

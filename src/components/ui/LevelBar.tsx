@@ -164,7 +164,7 @@ export default function LevelBar() {
         aria-label={collapsed ? "Show rank" : "Hide rank"}
         className="absolute left-1/2 -translate-x-1/2 cursor-pointer transition-all duration-300"
         style={{
-          bottom: "-12px",
+          bottom: "-20px",
           width: "44px",
           height: "20px",
           background: "rgba(0,0,0,0.9)",
