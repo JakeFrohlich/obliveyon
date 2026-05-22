@@ -123,7 +123,7 @@ export default function ShopPage() {
                   {product.name}
                 </p>
                 <p
-                  className="text-base sm:text-lg tracking-[0.15em] text-white/85 mt-2"
+                  className="text-base sm:text-lg tracking-[0.15em] text-white/55 mt-2"
                   style={{ fontFamily: "var(--font-medieval)", fontWeight: 400 }}
                 >
                   {product.price}
