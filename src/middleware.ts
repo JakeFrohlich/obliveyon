@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const DROP_DATE = new Date("2026-05-22T20:00:00Z"); // 3pm EST (UTC-5)
+const DROP_DATE = new Date("2026-05-22T00:00:00Z"); // gate open
 
 const ALLOWED_PATHS = [
   "/signup",
