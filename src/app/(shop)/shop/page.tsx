@@ -53,8 +53,8 @@ export default function ShopPage() {
             <h1
               className="text-3xl sm:text-4xl lg:text-5xl tracking-[0.25em] uppercase text-white"
               style={{
-                fontFamily: "var(--font-luxe)",
-                fontWeight: 400,
+                fontFamily: "var(--font-gothic)",
+                fontWeight: 300,
                 textShadow: "0 0 40px rgba(255,255,255,0.06)",
               }}
             >
@@ -117,14 +117,14 @@ export default function ShopPage() {
               </div>
               <div className="mt-3">
                 <p
-                  className="text-sm sm:text-base tracking-[0.32em] uppercase text-white/80 group-hover:text-white transition-colors duration-300 truncate"
-                  style={{ fontFamily: "var(--font-luxe)", fontWeight: 400 }}
+                  className="text-[11px] sm:text-xs tracking-[0.25em] uppercase text-white/75 group-hover:text-white transition-colors duration-300 truncate"
+                  style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
                 >
                   {product.name}
                 </p>
                 <p
-                  className="text-base sm:text-lg tracking-[0.22em] text-white/55 mt-2"
-                  style={{ fontFamily: "var(--font-luxe)", fontWeight: 400 }}
+                  className="text-base sm:text-lg tracking-[0.15em] text-white/55 mt-2"
+                  style={{ fontFamily: "var(--font-medieval)", fontWeight: 400 }}
                 >
                   {product.price}
                 </p>

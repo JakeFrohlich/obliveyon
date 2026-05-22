@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Cormorant, Italiana } from "next/font/google";
+import { Cormorant_Garamond, Cormorant } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Providers from "@/components/layout/Providers";
@@ -16,13 +16,6 @@ const cormorantDisplay = Cormorant({
   subsets: ["latin"],
   weight: ["300", "400", "500"],
   variable: "--font-gothic",
-  display: "swap",
-});
-
-const italiana = Italiana({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-luxe",
   display: "swap",
 });
 
@@ -53,7 +46,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`min-h-screen flex flex-col ${cormorant.variable} ${cormorantDisplay.variable} ${italiana.variable}`}>
+      <body className={`min-h-screen flex flex-col ${cormorant.variable} ${cormorantDisplay.variable}`}>
         <Providers>
           <main className="flex-1">{children}</main>
         </Providers>
