@@ -52,7 +52,7 @@ export default function LevelBar() {
 
   return (
     <div
-      className="fixed top-[56px] left-0 right-0 z-40"
+      className="hidden sm:block fixed top-[56px] left-0 right-0 z-40"
       style={{
         background: "rgba(0,0,0,0.9)",
         backdropFilter: "blur(12px)",
