@@ -172,7 +172,7 @@ export default function Navbar() {
         borderBottom: "1px solid rgba(255,255,255,0.04)",
       }}
     >
-      {/* Left — Return + Profile + Settings */}
+      {/* Left — Return + Profile + Settings (profile/settings hidden on mobile) */}
       <div className="flex items-center gap-2 sm:gap-4">
         <Link
           href={returnHref}
@@ -184,7 +184,7 @@ export default function Navbar() {
         <Link
           href={isAuthed ? "/profile" : "/account"}
           aria-label={isAuthed ? "Profile" : "Sign in or sign up"}
-          className="flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
+          className="hidden sm:flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
           style={{ ...borderStyle, padding: "6px 10px" }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -195,7 +195,7 @@ export default function Navbar() {
         <Link
           href="/settings"
           aria-label="Settings"
-          className="flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
+          className="hidden sm:flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
           style={{ ...borderStyle, padding: "6px 10px" }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -205,10 +205,10 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* Center — Logo (hidden on small screens to avoid overlapping side groups) */}
+      {/* Center — Logo (visible on all screens now) */}
       <Link
         href="/"
-        className="hidden lg:block absolute left-1/2 -translate-x-1/2 text-white hover:text-white/70 transition-colors duration-300 pointer-events-auto"
+        className="absolute left-1/2 -translate-x-1/2 text-white hover:text-white/70 transition-colors duration-300 pointer-events-auto"
         style={{
           fontFamily: "var(--font-gothic)",
           fontWeight: 400,
@@ -221,10 +221,10 @@ export default function Navbar() {
         Obliveyon
       </Link>
 
-      {/* Right — Free Shipping badge + Social + Cart */}
+      {/* Right — Free Shipping badge + Social + Cart (social hidden on mobile) */}
       <div className="flex items-center gap-2 sm:gap-4">
         <FreeShippingBadge />
-        <div className="flex items-center justify-center" style={borderStyle}>
+        <div className="hidden sm:flex items-center justify-center" style={borderStyle}>
           <SocialCrossfade />
         </div>
 
