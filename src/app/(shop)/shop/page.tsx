@@ -48,14 +48,8 @@ export default function ShopPage() {
     >
       {/* Main content — grows to push footer down */}
       <main className="flex-1">
-        {/* Header — Collection title sits well below the navbar */}
-        <div className="shop-header px-6 sm:px-10 lg:px-16 pb-10">
-          <style>{`
-            .shop-header { padding-top: 180px; }
-            @media (min-width: 640px) {
-              .shop-header { padding-top: 120px; }
-            }
-          `}</style>
+        {/* Header */}
+        <div className="px-6 sm:px-10 lg:px-16 pb-10" style={{ paddingTop: "120px" }}>
           <div className="text-center mt-6">
             <h1
               className="text-3xl sm:text-4xl lg:text-5xl tracking-[0.25em] uppercase text-white"
