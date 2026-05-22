@@ -48,8 +48,8 @@ export default function ShopPage() {
     >
       {/* Main content — grows to push footer down */}
       <main className="flex-1">
-        {/* Header — slightly less top padding on phone since LevelBar is hidden */}
-        <div className="px-6 sm:px-10 lg:px-16 pt-[100px] sm:pt-[120px] pb-10">
+        {/* Header — clear the navbar fully on phone */}
+        <div className="px-6 sm:px-10 lg:px-16 pt-[140px] sm:pt-[120px] pb-10">
           <div className="text-center mt-6">
             <h1
               className="text-3xl sm:text-4xl lg:text-5xl tracking-[0.25em] uppercase text-white"
