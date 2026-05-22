@@ -6,7 +6,7 @@ const SITE_LINKS = [
   { label: "Shop",     href: "/shop" },
   { label: "FAQ",      href: "/faq" },
   { label: "Policies", href: "/privacy" },
-  { label: "Contact",  href: "mailto:Obliveyon@gmail.com" },
+  { label: "Contact",  href: "mailto:vip@obliveyon.com" },
 ];
 
 export default function Footer() {

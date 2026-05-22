@@ -78,7 +78,7 @@ export default function AccountGatewayPage() {
         {[
           { label: "Shop", href: "/shop" },
           { label: "Privacy Policy", href: "/privacy" },
-          { label: "Contact", href: "mailto:Obliveyon@gmail.com" },
+          { label: "Contact", href: "mailto:vip@obliveyon.com" },
         ].map((l) => (
           <a
             key={l.label}

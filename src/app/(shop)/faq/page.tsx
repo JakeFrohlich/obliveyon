@@ -6,11 +6,7 @@ import Footer from "@/components/shop/Footer";
 const FAQS: { q: string; a: string }[] = [
   {
     q: "When does the first drop release?",
-    a: "May 21, 2026. Sign up to be the first to know when the doors open.",
-  },
-  {
-    q: "How does sizing run?",
-    a: "Pieces run true to size. The Original Obliveyon zip-up has a relaxed, oversized fit through the body. If you're between sizes, size down for a closer fit, up for a looser drape.",
+    a: "May 22, 2026. Sign up to be the first to know when the doors open.",
   },
   {
     q: "What materials are used?",
@@ -22,7 +18,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "How long does shipping take?",
-    a: "Orders typically ship within 3–5 business days from order confirmation. Delivery time varies by destination — see our Shipping Policy for full details.",
+    a: "Shipping takes 6–18 business days from order confirmation, depending on destination.",
   },
   {
     q: "Do you ship internationally?",
@@ -30,7 +26,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What's your return policy?",
-    a: "Unworn, unwashed pieces with original tags can be returned within 14 days of delivery for a refund. See our Refund Policy for full details.",
+    a: "Returns accepted within 14 days, including the time it takes for delivery.",
   },
   {
     q: "Will sold-out colorways come back?",
@@ -38,7 +34,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "How do I contact the team?",
-    a: "Email Obliveyon@gmail.com — a real person will get back to you.",
+    a: "Email vip@obliveyon.com — a real person will get back to you.",
   },
 ];
 
@@ -132,11 +128,11 @@ export default function FAQPage() {
             Still have questions?
           </p>
           <a
-            href="mailto:Obliveyon@gmail.com"
+            href="mailto:vip@obliveyon.com"
             className="inline-block text-sm tracking-[0.3em] uppercase text-white/85 hover:text-white border-b border-white/20 hover:border-white/60 pb-1 transition-colors duration-300"
             style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
           >
-            Obliveyon@gmail.com
+            vip@obliveyon.com
           </a>
         </div>
       </div>
