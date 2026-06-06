@@ -24,11 +24,6 @@ const SHOPIFY_VARIANTS: Record<string, number> = {
   "the-original-obliveyon|Black|M":  50142433018157,
   "the-original-obliveyon|Black|L":  50142433116461,
   "the-original-obliveyon|Black|XL": 50142433214765,
-  // Zip Up — Original (mapped to Black)
-  "the-original-obliveyon|Original|S":  50142432919853,
-  "the-original-obliveyon|Original|M":  50142433018157,
-  "the-original-obliveyon|Original|L":  50142433116461,
-  "the-original-obliveyon|Original|XL": 50142433214765,
   // Hoodie
   "obliveyon-hoodie||S":  48602088440109,
   "obliveyon-hoodie||M":  48602088472877,
@@ -146,6 +141,12 @@ export default function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.id} className="flex items-center justify-between">
                   <div>
+                    {item.collection && (
+                      <p className="text-[10px] tracking-[0.15em] uppercase mb-0.5"
+                        style={{ fontFamily: "var(--font-medieval)", fontWeight: 300, color: "rgba(255,255,255,0.3)" }}>
+                        {item.collection}
+                      </p>
+                    )}
                     <p className="text-sm" style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, color: "rgba(255,255,255,0.8)" }}>
                       {item.name}
                     </p>

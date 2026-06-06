@@ -68,6 +68,7 @@ export default function ObliveyonHoodiePage() {
       quantity,
       image: "/hoodie-front.jpg",
       color: "Black",
+      collection: "The Obliveyon Hoodie",
     });
     setAdded(true);
     setQuantity(1);

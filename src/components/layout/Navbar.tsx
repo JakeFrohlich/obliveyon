@@ -7,6 +7,94 @@ import { useSession } from "next-auth/react";
 import { useCart } from "@/hooks/use-cart";
 import CartSidebar from "@/components/cart/CartSidebar";
 
+function FreeShippingBadge() {
+  return (
+    <>
+      <style>{`
+        @keyframes wumpus-shift {
+          0%   { background-position: 0% 50%; }
+          50%  { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes wumpus-truck {
+          0%   { transform: translateX(0px); }
+          50%  { transform: translateX(2px); }
+          100% { transform: translateX(0px); }
+        }
+        .wumpus-text {
+          background: linear-gradient(
+            90deg,
+            rgba(255,255,255,0.45) 0%,
+            rgba(255,255,255,1)    25%,
+            rgba(255,255,255,0.55) 50%,
+            rgba(255,255,255,1)    75%,
+            rgba(255,255,255,0.45) 100%
+          );
+          background-size: 300% 100%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          color: transparent;
+          animation: wumpus-shift 4s ease-in-out infinite;
+        }
+        .wumpus-truck {
+          animation: wumpus-truck 2s ease-in-out infinite;
+        }
+      `}</style>
+      <div
+        className="hidden md:flex items-center gap-1.5"
+        style={{
+          border: "1px solid rgba(255,255,255,0.2)",
+          padding: "4px 14px",
+          cursor: "default",
+          userSelect: "none",
+        }}
+        aria-label="Free US Shipping"
+        title="Free US Shipping on every order"
+      >
+        <svg
+          className="wumpus-truck"
+          width="13"
+          height="11"
+          viewBox="0 0 24 20"
+          fill="none"
+          stroke="url(#ship-grad)"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          style={{ flexShrink: 0 }}
+        >
+          <defs>
+            <linearGradient id="ship-grad" x1="0" y1="0" x2="24" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stopColor="rgba(255,255,255,0.45)" />
+              <stop offset="50%"  stopColor="rgba(255,255,255,1)" />
+              <stop offset="100%" stopColor="rgba(255,255,255,0.45)" />
+            </linearGradient>
+          </defs>
+          <rect x="1" y="5" width="13" height="9" rx="0.5" />
+          <path d="M14 8h4l3 3v3h-7z" />
+          <circle cx="6" cy="16" r="2" />
+          <circle cx="17" cy="16" r="2" />
+          <path d="M0 8h1.5M0 11h2.5" opacity="0.5" />
+        </svg>
+        <span
+          className="wumpus-text"
+          style={{
+            fontFamily: "var(--font-medieval)",
+            fontWeight: 400,
+            fontSize: "11px",
+            letterSpacing: "0.38em",
+            textTransform: "uppercase",
+          }}
+        >
+          Free US Shipping
+        </span>
+      </div>
+    </>
+  );
+}
+
 function SocialCrossfade() {
   const [showDiscord, setShowDiscord] = useState(true);
 
@@ -19,7 +107,7 @@ function SocialCrossfade() {
     <div className="relative w-5 h-5" style={{ flexShrink: 0 }}>
       {/* Discord icon */}
       <a
-        href="https://discord.gg/obliveyon"
+        href="https://discord.gg/M4kgbn9Z"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Discord"
@@ -76,19 +164,19 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 sm:px-10"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between pl-3 pr-8 sm:pl-10 sm:pr-14"
       style={{
         height: "56px",
-        background: "rgba(0,0,0,0.6)",
+        background: "#000000",
         backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(255,255,255,0.04)",
       }}
     >
-      {/* Left — Return + Profile + Settings */}
-      <div className="flex items-center gap-4">
+      {/* Left — Return + Profile + Settings (profile/settings hidden on mobile) */}
+      <div className="flex items-center gap-2 sm:gap-4">
         <Link
           href={returnHref}
-          className="text-[11px] tracking-[0.5em] uppercase text-white/40 hover:text-white transition-colors duration-300"
+          className="text-[9px] sm:text-[11px] tracking-[0.3em] sm:tracking-[0.5em] uppercase text-white/40 hover:text-white transition-colors duration-300 whitespace-nowrap"
           style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
         >
           {returnLabel}
@@ -96,7 +184,7 @@ export default function Navbar() {
         <Link
           href={isAuthed ? "/profile" : "/account"}
           aria-label={isAuthed ? "Profile" : "Sign in or sign up"}
-          className="flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
+          className="hidden sm:flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
           style={{ ...borderStyle, padding: "6px 10px" }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -107,7 +195,7 @@ export default function Navbar() {
         <Link
           href="/settings"
           aria-label="Settings"
-          className="flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
+          className="hidden sm:flex items-center justify-center text-white/70 hover:text-white transition-colors duration-300"
           style={{ ...borderStyle, padding: "6px 10px" }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -117,10 +205,10 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* Center — Logo */}
+      {/* Center — Logo (visible on all screens now) */}
       <Link
         href="/"
-        className="absolute left-1/2 -translate-x-1/2 text-white hover:text-white/70 transition-colors duration-300"
+        className="absolute left-1/2 -translate-x-1/2 text-white hover:text-white/70 transition-colors duration-300 pointer-events-auto"
         style={{
           fontFamily: "var(--font-gothic)",
           fontWeight: 400,
@@ -133,16 +221,17 @@ export default function Navbar() {
         Obliveyon
       </Link>
 
-      {/* Right — Social + Cart */}
-      <div className="flex items-center gap-4">
-        <div className="flex items-center justify-center" style={borderStyle}>
+      {/* Right — Free Shipping badge + Social + Cart (social hidden on mobile) */}
+      <div className="flex items-center gap-2 sm:gap-4">
+        <FreeShippingBadge />
+        <div className="hidden sm:flex items-center justify-center" style={borderStyle}>
           <SocialCrossfade />
         </div>
 
         <button
           onClick={() => setCartOpen(true)}
           aria-label="Open cart"
-          className="relative flex items-center gap-2 text-[11px] tracking-[0.5em] uppercase text-white/70 hover:text-white transition-colors duration-300 cursor-pointer"
+          className="relative flex items-center gap-2 text-[11px] tracking-[0.3em] sm:tracking-[0.5em] uppercase text-white/70 hover:text-white transition-colors duration-300 cursor-pointer"
           style={{ fontFamily: "var(--font-medieval)", fontWeight: 400, ...borderStyle }}
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -156,7 +245,7 @@ export default function Navbar() {
             <circle cx="7" cy="13.5" r="0.8" fill="currentColor" />
             <circle cx="11" cy="13.5" r="0.8" fill="currentColor" />
           </svg>
-          Cart
+          <span className="hidden sm:inline">Cart</span>
           {totalItems > 0 && (
             <span
               className="absolute -top-1 -right-2 w-4 h-4 flex items-center justify-center text-[9px]"

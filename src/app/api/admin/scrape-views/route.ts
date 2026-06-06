@@ -153,7 +153,7 @@ async function extractInstagramViews(url: string): Promise<number> {
     await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
 
     // Wait for view count element to load
-    await page.waitForTimeout(2000);
+    await new Promise((r) => setTimeout(r, 2000));
 
     // Extract view count from page
     const viewCount = await page.evaluate(() => {

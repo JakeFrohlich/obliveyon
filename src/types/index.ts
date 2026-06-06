@@ -7,6 +7,7 @@ export interface CartItem {
   quantity: number;
   image: string;
   color?: string;
+  collection?: string;
 }
 
 export interface ProductFilters {

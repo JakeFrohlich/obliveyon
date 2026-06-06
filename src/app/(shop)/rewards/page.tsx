@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { RANKS, type Rank } from "@/lib/ranks";
+import Footer from "@/components/shop/Footer";
 
 type RankResponse = {
   pieces: number;
@@ -36,10 +37,11 @@ export default function RewardsPage() {
   const currentTier = rankData?.current.tier ?? 0;
 
   return (
-    <div className="min-h-screen" style={{ background: "#000000" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "#000000" }}>
+      <div className="flex-1">
       <div
         className="w-full mx-auto px-6 sm:px-10 pb-24"
-        style={{ paddingTop: "140px", maxWidth: "960px" }}
+        style={{ paddingTop: "140px", maxWidth: "960px", marginLeft: "auto", marginRight: "auto" }}
       >
         {/* Header */}
         <div className="text-center mb-14">
@@ -197,6 +199,8 @@ export default function RewardsPage() {
           )}
         </div>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }

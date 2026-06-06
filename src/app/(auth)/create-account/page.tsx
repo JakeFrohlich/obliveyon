@@ -190,7 +190,7 @@ export default function CreateAccountPage() {
       <div className="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
         {[
           { label: "Privacy Policy", href: "/privacy" },
-          { label: "Contact", href: "mailto:Obliveyon@gmail.com" },
+          { label: "Contact", href: "mailto:vip@obliveyon.com" },
         ].map((l) => (
           <a
             key={l.label}

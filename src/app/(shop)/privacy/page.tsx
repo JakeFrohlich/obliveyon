@@ -13,11 +13,11 @@ const SECTIONS = [
   },
   {
     title: "Shipping",
-    body: "Orders are processed within 3–5 business days. Once shipped, delivery timeframes depend on your location. International customers are responsible for any customs duties or import taxes assessed by their country.",
+    body: "Shipping takes 6–18 business days from order confirmation, depending on destination. International customers are responsible for any customs duties or import taxes assessed by their country.",
   },
   {
     title: "Contact",
-    body: "For any order issues, reach us at Obliveyon@gmail.com. Include your order number and a brief description of the issue and we will get back to you as soon as possible.",
+    body: "For any order issues, reach us at vip@obliveyon.com. Include your order number and a brief description of the issue and we will get back to you as soon as possible.",
   },
 ];
 

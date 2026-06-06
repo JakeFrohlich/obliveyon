@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Footer from "@/components/shop/Footer";
+import MobileRankCard from "@/components/shop/MobileRankCard";
 
 const STATIC_PRODUCTS = [
   {
@@ -10,21 +11,21 @@ const STATIC_PRODUCTS = [
     category: "Hoodie",
   },
   {
-    name: "Acid Wash",
+    name: "Acid Wash Zip Up",
     href: "/product/the-original-obliveyon?color=0",
     image: "/try 2.png",
     price: "$70",
     category: "Hoodie",
   },
   {
-    name: "White",
+    name: "White Zip Up",
     href: "/product/the-original-obliveyon?color=1",
     image: "/White 1.png",
     price: "$70",
     category: "Hoodie",
   },
   {
-    name: "Black",
+    name: "Black Zip Up",
     href: "/product/the-original-obliveyon?color=2",
     image: "/black 1st.png",
     price: "$70",
@@ -47,8 +48,9 @@ export default function ShopPage() {
     >
       {/* Main content — grows to push footer down */}
       <main className="flex-1">
-        {/* Header */}
-        <div className="px-6 sm:px-10 lg:px-16 pb-10" style={{ paddingTop: "120px" }}>
+        {/* Header — mobile 80px clears navbar (56px); desktop 120px clears navbar+LevelBar */}
+        <div className="px-6 sm:px-10 lg:px-16 pb-10" style={{ paddingTop: "80px" }}>
+          <div className="hidden sm:block" style={{ height: "40px" }} />
           <div className="text-center mt-6">
             <h1
               className="text-3xl sm:text-4xl lg:text-5xl tracking-[0.25em] uppercase text-white"
@@ -123,8 +125,8 @@ export default function ShopPage() {
                   {product.name}
                 </p>
                 <p
-                  className="text-[10px] tracking-[0.15em] text-white/45 mt-1"
-                  style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+                  className="text-base sm:text-lg tracking-[0.15em] text-white/55 mt-2"
+                  style={{ fontFamily: "var(--font-medieval)", fontWeight: 400 }}
                 >
                   {product.price}
                 </p>
@@ -136,6 +138,9 @@ export default function ShopPage() {
 
         </div>
       </main>
+
+      {/* Mobile-only: rank info just above the footer (matches LevelBar content) */}
+      <MobileRankCard />
 
       <Footer />
     </div>
