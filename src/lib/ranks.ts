@@ -39,7 +39,7 @@ export const RANKS: Rank[] = [
   { tier: 1, title: "The Wanderer",  emoji: "🕯️", threshold: 0,  perk: "Early access to drops",                  discount: 0  },
   { tier: 2, title: "The Forgotten", emoji: "⚔️", threshold: 1,  perk: "5% off next order",                       discount: 5  },
   { tier: 3, title: "The Hunter",    emoji: "👁️", threshold: 5,  perk: "Exclusive discounts and rewards",         discount: 10 },
-  { tier: 4, title: "The Initiate",  emoji: "🩸", threshold: 10, perk: "15% off + exclusive colorways",           discount: 15 },
+  { tier: 4, title: "The Initiate",  emoji: "🩸", threshold: 10, perk: "More exclusive discounts and rewards",           discount: 15 },
   { tier: 5, title: "The Obliveyon", emoji: "🖤", threshold: 30, perk: "15% off every order",                     discount: 15 },
 ];
 

@@ -329,6 +329,12 @@ function SignupForm() {
                   {phoneError}
                 </p>
               )}
+              <p
+                className="text-[9px] mt-2 leading-relaxed"
+                style={{ fontFamily: "var(--font-medieval)", color: "rgba(255,255,255,0.3)", letterSpacing: "0.03em" }}
+              >
+                By providing your phone number, you agree to receive marketing text messages from Obliveyon. Message &amp; data rates may apply. Reply STOP to unsubscribe.
+              </p>
             </div>
 
             {error && (

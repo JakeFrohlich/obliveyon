@@ -8,23 +8,31 @@ const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
 // E.164 format: + followed by 7–15 digits
 const E164_REGEX = /^\+[1-9]\d{6,14}$/;
 
-const bodySchema = z.object({
-  email: z.string().max(254).refine((v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), {
-    message: "Valid email is required",
-  }),
-  phone: z
-    .string()
-    .max(20)
-    .refine((v) => E164_REGEX.test(v), {
-      message: "Phone must be in E.164 format (e.g. +14155550100)",
-    })
-    .optional(),
-  ref: z
-    .string()
-    .max(64)
-    .regex(/^[a-zA-Z0-9_-]+$/)
-    .optional(),
-});
+const bodySchema = z
+  .object({
+    email: z
+      .string()
+      .max(254)
+      .refine((v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), {
+        message: "Valid email is required",
+      })
+      .optional(),
+    phone: z
+      .string()
+      .max(20)
+      .refine((v) => E164_REGEX.test(v), {
+        message: "Phone must be in E.164 format (e.g. +14155550100)",
+      })
+      .optional(),
+    ref: z
+      .string()
+      .max(64)
+      .regex(/^[a-zA-Z0-9_-]+$/)
+      .optional(),
+  })
+  .refine((d) => d.email || d.phone, {
+    message: "At least one of email or phone is required",
+  });
 
 function sanitize(str: unknown, maxLength: number): string {
   if (typeof str !== "string") return "";
@@ -70,8 +78,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const email = sanitize(parsed.data.email, 254);
-  // Phone is already validated E.164 by the schema
+  const email = parsed.data.email ? sanitize(parsed.data.email, 254) : undefined;
   const normalizedPhone = parsed.data.phone ? sanitize(parsed.data.phone, 20) : undefined;
   const ref = parsed.data.ref ? sanitize(parsed.data.ref, 64) : undefined;
 
@@ -92,7 +99,7 @@ export async function POST(req: NextRequest) {
       data: {
         type: "profile",
         attributes: {
-          email,
+          ...(email ? { email } : {}),
           ...(normalizedPhone ? { phone_number: normalizedPhone } : {}),
           properties: profileProperties,
         },
@@ -124,10 +131,10 @@ export async function POST(req: NextRequest) {
               {
                 type: "profile",
                 attributes: {
-                  email,
+                  ...(email ? { email } : {}),
                   ...(normalizedPhone ? { phone_number: normalizedPhone } : {}),
                   subscriptions: {
-                    email: { marketing: { consent: "SUBSCRIBED" } },
+                    ...(email ? { email: { marketing: { consent: "SUBSCRIBED" } } } : {}),
                     ...(normalizedPhone
                       ? {
                           sms: {

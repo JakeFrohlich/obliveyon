@@ -229,6 +229,39 @@ export default function Home() {
             Credits
           </span>
         </button>
+
+      </div>
+
+      {/* Legal links — bottom right corner */}
+      <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-10 flex flex-col items-end gap-1">
+        <button
+          onClick={() => router.push("/terms")}
+          className="py-2 pl-4"
+          style={{ transition: "opacity 0.3s ease", opacity: 0.35 }}
+          onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.35"; }}
+        >
+          <span
+            className="text-[9px] sm:text-[10px] tracking-[0.35em] uppercase text-white"
+            style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+          >
+            Terms
+          </span>
+        </button>
+        <button
+          onClick={() => router.push("/privacy-policy")}
+          className="py-2 pl-4"
+          style={{ transition: "opacity 0.3s ease", opacity: 0.35 }}
+          onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.35"; }}
+        >
+          <span
+            className="text-[9px] sm:text-[10px] tracking-[0.35em] uppercase text-white"
+            style={{ fontFamily: "var(--font-medieval)", fontWeight: 300 }}
+          >
+            Privacy
+          </span>
+        </button>
       </div>
 
       <style jsx>{`
